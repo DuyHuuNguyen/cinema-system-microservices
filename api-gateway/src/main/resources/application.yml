@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: api-gateway
+---
+server:
+  port: 9090
+---
+springdoc:
+  swagger-ui:
+    urls:
+      - name: user-service
+        url: http://localhost:8082/v3/api-docs
+
+      - name: notification-service
+        url: http://localhost:8081/v3/api-docs
+
+      - name: movie-service
+        url: http://localhost:8083/v3/api-docs
+
+      - name: schedule-service
+        url: http://localhost:8084/v3/api-docs
+
+      - name: booking-service
+        url: http://localhost:8085/v3/api-docs
+
+      - name: payment-service
+        url: http://localhost:8086/v3/api-docs
