@@ -13,15 +13,23 @@
         <module name="movie-service" />
         <module name="user-service" />
         <module name="eureka-server" />
+        <module name="identification-service" />
         <module name="notification-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="demo" target="21" />
+      <module name="identificaserese-service" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="booking-service" options="-parameters" />
+      <module name="demo" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="identificaserese-service" options="-parameters" />
+      <module name="identification-service" options="-parameters" />
       <module name="movie-service" options="-parameters" />
       <module name="notification-service" options="-parameters" />
       <module name="payment-service" options="-parameters" />
