@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Hobby extends BaseEntity {
-    @Column(name = "hobby_name",nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private HobbyEnum hobbyName;
+  @Column(name = "hobby_name", nullable = false)
+  @Enumerated(value = EnumType.STRING)
+  private HobbyEnum hobbyName;
 }

@@ -13,8 +13,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role extends BaseEntity{
-    @Column(name = "role_name",nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RoleEnum roleName;
+public class Role extends BaseEntity {
+  @Column(name = "role_name", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private RoleEnum roleName;
 }

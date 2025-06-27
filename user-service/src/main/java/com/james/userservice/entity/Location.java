@@ -16,12 +16,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Location extends BaseEntity {
-    @Column(name="longitude",nullable = false)
-    private Long longitude;
+  @Column(name = "longitude", nullable = false)
+  private Long longitude;
 
-    @Column(name = "latitude",nullable = false)
-    private Long latitude;
+  @Column(name = "latitude", nullable = false)
+  private Long latitude;
 
-    @ManyToOne
-    private User user;
+  @ManyToOne private User user;
 }

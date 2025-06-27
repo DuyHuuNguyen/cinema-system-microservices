@@ -1,12 +1,11 @@
 package com.james.userservice.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @Entity
 @Table(name = "work_places")
@@ -14,15 +13,15 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkPlace extends BaseEntity{
+public class WorkPlace extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id",nullable = false)
-    private User employee;
+  @ManyToOne
+  @JoinColumn(name = "employee_id", nullable = false)
+  private User employee;
 
-    @Column(name ="theater_id",nullable = false)
-    private Long theaterId;
+  @Column(name = "theater_id", nullable = false)
+  private Long theaterId;
 
-    @OneToMany(mappedBy = "workPlace")
-    private List<WorkShift> workShifts;
+  @OneToMany(mappedBy = "workPlace")
+  private List<WorkShift> workShifts;
 }
