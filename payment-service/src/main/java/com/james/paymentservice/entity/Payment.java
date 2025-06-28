@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Payment extends BaseEntity {
+
   @Column(name = "payment_type", nullable = false)
   @Enumerated(value = EnumType.STRING)
   private PaymentType paymentType;

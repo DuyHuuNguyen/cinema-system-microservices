@@ -1,0 +1,55 @@
+package com.james.movieservice.entity;
+
+import jakarta.persistence.*;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+@Entity
+@Table(name = "movies")
+@Getter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Movie extends BaseEntity {
+
+  @Column(name = "title", nullable = false)
+  private String title;
+
+  @Column(name = "description", nullable = false)
+  private String description;
+
+  @Column(name = "duration", nullable = false)
+  private Time duration;
+
+  @Column(name = "language", nullable = false)
+  private String language;
+
+  @Column(name = "released_at", nullable = false)
+  private Long releasedAt;
+
+  @Column(name = "poster_url", nullable = false)
+  private String poster;
+
+  @Column(name = "trailer_url", nullable = false)
+  private String trailer;
+
+  @Column(name = "movie_url", nullable = false)
+  private String movie;
+
+  @Column(name = "theater_id", nullable = false)
+  private Long theaterId;
+
+  @ManyToOne
+  @JoinColumn(name = "category_id", nullable = false)
+  private Category category;
+
+  @OneToMany(mappedBy = "movie", orphanRemoval = true)
+  @Builder.Default
+  private List<MovieRate> movieRates = new ArrayList<>();
+}
