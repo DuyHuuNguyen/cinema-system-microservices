@@ -9,16 +9,27 @@ springdoc:
   api-docs:
     enabled: true
   swagger-ui:
-#    enabled: true
-#    path: /swagger-ui.html
     urls:
       - name: booking-service
         url: /booking-service/v3/api-docs
+
       - name: user-service
         url: /user-service/v3/api-docs
 
+      - name: movie-service
+        url: /movie-service/v3/api-docs
 
+      - name: payment-service
+        url: /payment-service/v3/api-docs
 
+      - name: schedule-service
+        url: /schedule-service/v3/api-docs
+
+      - name: notification-service
+        url: /notification-service/v3/api-docs
+
+      - name: identification-service
+        url: /identification-service/v3/api-docs
 ---
 spring:
   cloud:
