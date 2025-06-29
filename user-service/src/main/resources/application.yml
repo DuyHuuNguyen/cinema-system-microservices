@@ -16,3 +16,7 @@ spring:
     username: postgres
     password: 1111
     driver-class-name: org.postgresql.Driver
+cloudinary:
+  cloudinary-name: dvynemzxx
+  api-key: 368324453129176
+  api-secret: FyxpYajXxv58KvfsbG9mYuYWOh8
