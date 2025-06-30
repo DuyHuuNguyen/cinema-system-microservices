@@ -27,3 +27,12 @@ spring:
           auth: true
           starttls:
             enable: true
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 578
+rabbitmq-info:
+  topic-exchange-user-notification: TOPIC_EXCHANGE_USER_NOTIFICATION
+  routing-key-user-notification: ROUTING_KEY_USER_NOTIFICATION
+  queue-name-user-notification: QUEUE_USER_NOTIFICATION
