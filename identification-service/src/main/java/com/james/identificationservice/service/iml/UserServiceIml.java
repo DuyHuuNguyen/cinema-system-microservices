@@ -5,8 +5,10 @@ import com.james.identificationservice.repository.UserRepository;
 import com.james.identificationservice.service.UserService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceIml implements UserService {
@@ -14,6 +16,6 @@ public class UserServiceIml implements UserService {
 
   @Override
   public Optional<User> findByEmail(String email) {
-    return userRepository.findByEmail(email);
+    return userRepository.findUserByEmail(email);
   }
 }

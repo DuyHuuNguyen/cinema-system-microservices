@@ -32,12 +32,11 @@ public class AuthTokenInterceptor extends OncePerRequestFilter {
   private final JwtService jwtService;
   private final CacheService cacheService;
 
-  private static final List<String> PUBLIC_APIS =
-      List.of();
+  private static final List<String> PUBLIC_APIS = List.of("/api/v1/auth");
 
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs/");
 
-  private final String RESET_PASSWORD_URL = "";
+  private final String RESET_PASSWORD_URL = "_";
 
   private final String ROLE_PATTERN = "ROLE_%s";
 
@@ -51,6 +50,7 @@ public class AuthTokenInterceptor extends OncePerRequestFilter {
     var isPublic = PUBLIC_APIS.stream().anyMatch(path::startsWith);
 
     if (isSwagger || isPublic) {
+      log.info("Pass request");
       filterChain.doFilter(request, response);
       return;
     }
