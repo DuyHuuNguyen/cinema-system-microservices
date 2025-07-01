@@ -1,7 +1,15 @@
 package com.james.identificationservice.service;
 
-public interface CacheService {
-  Boolean hasKey(String accessTokenCacheKey);
+import java.util.concurrent.TimeUnit;
 
-  String retrieve(String accessTokenCacheKey);
+public interface CacheService {
+  void store(String key, Object value, Integer timeOut, TimeUnit timeUnit);
+
+  void store(String key, Object value);
+
+  Object retrieve(String key);
+
+  void delete(String key);
+
+  Boolean hasKey(String key);
 }
