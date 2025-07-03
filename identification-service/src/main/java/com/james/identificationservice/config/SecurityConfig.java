@@ -1,6 +1,5 @@
 package com.james.identificationservice.config;
 
-import com.james.identificationservice.interceptor.AuthTokenInterceptor;
 import com.james.identificationservice.interceptor.UserDetailsAuthenticationProviderInterceptor;
 import com.james.identificationservice.service.CacheService;
 import com.james.identificationservice.service.JwtService;
@@ -17,7 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -28,7 +26,7 @@ public class SecurityConfig implements WebMvcConfigurer {
   private final JwtService jwtService;
   private final CacheService cacheService;
 
-  private final String[] WHITE_LISTS = {"/api/v1/auth"};
+  private final String[] WHITE_LISTS = {"/api/v1/auth,"};
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -39,11 +37,6 @@ public class SecurityConfig implements WebMvcConfigurer {
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
       throws Exception {
     return authConfig.getAuthenticationManager();
-  }
-
-  @Bean
-  public AuthTokenInterceptor authTokenInterceptor() {
-    return new AuthTokenInterceptor(this.userService, this.jwtService, this.cacheService);
   }
 
   @Bean
@@ -64,7 +57,6 @@ public class SecurityConfig implements WebMvcConfigurer {
             request ->
                 request.requestMatchers(WHITE_LISTS).permitAll().anyRequest().authenticated());
     http.authenticationProvider(this.userDetailsAuthenticationProviderInterceptor());
-    http.addFilterBefore(this.authTokenInterceptor(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 }

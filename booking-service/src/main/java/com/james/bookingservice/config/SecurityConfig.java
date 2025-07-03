@@ -14,7 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableSpringConfigured
 public class SecurityConfig {
 
-  private final String[] WHITE_LISTS = {"/api/v1/auth"};
+  private final String[] WHITE_LISTS = {
+    "/api/v1/auth/login", "/api/v1/auth/authorization", "/swagger-ui/", "/v3/api-docs/"
+  };
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)

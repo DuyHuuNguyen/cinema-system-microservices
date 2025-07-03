@@ -3,6 +3,7 @@ package com.james.identificationservice.interceptor;
 import com.james.identificationservice.config.SecurityUserDetails;
 import com.james.identificationservice.enums.ErrorCode;
 import com.james.identificationservice.exception.EntityNotFoundException;
+import com.james.identificationservice.exception.PermissionDeniedException;
 import com.james.identificationservice.service.UserService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,12 +41,11 @@ public class UserDetailsAuthenticationProviderInterceptor
 
     log.info("user pw : {}", user.getPassword());
     log.info("system pw : {}", authentication.getCredentials().toString());
-    //    var isNotMatchedPassword =
-    //        !this.passwordEncoder.matches(
-    //            authentication.getCredentials().toString(), user.getPassword());
+    var isNotMatchedPassword =
+        !this.passwordEncoder.matches(
+            authentication.getCredentials().toString(), user.getPassword());
 
-    //    if (isNotMatchedPassword) throw new
-    // PermissionDeniedException(ErrorCode.NOT_MATCHED_PASSWORD);
+    if (isNotMatchedPassword) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_PASSWORD);
 
     List<GrantedAuthority> authorityList =
         user.getRoles().stream()
