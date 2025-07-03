@@ -1,13 +1,18 @@
 package com.james.identificationservice.facade.Iml;
 
+import com.james.identificationservice.dto.UserDTO;
+import com.james.identificationservice.enums.RoleEnum;
 import com.james.identificationservice.enums.TokenType;
 import com.james.identificationservice.facade.UserFacade;
+import com.james.identificationservice.request.AuthenticationRequest;
 import com.james.identificationservice.request.LoginRequest;
 import com.james.identificationservice.response.BaseResponse;
 import com.james.identificationservice.response.LoginResponse;
+import com.james.identificationservice.service.BookingService;
 import com.james.identificationservice.service.CacheService;
 import com.james.identificationservice.service.JwtService;
 import com.james.identificationservice.service.UserService;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +27,7 @@ public class UserFacadeIml implements UserFacade {
   private final CacheService cacheService;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final BookingService bookingService;
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest request) {
