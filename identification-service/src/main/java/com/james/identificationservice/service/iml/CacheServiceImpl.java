@@ -13,6 +13,11 @@ import org.springframework.stereotype.Service;
 public class CacheServiceImpl implements CacheService {
   private final RedisTemplate<String, Object> redisTemplate;
 
+  //  @PostConstruct
+  //  void run(){
+  //    this.store("a","11111");
+  //  }
+
   @Override
   public void store(String key, Object value, Integer timeOut, TimeUnit timeUnit) {
     this.redisTemplate.opsForValue().set(key, value, timeOut, timeUnit);
