@@ -3,6 +3,7 @@ package com.james.userservice.service.impl;
 import com.james.userservice.entity.User;
 import com.james.userservice.repository.UserRepository;
 import com.james.userservice.service.UserService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +20,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean verify(String email) {
     return this.userRepository.verify(email);
+  }
+
+  @Override
+  public Optional<User> findUserById(Long id) {
+    return this.userRepository.findById(id);
   }
 }

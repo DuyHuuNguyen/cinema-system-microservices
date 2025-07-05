@@ -1,14 +1,13 @@
 package com.james.userservice.entity;
 
+import com.james.userservice.dto.ProfileDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@ToString
 @Entity
 @Table(name = "users")
 @Getter
@@ -49,7 +48,7 @@ public class User extends BaseEntity {
   @JoinColumn(name = "location_id", referencedColumnName = "id")
   private Location location;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default
   @JoinTable(
       name = "user_roles",
@@ -57,10 +56,7 @@ public class User extends BaseEntity {
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   private List<Role> roles = new ArrayList<>();
 
-  //  @ManyToMany(cascade =
-  // {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default
   @JoinTable(
       name = "user_hobbies",
@@ -69,6 +65,7 @@ public class User extends BaseEntity {
   private List<Hobby> hobbies = new ArrayList<>();
 
   @OneToMany(
+      fetch = FetchType.LAZY,
       mappedBy = "employee",
       cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.PERSIST, CascadeType.REFRESH})
   @Builder.Default
@@ -85,5 +82,19 @@ public class User extends BaseEntity {
 
   public void addRole(Role role) {
     this.roles.add(role);
+  }
+
+  public void changeHobbies(List<Hobby> newHobbies) {
+    this.hobbies.clear();
+    for (var hobby : newHobbies) {
+      this.hobbies.add(hobby);
+    }
+  }
+
+  public void changeProfile(ProfileDTO profileDTO) {
+    this.lastname = profileDTO.getLastName();
+    this.firstname = profileDTO.getFirstName();
+    this.dateOfBirth = profileDTO.getDateOfBirth();
+    this.avatarKey = profileDTO.getAvatarUrl();
   }
 }

@@ -1,5 +1,7 @@
 package com.james.userservice.facade.impl;
 
+import com.james.userservice.config.SecurityUserDetails;
+import com.james.userservice.dto.ProfileDTO;
 import com.james.userservice.entity.Location;
 import com.james.userservice.entity.User;
 import com.james.userservice.enums.ErrorCode;
@@ -7,13 +9,15 @@ import com.james.userservice.enums.RoleEnum;
 import com.james.userservice.exception.EmailIsUsedException;
 import com.james.userservice.exception.EntityNotFoundException;
 import com.james.userservice.facade.UserFacade;
-import com.james.userservice.resquest.UpsertUserRequest;
+import com.james.userservice.resquest.SignUpUserRequest;
+import com.james.userservice.resquest.UpdateUserRequest;
 import com.james.userservice.service.HobbyService;
 import com.james.userservice.service.LocationService;
 import com.james.userservice.service.RoleService;
 import com.james.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +34,7 @@ public class UserFacadeImpl implements UserFacade {
 
   @Override
   @Transactional
-  public void signUp(UpsertUserRequest upsertUserRequest) {
+  public void signUp(SignUpUserRequest upsertUserRequest) {
     var isEmailAvailable = this.userService.verify(upsertUserRequest.getEmail());
     if (!isEmailAvailable) throw new EmailIsUsedException(ErrorCode.EMAIL_IS_USED);
 
@@ -75,6 +79,42 @@ public class UserFacadeImpl implements UserFacade {
         }
       }
     }
+
+    this.userService.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void updateProfile(UpdateUserRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    var user =
+        this.userService
+            .findUserById(principal.id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    var newHobbies = this.hobbyService.findHobbiesByHobbyEnums(request.getHobbies());
+    if (!newHobbies.isEmpty()) {
+      user.changeHobbies(newHobbies);
+    }
+
+    var profileDTO =
+        ProfileDTO.builder()
+            .firstName(request.getFirstName())
+            .lastName(request.getLastName())
+            .avatarUrl(request.getAvatarUrl())
+            .dateOfBirth(request.getDateOfBirth())
+            .build();
+
+    user.changeProfile(profileDTO);
+
+    var newLocation =
+        Location.builder()
+            .longitude(request.getLongitude())
+            .latitude(request.getLatitude())
+            .build();
+    user.addLocation(newLocation);
 
     this.userService.save(user);
   }
