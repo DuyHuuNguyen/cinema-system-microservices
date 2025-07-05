@@ -1,9 +1,8 @@
 package com.james.bookingservice.dto;
 
 import com.james.bookingservice.enums.RoleEnum;
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
 
 @ToString
 @Builder
@@ -11,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ValidTokenDTO {
-    private UserDTO userDTO;
-    private List<RoleEnum> roles;
+  private UserDTO userDTO;
+  private List<RoleEnum> roles;
 }

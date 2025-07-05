@@ -1,7 +1,6 @@
 package com.james.identificationservice.controller;
 
 import com.james.identificationservice.facade.AuthFacade;
-import com.james.identificationservice.request.AuthorizeRequest;
 import com.james.identificationservice.request.LoginRequest;
 import com.james.identificationservice.response.BaseResponse;
 import com.james.identificationservice.response.LoginResponse;
@@ -9,7 +8,6 @@ import com.james.identificationservice.response.ValidTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

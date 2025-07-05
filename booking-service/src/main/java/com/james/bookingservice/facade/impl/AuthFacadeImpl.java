@@ -30,7 +30,7 @@ public class AuthFacadeImpl implements AuthFacade {
         authenticationRequest.getRoles().stream()
             .map(role -> new SimpleGrantedAuthority(String.format(ROLE_PATTERN, role.toString())))
             .collect(Collectors.toList());
-    log.info("   List<GrantedAuthority> authorityList = {}",authorityList.toArray());
+    log.info("   List<GrantedAuthority> authorityList = {}", authorityList.toArray());
     SecurityUserDetails principle =
         SecurityUserDetails.build(authenticationRequest.getUserDTO(), authorityList);
 
@@ -38,9 +38,10 @@ public class AuthFacadeImpl implements AuthFacade {
         new UsernamePasswordAuthenticationToken(principle, null, authorityList);
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
-    var principal =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    log.info("test {}",principal.getAuthorities().toArray());
-    log.info("test {}",SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    log.info("test {}", principal.getAuthorities().toArray());
+    log.info("test {}", SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
     log.info("Authentication success");
     return BaseResponse.ok();
   }

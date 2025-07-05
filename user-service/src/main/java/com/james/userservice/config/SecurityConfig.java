@@ -1,10 +1,9 @@
-package com.james.identificationservice.config;
+package com.james.userservice.config;
 
-import com.james.identificationservice.interceptor.UserDetailsAuthenticationProviderInterceptor;
-import com.james.identificationservice.service.CacheService;
-import com.james.identificationservice.service.JwtService;
-import com.james.identificationservice.service.UserService;
+import com.james.userservice.interceptor.AuthenticationTokenProviderInterceptor;
+import com.james.userservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,39 +12,28 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfig implements WebMvcConfigurer {
-  private final UserService userService;
-  private final JwtService jwtService;
-  private final CacheService cacheService;
+public class SecurityConfig {
 
+  private final AuthService authService;
   private final String[] WHITE_LISTS = {
-    "/api/v1/auth/login", "/api/v1/auth/authorization", "/swagger-ui/**", "/v3/api-docs/**",
+    "/api/v1/auth/authorization", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/auth"
   };
 
   @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
+  public AuthenticationTokenProviderInterceptor authenticationTokenProviderInterceptor() {
+    return new AuthenticationTokenProviderInterceptor(this.authService);
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
-      throws Exception {
-    return authConfig.getAuthenticationManager();
-  }
-
-  @Bean
-  public UserDetailsAuthenticationProviderInterceptor
-      userDetailsAuthenticationProviderInterceptor() {
-    return new UserDetailsAuthenticationProviderInterceptor(
-        this.userService, this.passwordEncoder());
+  @SneakyThrows
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
+    return configuration.getAuthenticationManager();
   }
 
   @Bean
@@ -58,7 +46,8 @@ public class SecurityConfig implements WebMvcConfigurer {
         .authorizeHttpRequests(
             request ->
                 request.requestMatchers(WHITE_LISTS).permitAll().anyRequest().authenticated());
-    http.authenticationProvider(this.userDetailsAuthenticationProviderInterceptor());
+    http.addFilterBefore(
+        this.authenticationTokenProviderInterceptor(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 }

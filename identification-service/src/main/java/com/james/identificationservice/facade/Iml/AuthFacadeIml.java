@@ -16,7 +16,6 @@ import com.james.identificationservice.response.ValidTokenResponse;
 import com.james.identificationservice.service.CacheService;
 import com.james.identificationservice.service.JwtService;
 import com.james.identificationservice.service.UserService;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -81,7 +80,8 @@ public class AuthFacadeIml implements AuthFacade {
             .map(
                 role -> new SimpleGrantedAuthority(String.format(ROLE_PATTERN, role.getRoleName())))
             .collect(Collectors.toList());
-    log.info("role {}", Arrays.toString(user.getRoles().stream().map(r -> r.getRoleName()).toArray()));
+    log.info(
+        "role {}", Arrays.toString(user.getRoles().stream().map(r -> r.getRoleName()).toArray()));
     var principle = SecurityUserDetails.build(user, authorityList);
     UsernamePasswordAuthenticationToken authentication =
         new UsernamePasswordAuthenticationToken(principle, null, authorityList);
@@ -93,7 +93,7 @@ public class AuthFacadeIml implements AuthFacade {
             .userDTO(this.userMapper.toUserDTO(user))
             .build();
 
-//    this.addAuthenticationForAllService(authenticationRequest);
+    //    this.addAuthenticationForAllService(authenticationRequest);
 
     return BaseResponse.ok();
   }
@@ -106,13 +106,13 @@ public class AuthFacadeIml implements AuthFacade {
       throw new InvalidTokenException(ErrorCode.TOKEN_NOT_FOUND);
 
     var user =
-            userService
-                    .findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+        userService
+            .findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
     return ValidTokenResponse.builder()
-            .userDTO(this.userMapper.toUserDTO(user))
-            .roles(user.getRoles().stream().map(Role::getRoleName).toList())
-            .build();
+        .userDTO(this.userMapper.toUserDTO(user))
+        .roles(user.getRoles().stream().map(Role::getRoleName).toList())
+        .build();
   }
 
   private Boolean validateTokenFromCache(String email, String token) {
@@ -123,6 +123,4 @@ public class AuthFacadeIml implements AuthFacade {
     return cacheService.hasKey(accessTokenCacheKey)
         && cacheService.retrieve(accessTokenCacheKey).equals(token);
   }
-
-
 }

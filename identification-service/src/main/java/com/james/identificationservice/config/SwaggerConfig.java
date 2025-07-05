@@ -10,15 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(
-        servers = {@Server(url = "/identification-service")})
+@OpenAPIDefinition(servers = {@Server(url = "/identification-service")})
 @SecurityScheme(
-        name = "Bearer Authentication",
-        type = SecuritySchemeType.HTTP,
-        bearerFormat = "JWT",
-        scheme = "bearer",
-        in = SecuritySchemeIn.HEADER,
-        paramName = "Authorization")
+    name = "Bearer Authentication",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+    scheme = "bearer",
+    in = SecuritySchemeIn.HEADER,
+    paramName = "Authorization")
 public class SwaggerConfig {
   @Bean
   public GroupedOpenApi openApi() {

@@ -1,11 +1,10 @@
-package com.james.bookingservice.interceptor;
+package com.james.userservice.interceptor;
 
-import com.james.bookingservice.service.AuthService;
+import com.james.userservice.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,15 +18,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @RequiredArgsConstructor
-public class AuthenticationTokenInterceptor extends OncePerRequestFilter {
+public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter {
   private final AuthService authService;
+
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
 
   @Override
   protected void doFilterInternal(
-      @NotNull HttpServletRequest request,
-      @NotNull HttpServletResponse response,
-      FilterChain filterChain)
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String path = request.getRequestURI();
     log.info("path : {}", path);

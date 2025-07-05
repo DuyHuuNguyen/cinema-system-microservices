@@ -1,6 +1,6 @@
-package com.james.bookingservice.service;
+package com.james.userservice.service;
 
-import com.james.bookingservice.dto.ValidTokenDTO;
+import com.james.userservice.dto.ValidTokenDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
