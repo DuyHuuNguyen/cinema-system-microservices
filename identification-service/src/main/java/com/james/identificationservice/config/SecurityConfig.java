@@ -26,7 +26,9 @@ public class SecurityConfig implements WebMvcConfigurer {
   private final JwtService jwtService;
   private final CacheService cacheService;
 
-  private final String[] WHITE_LISTS = {"/api/v1/auth,"};
+  private final String[] WHITE_LISTS = {"/api/v1/auth/login","/api/v1/auth/authorization",
+          "/swagger-ui/**",
+          "/v3/api-docs/**",};
 
   @Bean
   public PasswordEncoder passwordEncoder() {

@@ -39,8 +39,6 @@ public class UserDetailsAuthenticationProviderInterceptor
             .findByEmail(username)
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
 
-    log.info("user pw : {}", user.getPassword());
-    log.info("system pw : {}", authentication.getCredentials().toString());
     var isNotMatchedPassword =
         !this.passwordEncoder.matches(
             authentication.getCredentials().toString(), user.getPassword());
