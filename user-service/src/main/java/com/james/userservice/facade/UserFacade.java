@@ -1,3 +1,8 @@
 package com.james.userservice.facade;
 
-public interface UserFacade {}
+import com.james.userservice.resquest.UpsertUserRequest;
+
+public interface UserFacade {
+
+  void signUp(UpsertUserRequest upsertUserRequest);
+}

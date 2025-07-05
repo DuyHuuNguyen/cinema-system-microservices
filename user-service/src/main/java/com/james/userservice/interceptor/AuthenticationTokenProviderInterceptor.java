@@ -22,6 +22,7 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
   private final AuthService authService;
 
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
+  private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/v1/users/sign-up");
 
   @Override
   protected void doFilterInternal(
@@ -30,10 +31,12 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
     String path = request.getRequestURI();
     log.info("path : {}", path);
     var isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);
+    var isPublicEndPoint = PUBLIC_ENDPOINTS.stream().anyMatch(path::startsWith);
     log.info("swagger {}", isSwagger);
+    log.info("public endpoint {}", isPublicEndPoint);
     String token = getTokenFromHeader(request);
 
-    if (isSwagger) {
+    if (isSwagger || isPublicEndPoint) {
       filterChain.doFilter(request, response);
       return;
     }

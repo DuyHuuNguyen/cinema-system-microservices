@@ -1,14 +1,13 @@
 package com.james.userservice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+@ToString
 @Entity
 @Table(name = "locations")
 @Getter
@@ -22,5 +21,10 @@ public class Location extends BaseEntity {
   @Column(name = "latitude", nullable = false)
   private Long latitude;
 
-  @ManyToOne private User user;
+  @OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
+  private User user;
+
+  public void addUser(User user) {
+    this.user = user;
+  }
 }

@@ -1,3 +1,9 @@
 package com.james.userservice.service;
 
-public interface UserService {}
+import com.james.userservice.entity.User;
+
+public interface UserService {
+  void save(User user);
+
+  boolean verify(String email);
+}

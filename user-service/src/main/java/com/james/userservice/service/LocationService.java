@@ -1,3 +1,7 @@
 package com.james.userservice.service;
 
-public interface LocationService {}
+import com.james.userservice.entity.Location;
+
+public interface LocationService {
+  void save(Location location);
+}
