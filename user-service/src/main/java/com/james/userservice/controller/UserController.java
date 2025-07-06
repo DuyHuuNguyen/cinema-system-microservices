@@ -3,6 +3,7 @@ package com.james.userservice.controller;
 import com.james.userservice.facade.UserFacade;
 import com.james.userservice.response.BaseResponse;
 import com.james.userservice.response.ProfileResponse;
+import com.james.userservice.resquest.ChangeLocationRequest;
 import com.james.userservice.resquest.InviteWatchingMovieRequest;
 import com.james.userservice.resquest.SignUpUserRequest;
 import com.james.userservice.resquest.UpdateUserRequest;
@@ -48,6 +49,15 @@ public class UserController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<Void> inviteWatchingMovie(@RequestBody InviteWatchingMovieRequest request) {
     this.userFacade.inviteWatchingMovie(request);
+    return BaseResponse.ok();
+  }
+
+  @PatchMapping("/location")
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<Void> changeLocation(@RequestBody ChangeLocationRequest request) {
+    this.userFacade.changeLocation(request);
     return BaseResponse.ok();
   }
 }

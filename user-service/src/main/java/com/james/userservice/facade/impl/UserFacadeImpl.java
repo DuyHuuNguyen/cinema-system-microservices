@@ -14,6 +14,7 @@ import com.james.userservice.facade.UserFacade;
 import com.james.userservice.mapper.UserMapper;
 import com.james.userservice.response.BaseResponse;
 import com.james.userservice.response.ProfileResponse;
+import com.james.userservice.resquest.ChangeLocationRequest;
 import com.james.userservice.resquest.InviteWatchingMovieRequest;
 import com.james.userservice.resquest.SignUpUserRequest;
 import com.james.userservice.resquest.UpdateUserRequest;
@@ -150,6 +151,26 @@ public class UserFacadeImpl implements UserFacade {
 
     var inviteWatchingMovieDTO =
         InviteWatchingMovieDTO.builder().emailDTOS(emailDTOS).scheduleDTO(scheduleDTO).build();
+  }
 
+  @Override
+  @Transactional
+  public void changeLocation(ChangeLocationRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    var user =
+        this.userService
+            .findUserById(principal.getId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    var newlocation =
+        Location.builder()
+            .longitude(request.getLongitude())
+            .latitude(request.getLatitude())
+            .build();
+
+    user.addLocation(newlocation);
+    userService.save(user);
   }
 }
