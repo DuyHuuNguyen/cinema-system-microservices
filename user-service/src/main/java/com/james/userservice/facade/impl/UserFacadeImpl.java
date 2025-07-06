@@ -1,6 +1,8 @@
 package com.james.userservice.facade.impl;
 
 import com.james.userservice.config.SecurityUserDetails;
+import com.james.userservice.dto.EmailDTO;
+import com.james.userservice.dto.InviteWatchingMovieDTO;
 import com.james.userservice.dto.ProfileDTO;
 import com.james.userservice.entity.Location;
 import com.james.userservice.entity.User;
@@ -9,12 +11,13 @@ import com.james.userservice.enums.RoleEnum;
 import com.james.userservice.exception.EmailIsUsedException;
 import com.james.userservice.exception.EntityNotFoundException;
 import com.james.userservice.facade.UserFacade;
+import com.james.userservice.mapper.UserMapper;
+import com.james.userservice.response.BaseResponse;
+import com.james.userservice.response.ProfileResponse;
+import com.james.userservice.resquest.InviteWatchingMovieRequest;
 import com.james.userservice.resquest.SignUpUserRequest;
 import com.james.userservice.resquest.UpdateUserRequest;
-import com.james.userservice.service.HobbyService;
-import com.james.userservice.service.LocationService;
-import com.james.userservice.service.RoleService;
-import com.james.userservice.service.UserService;
+import com.james.userservice.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +34,9 @@ public class UserFacadeImpl implements UserFacade {
   private final HobbyService hobbyService;
   private final PasswordEncoder passwordEncoder;
   private final RoleService roleService;
+  private final UserMapper userMapper;
+  private final MovieService movieService;
+  private final ScheduleService scheduleService;
 
   @Override
   @Transactional
@@ -117,5 +123,33 @@ public class UserFacadeImpl implements UserFacade {
     user.addLocation(newLocation);
 
     this.userService.save(user);
+  }
+
+  @Override
+  public BaseResponse<ProfileResponse> getProfile() {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    var user =
+        this.userService
+            .findUserById(principal.id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    return BaseResponse.build(this.userMapper.toProfile(user), true);
+  }
+
+  @Override
+  public void inviteWatchingMovie(InviteWatchingMovieRequest request) {
+    var users = this.userService.findUserByIds(request.getIds());
+
+    var emailDTOS =
+        users.stream()
+            .map(user -> EmailDTO.builder().email(user.getEmail()).id(user.getId()).build())
+            .toList();
+
+    var scheduleDTO = this.scheduleService.findScheduleById(request.getScheduleId());
+
+    var inviteWatchingMovieDTO =
+        InviteWatchingMovieDTO.builder().emailDTOS(emailDTOS).scheduleDTO(scheduleDTO).build();
+
   }
 }

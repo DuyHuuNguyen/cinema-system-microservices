@@ -1,5 +1,6 @@
 package com.james.userservice.entity;
 
+import com.james.userservice.dto.LocationDTO;
 import com.james.userservice.dto.ProfileDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -96,5 +97,9 @@ public class User extends BaseEntity {
     this.firstname = profileDTO.getFirstName();
     this.dateOfBirth = profileDTO.getDateOfBirth();
     this.avatarKey = profileDTO.getAvatarUrl();
+  }
+
+  public LocationDTO getLocationDTO() {
+    return this.location.getLocationDTO();
   }
 }

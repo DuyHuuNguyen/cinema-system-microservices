@@ -1,6 +1,7 @@
 package com.james.userservice.service;
 
 import com.james.userservice.entity.User;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -9,4 +10,6 @@ public interface UserService {
   boolean verify(String email);
 
   Optional<User> findUserById(Long id);
+
+  List<User> findUserByIds(List<Long> ids);
 }

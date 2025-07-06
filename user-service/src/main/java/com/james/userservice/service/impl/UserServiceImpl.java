@@ -3,6 +3,7 @@ package com.james.userservice.service.impl;
 import com.james.userservice.entity.User;
 import com.james.userservice.repository.UserRepository;
 import com.james.userservice.service.UserService;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public Optional<User> findUserById(Long id) {
     return this.userRepository.findById(id);
+  }
+
+  @Override
+  public List<User> findUserByIds(List<Long> ids) {
+    return this.userRepository.findUserByIds(ids);
   }
 }

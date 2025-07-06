@@ -1,5 +1,6 @@
 package com.james.userservice.entity;
 
+import com.james.userservice.dto.LocationDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,5 +27,10 @@ public class Location extends BaseEntity {
 
   public void addUser(User user) {
     this.user = user;
+  }
+
+  public LocationDTO getLocationDTO() {
+
+    return LocationDTO.builder().latitude(latitude).longitude(longitude).build();
   }
 }

@@ -2,6 +2,8 @@ package com.james.userservice.controller;
 
 import com.james.userservice.facade.UserFacade;
 import com.james.userservice.response.BaseResponse;
+import com.james.userservice.response.ProfileResponse;
+import com.james.userservice.resquest.InviteWatchingMovieRequest;
 import com.james.userservice.resquest.SignUpUserRequest;
 import com.james.userservice.resquest.UpdateUserRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +31,23 @@ public class UserController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<Void> updateProfile(@RequestBody UpdateUserRequest request) {
     this.userFacade.updateProfile(request);
+    return BaseResponse.ok();
+  }
+
+  @GetMapping
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<ProfileResponse> getProfile() {
+    return this.userFacade.getProfile();
+  }
+
+  @PostMapping("/invite")
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<Void> inviteWatchingMovie(@RequestBody InviteWatchingMovieRequest request) {
+    this.userFacade.inviteWatchingMovie(request);
     return BaseResponse.ok();
   }
 }
