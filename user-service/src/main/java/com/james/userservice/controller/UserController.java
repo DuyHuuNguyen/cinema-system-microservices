@@ -1,5 +1,6 @@
 package com.james.userservice.controller;
 
+import com.james.userservice.dto.JobApplicationRequest;
 import com.james.userservice.facade.UserFacade;
 import com.james.userservice.response.BaseResponse;
 import com.james.userservice.response.ProfileResponse;
@@ -58,6 +59,15 @@ public class UserController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<Void> changeLocation(@RequestBody ChangeLocationRequest request) {
     this.userFacade.changeLocation(request);
+    return BaseResponse.ok();
+  }
+
+  @PostMapping("/employee")
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<Void> jobApplication(@RequestBody JobApplicationRequest request) {
+    this.userFacade.jobApplication(request);
     return BaseResponse.ok();
   }
 }

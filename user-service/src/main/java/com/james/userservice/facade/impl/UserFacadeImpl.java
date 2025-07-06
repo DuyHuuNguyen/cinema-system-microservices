@@ -1,9 +1,7 @@
 package com.james.userservice.facade.impl;
 
 import com.james.userservice.config.SecurityUserDetails;
-import com.james.userservice.dto.EmailDTO;
-import com.james.userservice.dto.InviteWatchingMovieDTO;
-import com.james.userservice.dto.ProfileDTO;
+import com.james.userservice.dto.*;
 import com.james.userservice.entity.Location;
 import com.james.userservice.entity.User;
 import com.james.userservice.enums.ErrorCode;
@@ -172,5 +170,24 @@ public class UserFacadeImpl implements UserFacade {
 
     user.addLocation(newlocation);
     userService.save(user);
+  }
+
+  @Override
+  public void jobApplication(JobApplicationRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    var user =
+        this.userService
+            .findUserById(principal.getId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    var theaterDTO = this.scheduleService.findTheaterById(request.getTheaterId());
+
+    var isNotFoundTheater = theaterDTO != null;
+    if (isNotFoundTheater) throw new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND);
+
+    var jobApplicationDTO =
+        JobApplicationDTO.builder().theaterDTO(theaterDTO).userId(user.getId()).build();
   }
 }

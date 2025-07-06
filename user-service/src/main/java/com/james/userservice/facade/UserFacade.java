@@ -1,5 +1,6 @@
 package com.james.userservice.facade;
 
+import com.james.userservice.dto.JobApplicationRequest;
 import com.james.userservice.response.BaseResponse;
 import com.james.userservice.response.ProfileResponse;
 import com.james.userservice.resquest.ChangeLocationRequest;
@@ -18,4 +19,6 @@ public interface UserFacade {
   void inviteWatchingMovie(InviteWatchingMovieRequest request);
 
   void changeLocation(ChangeLocationRequest request);
+
+  void jobApplication(JobApplicationRequest request);
 }
