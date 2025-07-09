@@ -3,6 +3,7 @@ package com.james.userservice.facade.impl;
 import com.james.userservice.config.SecurityUserDetails;
 import com.james.userservice.dto.*;
 import com.james.userservice.entity.Location;
+import com.james.userservice.entity.Role;
 import com.james.userservice.entity.User;
 import com.james.userservice.enums.ErrorCode;
 import com.james.userservice.enums.RoleEnum;
@@ -12,11 +13,9 @@ import com.james.userservice.facade.UserFacade;
 import com.james.userservice.mapper.UserMapper;
 import com.james.userservice.response.BaseResponse;
 import com.james.userservice.response.ProfileResponse;
-import com.james.userservice.resquest.ChangeLocationRequest;
-import com.james.userservice.resquest.InviteWatchingMovieRequest;
-import com.james.userservice.resquest.SignUpUserRequest;
-import com.james.userservice.resquest.UpdateUserRequest;
+import com.james.userservice.resquest.*;
 import com.james.userservice.service.*;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -189,5 +188,25 @@ public class UserFacadeImpl implements UserFacade {
 
     var jobApplicationDTO =
         JobApplicationDTO.builder().theaterDTO(theaterDTO).userId(user.getId()).build();
+  }
+
+  @Override
+  @Transactional
+  public void changeRole(ChangeRoleRequest request) {
+    log.info("role :{}", request.getRoles());
+    var user =
+        this.userService
+            .findUserById(request.getUserId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    var roles = new ArrayList<Role>();
+    for (var roleEnum : request.getRoles()) {
+      var role =
+          this.roleService
+              .findRoleByEnum(roleEnum)
+              .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ROLE_NOT_FOUND));
+      roles.add(role);
+    }
+    user.changeRole(roles);
+    this.userService.save(user);
   }
 }

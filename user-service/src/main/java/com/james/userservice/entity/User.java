@@ -102,4 +102,9 @@ public class User extends BaseEntity {
   public LocationDTO getLocationDTO() {
     return this.location.getLocationDTO();
   }
+
+  public void changeRole(List<Role> roles) {
+    this.roles.clear();
+    this.roles.addAll(roles);
+  }
 }

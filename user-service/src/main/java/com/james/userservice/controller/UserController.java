@@ -4,10 +4,7 @@ import com.james.userservice.dto.JobApplicationRequest;
 import com.james.userservice.facade.UserFacade;
 import com.james.userservice.response.BaseResponse;
 import com.james.userservice.response.ProfileResponse;
-import com.james.userservice.resquest.ChangeLocationRequest;
-import com.james.userservice.resquest.InviteWatchingMovieRequest;
-import com.james.userservice.resquest.SignUpUserRequest;
-import com.james.userservice.resquest.UpdateUserRequest;
+import com.james.userservice.resquest.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +65,17 @@ public class UserController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<Void> jobApplication(@RequestBody JobApplicationRequest request) {
     this.userFacade.jobApplication(request);
+    return BaseResponse.ok();
+  }
+
+  @PatchMapping("/role/{id}")
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public BaseResponse<Void> changeRole(
+      @PathVariable Long id, @RequestBody ChangeRoleRequest request) {
+    request.setUserId(id);
+    this.userFacade.changeRole(request);
     return BaseResponse.ok();
   }
 }
