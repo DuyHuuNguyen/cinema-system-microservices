@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class ProfileResponse {
+  private Long id;
   private String firstname;
   private String lastname;
   private String email;

@@ -1,4 +1,4 @@
-package com.james.userservice.dto;
+package com.james.userservice.resquest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class JobApplicationDTO {
-  private Long userId;
+public class WorkShiftRequest extends BaseCriteria {
   private Long theaterId;
-  private String theaterName;
 }

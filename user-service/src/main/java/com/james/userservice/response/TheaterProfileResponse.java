@@ -1,4 +1,4 @@
-package com.james.userservice.dto;
+package com.james.userservice.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,11 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class JobApplicationDTO {
-  private Long userId;
-  private Long theaterId;
+public class TheaterProfileResponse {
+  private Long id;
   private String theaterName;
 }

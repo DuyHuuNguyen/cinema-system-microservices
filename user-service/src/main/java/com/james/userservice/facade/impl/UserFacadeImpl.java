@@ -28,13 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserFacadeImpl implements UserFacade {
   private final UserService userService;
-  private final LocationService locationService;
   private final HobbyService hobbyService;
   private final PasswordEncoder passwordEncoder;
   private final RoleService roleService;
   private final UserMapper userMapper;
-  private final MovieService movieService;
   private final ScheduleService scheduleService;
+  private final NotificationService notificationService;
 
   @Override
   @Transactional
@@ -148,6 +147,7 @@ public class UserFacadeImpl implements UserFacade {
 
     var inviteWatchingMovieDTO =
         InviteWatchingMovieDTO.builder().emailDTOS(emailDTOS).scheduleDTO(scheduleDTO).build();
+    //    this.notificationService.sendEmailInviteWatchingMovie(inviteWatchingMovieDTO);
   }
 
   @Override
@@ -181,13 +181,18 @@ public class UserFacadeImpl implements UserFacade {
             .findUserById(principal.getId())
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
 
-    var theaterDTO = this.scheduleService.findTheaterById(request.getTheaterId());
+    var theaterProfileResponse = this.scheduleService.findTheaterById(request.getTheaterId());
 
-    var isNotFoundTheater = theaterDTO != null;
+    var isNotFoundTheater = theaterProfileResponse != null;
     if (isNotFoundTheater) throw new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND);
 
-    var jobApplicationDTO =
-        JobApplicationDTO.builder().theaterDTO(theaterDTO).userId(user.getId()).build();
+    JobApplicationDTO jobApplicationDTO =
+        JobApplicationDTO.builder()
+            .theaterId(theaterProfileResponse.getId())
+            .theaterName(theaterProfileResponse.getTheaterName())
+            .userId(user.getId())
+            .build();
+    //    this.notificationService.sendEmailApplyJob(jobApplicationDTO);
   }
 
   @Override

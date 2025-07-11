@@ -12,6 +12,7 @@ public class UserMapperImpl implements UserMapper {
   @Override
   public ProfileResponse toProfile(User user) {
     return ProfileResponse.builder()
+        .id(user.getId())
         .firstname(user.getFirstname())
         .lastname(user.getLastname())
         .email(user.getEmail())
