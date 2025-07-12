@@ -15,4 +15,6 @@ public interface AuthFacade {
   ValidTokenResponse validToken(String accessToken);
 
   BaseResponse<RefreshTokenResponse> refreshToken(RefreshTokenRequest request);
+
+  void logout();
 }

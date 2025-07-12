@@ -38,7 +38,7 @@ public class User extends BaseEntity {
   @Column(name = "is_loyal_customer", nullable = false)
   private Boolean isLoyalCustomer;
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "user_roles",
       joinColumns = @JoinColumn(name = "user_id"),

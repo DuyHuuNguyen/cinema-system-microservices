@@ -8,8 +8,10 @@ import com.james.identificationservice.response.LoginResponse;
 import com.james.identificationservice.response.RefreshTokenResponse;
 import com.james.identificationservice.response.ValidTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,5 +41,15 @@ public class AuthController {
   @Operation(tags = {"Auth APIs"})
   public BaseResponse<RefreshTokenResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
     return this.authFacade.refreshToken(request);
+  }
+
+  @PostMapping("/logout")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auth APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<Void> logout() {
+    this.authFacade.logout();
+    return BaseResponse.ok();
   }
 }

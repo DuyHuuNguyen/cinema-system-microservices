@@ -1,5 +1,6 @@
 package com.james.identificationservice.config;
 
+import com.james.identificationservice.interceptor.AuthTokenProviderInterceptor;
 import com.james.identificationservice.interceptor.UserDetailsAuthenticationProviderInterceptor;
 import com.james.identificationservice.service.CacheService;
 import com.james.identificationservice.service.JwtService;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -31,7 +33,8 @@ public class SecurityConfig implements WebMvcConfigurer {
     "/api/v1/auth/authorization",
     "/swagger-ui/**",
     "/v3/api-docs/**",
-    "/api/v1/auth/refresh-token"
+    "/api/v1/auth/refresh-token",
+    "/api/v1/auth/logout",
   };
 
   @Bean
@@ -53,6 +56,11 @@ public class SecurityConfig implements WebMvcConfigurer {
   }
 
   @Bean
+  public AuthTokenProviderInterceptor authTokenProviderInterceptor() {
+    return new AuthTokenProviderInterceptor(userService, cacheService, jwtService);
+  }
+
+  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
@@ -63,6 +71,8 @@ public class SecurityConfig implements WebMvcConfigurer {
             request ->
                 request.requestMatchers(WHITE_LISTS).permitAll().anyRequest().authenticated());
     http.authenticationProvider(this.userDetailsAuthenticationProviderInterceptor());
+    http.addFilterBefore(
+        authTokenProviderInterceptor(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 }

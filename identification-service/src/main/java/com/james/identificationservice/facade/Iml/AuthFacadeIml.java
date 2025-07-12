@@ -144,6 +144,20 @@ public class AuthFacadeIml implements AuthFacade {
         true);
   }
 
+  @Override
+  public void logout() {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    var accessTokenCacheKey =
+        String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), principal.getUsername());
+    var refreshTokenCacheKey =
+        String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), principal.getUsername());
+
+    cacheService.delete(accessTokenCacheKey);
+    cacheService.delete(refreshTokenCacheKey);
+  }
+
   private Boolean validateTokenFromCache(String email, String token) {
     if (token == null) return false;
 
