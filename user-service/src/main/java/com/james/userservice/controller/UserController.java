@@ -3,10 +3,13 @@ package com.james.userservice.controller;
 import com.james.userservice.dto.JobApplicationRequest;
 import com.james.userservice.facade.UserFacade;
 import com.james.userservice.response.BaseResponse;
+import com.james.userservice.response.PaginationResponse;
 import com.james.userservice.response.ProfileResponse;
+import com.james.userservice.response.UserResponse;
 import com.james.userservice.resquest.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +36,7 @@ public class UserController {
     return BaseResponse.ok();
   }
 
-  @GetMapping
+  @GetMapping("/profile")
   @Operation(tags = {"User APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_USER')")
@@ -41,7 +44,7 @@ public class UserController {
     return this.userFacade.getProfile();
   }
 
-  @PostMapping("/invite")
+  @PostMapping("/invitation")
   @Operation(tags = {"User APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_USER')")
@@ -77,5 +80,14 @@ public class UserController {
     request.setUserId(id);
     this.userFacade.changeRole(request);
     return BaseResponse.ok();
+  }
+
+  @GetMapping
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')||hasRole('ROLE_EMPLOYEE')")
+  public BaseResponse<PaginationResponse<UserResponse>> getByFilter(
+      @NonNull UserCriteria userCriteria) {
+    return this.userFacade.getByFilter(userCriteria);
   }
 }

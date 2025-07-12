@@ -2,7 +2,9 @@ package com.james.userservice.facade;
 
 import com.james.userservice.dto.JobApplicationRequest;
 import com.james.userservice.response.BaseResponse;
+import com.james.userservice.response.PaginationResponse;
 import com.james.userservice.response.ProfileResponse;
+import com.james.userservice.response.UserResponse;
 import com.james.userservice.resquest.*;
 
 public interface UserFacade {
@@ -20,4 +22,6 @@ public interface UserFacade {
   void jobApplication(JobApplicationRequest request);
 
   void changeRole(ChangeRoleRequest request);
+
+  BaseResponse<PaginationResponse<UserResponse>> getByFilter(UserCriteria userCriteria);
 }

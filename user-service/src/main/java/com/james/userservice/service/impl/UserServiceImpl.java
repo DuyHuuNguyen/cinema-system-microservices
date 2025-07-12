@@ -6,6 +6,9 @@ import com.james.userservice.service.UserService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,5 +34,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<User> findUserByIds(List<Long> ids) {
     return this.userRepository.findUserByIds(ids);
+  }
+
+  @Override
+  public Page<User> findAll(Specification<User> specification, Pageable pageable) {
+    return this.userRepository.findAll(specification, pageable);
   }
 }

@@ -12,12 +12,17 @@ import com.james.userservice.exception.EntityNotFoundException;
 import com.james.userservice.facade.UserFacade;
 import com.james.userservice.mapper.UserMapper;
 import com.james.userservice.response.BaseResponse;
+import com.james.userservice.response.PaginationResponse;
 import com.james.userservice.response.ProfileResponse;
+import com.james.userservice.response.UserResponse;
 import com.james.userservice.resquest.*;
 import com.james.userservice.service.*;
+import com.james.userservice.specification.UserSpecification;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -213,5 +218,25 @@ public class UserFacadeImpl implements UserFacade {
     }
     user.changeRole(roles);
     this.userService.save(user);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<UserResponse>> getByFilter(UserCriteria userCriteria) {
+    var pageable = PageRequest.of(userCriteria.getCurrentPage(), userCriteria.getPageSize());
+    Specification<User> userSpecification =
+        UserSpecification.hasEmail(userCriteria.getEmail())
+            .and(UserSpecification.hasFirstname(userCriteria.getFirstname()))
+            .and(UserSpecification.hasLastname(userCriteria.getLastname()))
+            .and(UserSpecification.hasDateOfBirth(userCriteria.getDateOfBirth()));
+    var userPage = this.userService.findAll(userSpecification, pageable);
+
+    return BaseResponse.build(
+        PaginationResponse.<UserResponse>builder()
+            .data(userPage.get().map(user -> this.userMapper.toUserResponse(user)).toList())
+            .currentPage(userCriteria.getCurrentPage())
+            .totalElements(userPage.getNumberOfElements())
+            .totalPages(userPage.getTotalPages())
+            .build(),
+        true);
   }
 }
