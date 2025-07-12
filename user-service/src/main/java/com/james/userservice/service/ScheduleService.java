@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "schedule-service")
 public interface ScheduleService {
-  @GetMapping("/api/v1/schedules/{id}")
+  @GetMapping(value = "/api/v1/schedules/{id}", headers = "secret-key=user-service001")
   ScheduleDTO findScheduleById(@PathVariable Long id);
 
-  @GetMapping("/api/v1/schedules/theater/{id}")
+  @GetMapping(value = "/api/v1/schedules/theater/{id}", headers = "secret-key=user-service001")
   TheaterProfileResponse findTheaterById(@PathVariable Long id);
 }

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "notification-service")
 public interface NotificationService {
-  @PostMapping("/api/v1/notifications/job")
+  @PostMapping(value = "/api/v1/notifications/job", headers = "secret-key=user-service001")
   void sendEmailApplyJob(@RequestBody JobApplicationDTO JobApplicationDTO);
 
-  @PostMapping(value = "/api/v1/notifications/invitation")
+  @PostMapping(value = "/api/v1/notifications/invitation", headers = "secret-key=user-service001")
   void sendEmailInviteWatchingMovie(@RequestBody InviteWatchingMovieDTO inviteWatchingMovieDTO);
 }
