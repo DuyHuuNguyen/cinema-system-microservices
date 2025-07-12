@@ -66,7 +66,8 @@ public class JwtServiceImpl implements JwtService {
     } catch (MalformedJwtException
         | ExpiredJwtException
         | UnsupportedJwtException
-        | IllegalArgumentException exception) {
+        | IllegalArgumentException
+        | SignatureException exception) {
       throw new InvalidTokenException(ErrorCode.JWT_INVALID);
     }
     return true;
