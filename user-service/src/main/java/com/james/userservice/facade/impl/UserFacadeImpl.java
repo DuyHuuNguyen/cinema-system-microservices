@@ -147,7 +147,7 @@ public class UserFacadeImpl implements UserFacade {
 
     var inviteWatchingMovieDTO =
         InviteWatchingMovieDTO.builder().emailDTOS(emailDTOS).scheduleDTO(scheduleDTO).build();
-    //        this.notificationService.sendEmailInviteWatchingMovie(inviteWatchingMovieDTO);
+    this.notificationService.sendEmailInviteWatchingMovie(inviteWatchingMovieDTO);
   }
 
   @Override
@@ -192,7 +192,7 @@ public class UserFacadeImpl implements UserFacade {
             .theaterName(theaterProfileResponse.getTheaterName())
             .userId(user.getId())
             .build();
-    //    this.notificationService.sendEmailApplyJob(jobApplicationDTO);
+    this.notificationService.sendEmailApplyJob(jobApplicationDTO);
   }
 
   @Override
