@@ -10,8 +10,10 @@ import com.james.identificationservice.facade.AuthFacade;
 import com.james.identificationservice.mapper.UserMapper;
 import com.james.identificationservice.request.AuthenticationRequest;
 import com.james.identificationservice.request.LoginRequest;
+import com.james.identificationservice.request.RefreshTokenRequest;
 import com.james.identificationservice.response.BaseResponse;
 import com.james.identificationservice.response.LoginResponse;
+import com.james.identificationservice.response.RefreshTokenResponse;
 import com.james.identificationservice.response.ValidTokenResponse;
 import com.james.identificationservice.service.CacheService;
 import com.james.identificationservice.service.JwtService;
@@ -93,8 +95,6 @@ public class AuthFacadeIml implements AuthFacade {
             .userDTO(this.userMapper.toUserDTO(user))
             .build();
 
-    //    this.addAuthenticationForAllService(authenticationRequest);
-
     return BaseResponse.ok();
   }
 
@@ -113,6 +113,35 @@ public class AuthFacadeIml implements AuthFacade {
         .userDTO(this.userMapper.toUserDTO(user))
         .roles(user.getRoles().stream().map(Role::getRoleName).toList())
         .build();
+  }
+
+  @Override
+  public BaseResponse<RefreshTokenResponse> refreshToken(RefreshTokenRequest request) {
+    var isValidRefreshToken = this.jwtService.validateToken(request.getRefreshToken());
+    if (!isValidRefreshToken) throw new EntityNotFoundException(ErrorCode.JWT_INVALID);
+
+    var email = jwtService.getEmailFromJwtToken(request.getRefreshToken());
+
+    var accessTokenCacheKey = String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), email);
+    var refreshTokenCacheKey = String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), email);
+
+    var accessToken = cacheService.retrieve(accessTokenCacheKey);
+    var refreshToken = cacheService.retrieve(refreshTokenCacheKey);
+
+    if (refreshToken == null) throw new EntityNotFoundException(ErrorCode.JWT_INVALID);
+
+    if (!refreshToken.equals(request.getRefreshToken()))
+      throw new EntityNotFoundException(ErrorCode.JWT_INVALID);
+
+    var newAccessToken = jwtService.generateAccessToken(email);
+    cacheService.store(accessTokenCacheKey, newAccessToken, 1, TimeUnit.HOURS);
+
+    return BaseResponse.build(
+        RefreshTokenResponse.builder()
+            .accessToken(newAccessToken)
+            .refreshToken(request.getRefreshToken())
+            .build(),
+        true);
   }
 
   private Boolean validateTokenFromCache(String email, String token) {

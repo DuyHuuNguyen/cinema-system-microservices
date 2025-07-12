@@ -2,8 +2,10 @@ package com.james.identificationservice.controller;
 
 import com.james.identificationservice.facade.AuthFacade;
 import com.james.identificationservice.request.LoginRequest;
+import com.james.identificationservice.request.RefreshTokenRequest;
 import com.james.identificationservice.response.BaseResponse;
 import com.james.identificationservice.response.LoginResponse;
+import com.james.identificationservice.response.RefreshTokenResponse;
 import com.james.identificationservice.response.ValidTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +32,12 @@ public class AuthController {
   @Operation(tags = {"Auth APIs"})
   public ValidTokenResponse validToken(@RequestHeader("AccessToken") String accessToken) {
     return this.authFacade.validToken(accessToken);
+  }
+
+  @PostMapping("refresh-token")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auth APIs"})
+  public BaseResponse<RefreshTokenResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
+    return this.authFacade.refreshToken(request);
   }
 }
