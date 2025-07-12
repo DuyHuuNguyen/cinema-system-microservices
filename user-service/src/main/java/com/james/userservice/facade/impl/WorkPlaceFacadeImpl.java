@@ -11,6 +11,7 @@ import com.james.userservice.response.PaginationWorkShiftResponse;
 import com.james.userservice.response.TheaterProfileResponse;
 import com.james.userservice.response.WorkShiftResponse;
 import com.james.userservice.resquest.CheckInWorkShiftRequest;
+import com.james.userservice.resquest.CheckOutWorkShiftRequest;
 import com.james.userservice.resquest.WorkShiftRequest;
 import com.james.userservice.service.ScheduleService;
 import com.james.userservice.service.WorkPlaceService;
@@ -71,6 +72,20 @@ public class WorkPlaceFacadeImpl implements WorkPlaceFacade {
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.WORK_SHIFT_NOT_FOUNT));
     var now = Instant.now().toEpochMilli();
     workShift.checkIn(now);
+    this.workShiftService.save(workShift);
+  }
+
+  @Override
+  @Transactional
+  public void checkOutWorkShift(CheckOutWorkShiftRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var workShift =
+        this.workShiftService
+            .findWorkShiftByOwnerIdAndId(principal.getId(), request.getWorkShiftId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.WORK_SHIFT_NOT_FOUNT));
+    var now = Instant.now().toEpochMilli();
+    workShift.checkOut(now);
     this.workShiftService.save(workShift);
   }
 }

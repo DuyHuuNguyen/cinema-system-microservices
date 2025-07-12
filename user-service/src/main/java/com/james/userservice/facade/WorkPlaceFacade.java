@@ -5,6 +5,7 @@ import com.james.userservice.response.PaginationWorkShiftResponse;
 import com.james.userservice.response.TheaterProfileResponse;
 import com.james.userservice.response.WorkShiftResponse;
 import com.james.userservice.resquest.CheckInWorkShiftRequest;
+import com.james.userservice.resquest.CheckOutWorkShiftRequest;
 import com.james.userservice.resquest.WorkShiftRequest;
 
 public interface WorkPlaceFacade {
@@ -12,4 +13,6 @@ public interface WorkPlaceFacade {
       findMyWordShift(WorkShiftRequest request);
 
   void checkInWorkShift(CheckInWorkShiftRequest request);
+
+  void checkOutWorkShift(CheckOutWorkShiftRequest request);
 }

@@ -35,4 +35,8 @@ public class WorkShift extends BaseEntity {
   public void checkIn(long now) {
     this.checkedInAt = now;
   }
+
+  public void checkOut(long now) {
+    this.checkedOutAt = now;
+  }
 }
