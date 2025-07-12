@@ -11,6 +11,6 @@ public interface NotificationService {
   @PostMapping("/api/v1/notifications/job")
   void sendEmailApplyJob(@RequestBody JobApplicationDTO JobApplicationDTO);
 
-  @PostMapping(value = "/api/v1/notifications/watching-invite")
+  @PostMapping(value = "/api/v1/notifications/invitation")
   void sendEmailInviteWatchingMovie(@RequestBody InviteWatchingMovieDTO inviteWatchingMovieDTO);
 }

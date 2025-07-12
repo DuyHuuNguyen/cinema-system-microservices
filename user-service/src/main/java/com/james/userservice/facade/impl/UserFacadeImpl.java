@@ -147,7 +147,7 @@ public class UserFacadeImpl implements UserFacade {
 
     var inviteWatchingMovieDTO =
         InviteWatchingMovieDTO.builder().emailDTOS(emailDTOS).scheduleDTO(scheduleDTO).build();
-    //    this.notificationService.sendEmailInviteWatchingMovie(inviteWatchingMovieDTO);
+    //        this.notificationService.sendEmailInviteWatchingMovie(inviteWatchingMovieDTO);
   }
 
   @Override
