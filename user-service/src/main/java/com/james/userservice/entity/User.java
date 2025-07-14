@@ -1,14 +1,14 @@
 package com.james.userservice.entity;
 
+import com.james.userservice.dto.LocationDTO;
+import com.james.userservice.dto.ProfileDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@ToString
 @Entity
 @Table(name = "users")
 @Getter
@@ -38,25 +38,73 @@ public class User extends BaseEntity {
   @Builder.Default
   private Boolean isLoyalCustomer = false;
 
-  @OneToMany
-  @JoinColumn(name = "location_id")
-  private List<Location> locations;
+  @OneToOne(
+      cascade = {
+        CascadeType.DETACH,
+        CascadeType.MERGE,
+        CascadeType.PERSIST,
+        CascadeType.PERSIST,
+        CascadeType.REFRESH
+      })
+  @JoinColumn(name = "location_id", referencedColumnName = "id")
+  private Location location;
 
-  @ManyToMany
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Builder.Default
   @JoinTable(
-      name = "role_users",
+      name = "user_roles",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   private List<Role> roles = new ArrayList<>();
 
-  @ManyToMany
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Builder.Default
   @JoinTable(
       name = "user_hobbies",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "hobby_id"))
   private List<Hobby> hobbies = new ArrayList<>();
 
-  @OneToMany(mappedBy = "employee")
+  @OneToMany(
+      fetch = FetchType.LAZY,
+      mappedBy = "employee",
+      cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.PERSIST, CascadeType.REFRESH})
   @Builder.Default
   private List<WorkPlace> workPlaces = new ArrayList<>();
+
+  public void addLocation(Location location) {
+    location.addUser(this);
+    this.location = location;
+  }
+
+  public void addHobby(Hobby hobby) {
+    this.hobbies.add(hobby);
+  }
+
+  public void addRole(Role role) {
+    this.roles.add(role);
+  }
+
+  public void changeHobbies(List<Hobby> newHobbies) {
+    this.hobbies.clear();
+    for (var hobby : newHobbies) {
+      this.hobbies.add(hobby);
+    }
+  }
+
+  public void changeProfile(ProfileDTO profileDTO) {
+    this.lastname = profileDTO.getLastName();
+    this.firstname = profileDTO.getFirstName();
+    this.dateOfBirth = profileDTO.getDateOfBirth();
+    this.avatarKey = profileDTO.getAvatarUrl();
+  }
+
+  public LocationDTO getLocationDTO() {
+    return this.location.getLocationDTO();
+  }
+
+  public void changeRole(List<Role> roles) {
+    this.roles.clear();
+    this.roles.addAll(roles);
+  }
 }

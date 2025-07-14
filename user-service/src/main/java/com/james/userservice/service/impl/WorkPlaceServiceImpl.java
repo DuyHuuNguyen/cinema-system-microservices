@@ -6,6 +6,4 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class WorkPlaceServiceImpl implements WorkPlaceService {
-  private final WorkPlaceService workPlaceService;
-}
+public class WorkPlaceServiceImpl implements WorkPlaceService {}
