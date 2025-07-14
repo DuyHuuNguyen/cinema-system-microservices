@@ -10,7 +10,7 @@ CREATE TABLE "users"
     "avatar_key"        varchar(100),
     "date_of_birth"     bigint                NOT NULL,
     "is_loyal_customer" boolean               NOT NULL DEFAULT false,
-    "location_id"       bigint                NOT NULL,
+    "location_id"       bigint                ,
     "is_active"         boolean               NOT NULL DEFAULT true,
     "version"           bigint                NOT NULL DEFAULT 0,
     "created_at"        bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint,

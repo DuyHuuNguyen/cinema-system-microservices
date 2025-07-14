@@ -31,4 +31,12 @@ public class WorkShift extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "work_place_id")
   private WorkPlace workPlace;
+
+  public void checkIn(long now) {
+    this.checkedInAt = now;
+  }
+
+  public void checkOut(long now) {
+    this.checkedOutAt = now;
+  }
 }
