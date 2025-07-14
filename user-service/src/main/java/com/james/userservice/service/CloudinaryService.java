@@ -1,3 +1,7 @@
 package com.james.userservice.service;
 
-public interface CloudinaryService {}
+import com.james.userservice.enums.ResourceType;
+
+public interface CloudinaryService {
+  String uploadFile(byte[] image, ResourceType resourceType);
+}
