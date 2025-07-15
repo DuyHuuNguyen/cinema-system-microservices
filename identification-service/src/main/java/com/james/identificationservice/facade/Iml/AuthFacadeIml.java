@@ -9,14 +9,8 @@ import com.james.identificationservice.exception.EntityNotFoundException;
 import com.james.identificationservice.exception.InvalidTokenException;
 import com.james.identificationservice.facade.AuthFacade;
 import com.james.identificationservice.mapper.UserMapper;
-import com.james.identificationservice.request.AuthenticationRequest;
-import com.james.identificationservice.request.ForgotPasswordRequest;
-import com.james.identificationservice.request.LoginRequest;
-import com.james.identificationservice.request.RefreshTokenRequest;
-import com.james.identificationservice.response.BaseResponse;
-import com.james.identificationservice.response.LoginResponse;
-import com.james.identificationservice.response.RefreshTokenResponse;
-import com.james.identificationservice.response.ValidTokenResponse;
+import com.james.identificationservice.request.*;
+import com.james.identificationservice.response.*;
 import com.james.identificationservice.service.CacheService;
 import com.james.identificationservice.service.JwtService;
 import com.james.identificationservice.service.ProducerSendEmailService;
@@ -180,6 +174,28 @@ public class AuthFacadeIml implements AuthFacade {
             .subject("Your OTP")
             .build();
     this.producerSendEmailService.sendEmail(emailDTO);
+  }
+
+  @Override
+  public BaseResponse<VerifyOTPResponse> verifyOTP(VerifyOTPRequest request) {
+    String optKey = String.format(OTP_KEY_PATTERN, request.getEmail());
+
+    var isNotFoundOTP = !this.cacheService.hasKey(optKey);
+    if (isNotFoundOTP) throw new EntityNotFoundException(ErrorCode.OTP_NOT_FOUND);
+
+    var otp = this.cacheService.retrieve(optKey);
+    var isValidOTP = otp.equals(request.getOtp());
+
+    if (!isValidOTP) throw new InvalidTokenException(ErrorCode.JWT_INVALID);
+
+    var resetPasswordToken = this.jwtService.generateResetPasswordToken(request.getEmail());
+    var accessTokenCacheKey =
+        String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), request.getEmail());
+    this.cacheService.store(accessTokenCacheKey, resetPasswordToken, 1, TimeUnit.HOURS);
+
+    var verifyTokenResponse =
+        VerifyOTPResponse.builder().resetPasswordToken(resetPasswordToken).build();
+    return BaseResponse.build(verifyTokenResponse, true);
   }
 
   private Boolean validateTokenFromCache(String email, String token) {

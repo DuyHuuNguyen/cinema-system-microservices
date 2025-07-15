@@ -3,10 +3,8 @@ package com.james.identificationservice.facade;
 import com.james.identificationservice.request.ForgotPasswordRequest;
 import com.james.identificationservice.request.LoginRequest;
 import com.james.identificationservice.request.RefreshTokenRequest;
-import com.james.identificationservice.response.BaseResponse;
-import com.james.identificationservice.response.LoginResponse;
-import com.james.identificationservice.response.RefreshTokenResponse;
-import com.james.identificationservice.response.ValidTokenResponse;
+import com.james.identificationservice.request.VerifyOTPRequest;
+import com.james.identificationservice.response.*;
 
 public interface AuthFacade {
   BaseResponse<LoginResponse> login(LoginRequest request);
@@ -20,4 +18,6 @@ public interface AuthFacade {
   void logout();
 
   void forgotPassword(ForgotPasswordRequest request);
+
+  BaseResponse<VerifyOTPResponse> verifyOTP(VerifyOTPRequest request);
 }

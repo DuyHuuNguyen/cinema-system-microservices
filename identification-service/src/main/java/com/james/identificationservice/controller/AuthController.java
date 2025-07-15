@@ -4,10 +4,8 @@ import com.james.identificationservice.facade.AuthFacade;
 import com.james.identificationservice.request.ForgotPasswordRequest;
 import com.james.identificationservice.request.LoginRequest;
 import com.james.identificationservice.request.RefreshTokenRequest;
-import com.james.identificationservice.response.BaseResponse;
-import com.james.identificationservice.response.LoginResponse;
-import com.james.identificationservice.response.RefreshTokenResponse;
-import com.james.identificationservice.response.ValidTokenResponse;
+import com.james.identificationservice.request.VerifyOTPRequest;
+import com.james.identificationservice.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -60,5 +58,12 @@ public class AuthController {
   public BaseResponse<Void> forgotPassword(@RequestBody ForgotPasswordRequest request) {
     this.authFacade.forgotPassword(request);
     return BaseResponse.ok();
+  }
+
+  @PostMapping("/verify-otp")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auth APIs"})
+  public BaseResponse<VerifyOTPResponse> verifyOTP(@RequestBody VerifyOTPRequest request) {
+    return this.authFacade.verifyOTP(request);
   }
 }

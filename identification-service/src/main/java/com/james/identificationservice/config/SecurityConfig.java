@@ -34,6 +34,8 @@ public class SecurityConfig implements WebMvcConfigurer {
     "/swagger-ui/**",
     "/v3/api-docs/**",
     "/api/v1/auth/refresh-token",
+    "/api/v1/auth/forgot-password",
+    "/api/v1/auth/verify-otp",
     "/api/v1/auth/logout",
   };
 

@@ -1,6 +1,7 @@
 package com.james.identificationservice.interceptor;
 
 import com.james.identificationservice.exception.EntityNotFoundException;
+import com.james.identificationservice.exception.InvalidOTPException;
 import com.james.identificationservice.exception.InvalidTokenException;
 import com.james.identificationservice.exception.PermissionDeniedException;
 import com.james.identificationservice.response.BaseResponse;
@@ -34,6 +35,15 @@ public class RestHandlerException {
   @ExceptionHandler(InvalidTokenException.class)
   public ResponseEntity<BaseResponse<ExceptionResponse>> handleInvalidTokenException(
       InvalidTokenException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(InvalidOTPException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleInvalidOTPException(
+      InvalidOTPException exception) {
     return new ResponseEntity<>(
         BaseResponse.build(
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),

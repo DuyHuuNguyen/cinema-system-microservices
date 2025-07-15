@@ -52,4 +52,4 @@ logging:
 rabbitmq:
   exchangeName: demo
   user-mail-routing-key: demo
-  user-mail-queue: MyQueue
+  user-mail-queue: cinema-queue

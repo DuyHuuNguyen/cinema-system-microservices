@@ -17,7 +17,7 @@ public class ConsumerHandleEmailServiceImpl implements ConsumerHandleEmailServic
   @Override
   @RabbitListener(queues = "${rabbitmq.user-mail-queue}")
   public void handleSendEmail(EmailDTO emailDTO) {
-    log.info("handleSendEmail");
+    log.info("handleSendEmail {}", emailDTO.toString());
     this.emailService.sendEmail(emailDTO);
   }
 }
