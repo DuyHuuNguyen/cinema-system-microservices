@@ -1,6 +1,7 @@
 package com.james.identificationservice.controller;
 
 import com.james.identificationservice.facade.AuthFacade;
+import com.james.identificationservice.request.ForgotPasswordRequest;
 import com.james.identificationservice.request.LoginRequest;
 import com.james.identificationservice.request.RefreshTokenRequest;
 import com.james.identificationservice.response.BaseResponse;
@@ -36,7 +37,7 @@ public class AuthController {
     return this.authFacade.validToken(accessToken);
   }
 
-  @PostMapping("refresh-token")
+  @PostMapping("/refresh-token")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Auth APIs"})
   public BaseResponse<RefreshTokenResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
@@ -50,6 +51,14 @@ public class AuthController {
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<Void> logout() {
     this.authFacade.logout();
+    return BaseResponse.ok();
+  }
+
+  @PostMapping("/forgot-password")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auth APIs"})
+  public BaseResponse<Void> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+    this.authFacade.forgotPassword(request);
     return BaseResponse.ok();
   }
 }

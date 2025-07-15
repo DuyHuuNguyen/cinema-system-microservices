@@ -35,6 +35,7 @@ public class AuthTokenProviderInterceptor extends OncePerRequestFilter {
       List.of(
           "/api/v1/auth/login",
           "/api/v1/auth/authorization",
+          "/api/v1/auth/forgot-password",
           "/swagger-ui/**",
           "/v3/api-docs/**",
           "/api/v1/auth/refresh-token",

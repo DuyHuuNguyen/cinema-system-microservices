@@ -1,5 +1,6 @@
 package com.james.identificationservice.facade;
 
+import com.james.identificationservice.request.ForgotPasswordRequest;
 import com.james.identificationservice.request.LoginRequest;
 import com.james.identificationservice.request.RefreshTokenRequest;
 import com.james.identificationservice.response.BaseResponse;
@@ -17,4 +18,6 @@ public interface AuthFacade {
   BaseResponse<RefreshTokenResponse> refreshToken(RefreshTokenRequest request);
 
   void logout();
+
+  void forgotPassword(ForgotPasswordRequest request);
 }

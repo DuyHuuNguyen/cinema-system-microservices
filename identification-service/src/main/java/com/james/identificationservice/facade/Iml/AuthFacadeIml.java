@@ -1,6 +1,7 @@
 package com.james.identificationservice.facade.Iml;
 
 import com.james.identificationservice.config.SecurityUserDetails;
+import com.james.identificationservice.dto.EmailDTO;
 import com.james.identificationservice.entity.Role;
 import com.james.identificationservice.enums.ErrorCode;
 import com.james.identificationservice.enums.TokenType;
@@ -9,6 +10,7 @@ import com.james.identificationservice.exception.InvalidTokenException;
 import com.james.identificationservice.facade.AuthFacade;
 import com.james.identificationservice.mapper.UserMapper;
 import com.james.identificationservice.request.AuthenticationRequest;
+import com.james.identificationservice.request.ForgotPasswordRequest;
 import com.james.identificationservice.request.LoginRequest;
 import com.james.identificationservice.request.RefreshTokenRequest;
 import com.james.identificationservice.response.BaseResponse;
@@ -17,7 +19,9 @@ import com.james.identificationservice.response.RefreshTokenResponse;
 import com.james.identificationservice.response.ValidTokenResponse;
 import com.james.identificationservice.service.CacheService;
 import com.james.identificationservice.service.JwtService;
+import com.james.identificationservice.service.ProducerSendEmailService;
 import com.james.identificationservice.service.UserService;
+import com.james.identificationservice.until.GenerateCodeUntil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -38,10 +42,12 @@ public class AuthFacadeIml implements AuthFacade {
   private final UserService userService;
   private final CacheService cacheService;
   private final JwtService jwtService;
+  private final ProducerSendEmailService producerSendEmailService;
   private final AuthenticationManager authenticationManager;
   private final UserMapper userMapper;
 
   private final String ROLE_PATTERN = "ROLE_%s";
+  private final String OTP_KEY_PATTERN = "OPT_%s";
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest request) {
@@ -156,6 +162,24 @@ public class AuthFacadeIml implements AuthFacade {
 
     cacheService.delete(accessTokenCacheKey);
     cacheService.delete(refreshTokenCacheKey);
+  }
+
+  @Override
+  public void forgotPassword(ForgotPasswordRequest request) {
+    var user =
+        userService
+            .findByEmail(request.getEmail())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    var otp = GenerateCodeUntil.generateOTP();
+    String otpKey = String.format(OTP_KEY_PATTERN, request.getEmail());
+    cacheService.store(otpKey, otp, 1, TimeUnit.HOURS);
+    var emailDTO =
+        EmailDTO.builder()
+            .toEmail(user.getEmail())
+            .body("Your OTP is " + otp)
+            .subject("Your OTP")
+            .build();
+    this.producerSendEmailService.sendEmail(emailDTO);
   }
 
   private Boolean validateTokenFromCache(String email, String token) {
