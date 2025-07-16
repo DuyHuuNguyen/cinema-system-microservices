@@ -38,11 +38,15 @@ public class User extends BaseEntity {
   @Column(name = "is_loyal_customer", nullable = false)
   private Boolean isLoyalCustomer;
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "user_roles",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   @Builder.Default
   private List<Role> roles = new ArrayList<>();
+
+  public void changePassword(String newPasswordEncoded) {
+    this.password = newPasswordEncoded;
+  }
 }

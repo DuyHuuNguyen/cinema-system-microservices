@@ -1,21 +1,22 @@
 package com.james.identificationservice.facade.Iml;
 
 import com.james.identificationservice.config.SecurityUserDetails;
+import com.james.identificationservice.dto.EmailDTO;
 import com.james.identificationservice.entity.Role;
 import com.james.identificationservice.enums.ErrorCode;
 import com.james.identificationservice.enums.TokenType;
 import com.james.identificationservice.exception.EntityNotFoundException;
 import com.james.identificationservice.exception.InvalidTokenException;
+import com.james.identificationservice.exception.PermissionDeniedException;
 import com.james.identificationservice.facade.AuthFacade;
 import com.james.identificationservice.mapper.UserMapper;
-import com.james.identificationservice.request.AuthenticationRequest;
-import com.james.identificationservice.request.LoginRequest;
-import com.james.identificationservice.response.BaseResponse;
-import com.james.identificationservice.response.LoginResponse;
-import com.james.identificationservice.response.ValidTokenResponse;
+import com.james.identificationservice.request.*;
+import com.james.identificationservice.response.*;
 import com.james.identificationservice.service.CacheService;
 import com.james.identificationservice.service.JwtService;
+import com.james.identificationservice.service.ProducerSendEmailService;
 import com.james.identificationservice.service.UserService;
+import com.james.identificationservice.until.GenerateCodeUntil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +28,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -36,10 +39,13 @@ public class AuthFacadeIml implements AuthFacade {
   private final UserService userService;
   private final CacheService cacheService;
   private final JwtService jwtService;
+  private final ProducerSendEmailService producerSendEmailService;
   private final AuthenticationManager authenticationManager;
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
 
   private final String ROLE_PATTERN = "ROLE_%s";
+  private final String OTP_KEY_PATTERN = "OPT_%s";
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest request) {
@@ -93,8 +99,6 @@ public class AuthFacadeIml implements AuthFacade {
             .userDTO(this.userMapper.toUserDTO(user))
             .build();
 
-    //    this.addAuthenticationForAllService(authenticationRequest);
-
     return BaseResponse.ok();
   }
 
@@ -113,6 +117,107 @@ public class AuthFacadeIml implements AuthFacade {
         .userDTO(this.userMapper.toUserDTO(user))
         .roles(user.getRoles().stream().map(Role::getRoleName).toList())
         .build();
+  }
+
+  @Override
+  public BaseResponse<RefreshTokenResponse> refreshToken(RefreshTokenRequest request) {
+    var isValidRefreshToken = this.jwtService.validateToken(request.getRefreshToken());
+    if (!isValidRefreshToken) throw new EntityNotFoundException(ErrorCode.JWT_INVALID);
+
+    var email = jwtService.getEmailFromJwtToken(request.getRefreshToken());
+
+    var accessTokenCacheKey = String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), email);
+    var refreshTokenCacheKey = String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), email);
+
+    var accessToken = cacheService.retrieve(accessTokenCacheKey);
+    var refreshToken = cacheService.retrieve(refreshTokenCacheKey);
+
+    if (refreshToken == null) throw new EntityNotFoundException(ErrorCode.JWT_INVALID);
+
+    if (!refreshToken.equals(request.getRefreshToken()))
+      throw new EntityNotFoundException(ErrorCode.JWT_INVALID);
+
+    var newAccessToken = jwtService.generateAccessToken(email);
+    cacheService.store(accessTokenCacheKey, newAccessToken, 1, TimeUnit.HOURS);
+
+    return BaseResponse.build(
+        RefreshTokenResponse.builder()
+            .accessToken(newAccessToken)
+            .refreshToken(request.getRefreshToken())
+            .build(),
+        true);
+  }
+
+  @Override
+  public void logout() {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    var accessTokenCacheKey =
+        String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), principal.getUsername());
+    var refreshTokenCacheKey =
+        String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), principal.getUsername());
+
+    cacheService.delete(accessTokenCacheKey);
+    cacheService.delete(refreshTokenCacheKey);
+  }
+
+  @Override
+  public void forgotPassword(ForgotPasswordRequest request) {
+    var user =
+        userService
+            .findByEmail(request.getEmail())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    var otp = GenerateCodeUntil.generateOTP();
+    String otpKey = String.format(OTP_KEY_PATTERN, request.getEmail());
+    cacheService.store(otpKey, otp, 1, TimeUnit.HOURS);
+    var emailDTO =
+        EmailDTO.builder()
+            .toEmail(user.getEmail())
+            .body("Your OTP is " + otp)
+            .subject("Your OTP")
+            .build();
+    this.producerSendEmailService.sendEmail(emailDTO);
+  }
+
+  @Override
+  public BaseResponse<VerifyOTPResponse> verifyOTP(VerifyOTPRequest request) {
+    String optKey = String.format(OTP_KEY_PATTERN, request.getEmail());
+
+    var isNotFoundOTP = !this.cacheService.hasKey(optKey);
+    if (isNotFoundOTP) throw new EntityNotFoundException(ErrorCode.OTP_NOT_FOUND);
+
+    var otp = this.cacheService.retrieve(optKey);
+    var isValidOTP = otp.equals(request.getOtp());
+
+    if (!isValidOTP) throw new InvalidTokenException(ErrorCode.JWT_INVALID);
+
+    var resetPasswordToken = this.jwtService.generateResetPasswordToken(request.getEmail());
+    var accessTokenCacheKey =
+        String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), request.getEmail());
+    this.cacheService.store(accessTokenCacheKey, resetPasswordToken, 1, TimeUnit.HOURS);
+
+    var verifyTokenResponse =
+        VerifyOTPResponse.builder().resetPasswordToken(resetPasswordToken).build();
+    return BaseResponse.build(verifyTokenResponse, true);
+  }
+
+  @Override
+  @Transactional
+  public void resetPassword(ResetPasswordRequest request) {
+    var isValidPassword = request.getNewPassword().equals(request.getConfirmPassword());
+    if (!isValidPassword) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_PASSWORD);
+
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var user =
+        userService
+            .findByEmail(principal.getUsername())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    var newPasswordEncoded = passwordEncoder.encode(request.getNewPassword());
+    user.changePassword(newPasswordEncoded);
+    userService.save(user);
   }
 
   private Boolean validateTokenFromCache(String email, String token) {

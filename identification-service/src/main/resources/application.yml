@@ -25,6 +25,22 @@ spring:
     type: redis
     redis:
       time-to-live: 600000ms
+  rabbitmq:
+    port: 5672
+    host: localhost
+    username: guest
+    password: guest
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hduy09092005@gmail.com
+    password: srwmlebtfrsfdxkl
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 jwt:
   secretKey: 16502ee43b73ce88149ca42ab31db111063820asdbd106505a6sfsafg345ecbb33a7bbe6b38578b23baee473c7aaf89c8e490c8e1429fbb264f137d1e2b3fb2ef396d8
   accessTokenExpirationTime: 259200000 # 3 days
@@ -33,3 +49,7 @@ jwt:
 logging:
   level:
     org.springframework.data.redis.connection: DEBUG
+rabbitmq:
+  exchangeName: demo
+  user-mail-routing-key: demo
+  user-mail-queue: cinema-queue
