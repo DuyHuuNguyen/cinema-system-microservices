@@ -7,6 +7,7 @@ import com.james.identificationservice.enums.ErrorCode;
 import com.james.identificationservice.enums.TokenType;
 import com.james.identificationservice.exception.EntityNotFoundException;
 import com.james.identificationservice.exception.InvalidTokenException;
+import com.james.identificationservice.exception.PermissionDeniedException;
 import com.james.identificationservice.facade.AuthFacade;
 import com.james.identificationservice.mapper.UserMapper;
 import com.james.identificationservice.request.*;
@@ -27,7 +28,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -39,6 +42,7 @@ public class AuthFacadeIml implements AuthFacade {
   private final ProducerSendEmailService producerSendEmailService;
   private final AuthenticationManager authenticationManager;
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
 
   private final String ROLE_PATTERN = "ROLE_%s";
   private final String OTP_KEY_PATTERN = "OPT_%s";
@@ -196,6 +200,24 @@ public class AuthFacadeIml implements AuthFacade {
     var verifyTokenResponse =
         VerifyOTPResponse.builder().resetPasswordToken(resetPasswordToken).build();
     return BaseResponse.build(verifyTokenResponse, true);
+  }
+
+  @Override
+  @Transactional
+  public void resetPassword(ResetPasswordRequest request) {
+    var isValidPassword = request.getNewPassword().equals(request.getConfirmPassword());
+    if (!isValidPassword) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_PASSWORD);
+
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var user =
+        userService
+            .findByEmail(principal.getUsername())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    var newPasswordEncoded = passwordEncoder.encode(request.getNewPassword());
+    user.changePassword(newPasswordEncoded);
+    userService.save(user);
   }
 
   private Boolean validateTokenFromCache(String email, String token) {

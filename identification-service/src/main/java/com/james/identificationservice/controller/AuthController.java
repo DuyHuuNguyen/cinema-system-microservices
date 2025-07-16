@@ -1,10 +1,7 @@
 package com.james.identificationservice.controller;
 
 import com.james.identificationservice.facade.AuthFacade;
-import com.james.identificationservice.request.ForgotPasswordRequest;
-import com.james.identificationservice.request.LoginRequest;
-import com.james.identificationservice.request.RefreshTokenRequest;
-import com.james.identificationservice.request.VerifyOTPRequest;
+import com.james.identificationservice.request.*;
 import com.james.identificationservice.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -65,5 +62,15 @@ public class AuthController {
   @Operation(tags = {"Auth APIs"})
   public BaseResponse<VerifyOTPResponse> verifyOTP(@RequestBody VerifyOTPRequest request) {
     return this.authFacade.verifyOTP(request);
+  }
+
+  @PatchMapping("/reset-password")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auth APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<Void> resetPassword(@RequestBody ResetPasswordRequest request) {
+    this.authFacade.resetPassword(request);
+    return BaseResponse.ok();
   }
 }

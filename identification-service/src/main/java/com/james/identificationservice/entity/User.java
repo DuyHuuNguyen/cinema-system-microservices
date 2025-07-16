@@ -45,4 +45,8 @@ public class User extends BaseEntity {
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   @Builder.Default
   private List<Role> roles = new ArrayList<>();
+
+  public void changePassword(String newPasswordEncoded) {
+    this.password = newPasswordEncoded;
+  }
 }

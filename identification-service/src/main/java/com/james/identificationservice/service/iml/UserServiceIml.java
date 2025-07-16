@@ -18,4 +18,9 @@ public class UserServiceIml implements UserService {
   public Optional<User> findByEmail(String email) {
     return userRepository.findUserByEmail(email);
   }
+
+  @Override
+  public void save(User user) {
+    this.userRepository.save(user);
+  }
 }
