@@ -12,7 +12,7 @@ eureka:
 ---
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_payment_service_cinema_system_microservices_v1
+    url: jdbc:postgresql://localhost:5432/db_movie_service_cinema_system_microservices_v1
     username: postgres
     password: 1111
     driver-class-name: org.postgresql.Driver

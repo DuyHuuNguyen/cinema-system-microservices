@@ -22,4 +22,8 @@ public class Category extends BaseEntity {
   @OneToMany(mappedBy = "category")
   @Builder.Default
   private List<Movie> movies = new ArrayList<>();
+
+  public void addMovie(Movie movie) {
+    this.movies.add(movie);
+  }
 }

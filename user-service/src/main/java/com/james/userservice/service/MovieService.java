@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "movie-service")
 public interface MovieService {
-  @GetMapping(value = "/api/v1/movies/{id}", headers = "secret-key=user-service001")
+  @GetMapping(value = "/api/v1/movies/internal/{id}", headers = "secret-key=user-service001")
   MovieDTO findMovieById(@PathVariable Long id);
 }

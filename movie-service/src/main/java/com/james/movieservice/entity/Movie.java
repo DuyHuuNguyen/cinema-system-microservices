@@ -1,15 +1,12 @@
 package com.james.movieservice.entity;
 
 import jakarta.persistence.*;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@ToString
 @Entity
 @Table(name = "movies")
 @Getter
@@ -25,7 +22,7 @@ public class Movie extends BaseEntity {
   private String description;
 
   @Column(name = "duration", nullable = false)
-  private Time duration;
+  private String duration;
 
   @Column(name = "language", nullable = false)
   private String language;
@@ -52,4 +49,9 @@ public class Movie extends BaseEntity {
   @OneToMany(mappedBy = "movie", orphanRemoval = true)
   @Builder.Default
   private List<MovieRate> movieRates = new ArrayList<>();
+
+  public void addCategory(Category category) {
+    this.category = category;
+    category.addMovie(this);
+  }
 }

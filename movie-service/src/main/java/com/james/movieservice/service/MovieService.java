@@ -1,3 +1,7 @@
 package com.james.movieservice.service;
 
-public interface MovieService {}
+import com.james.movieservice.entity.Movie;
+
+public interface MovieService {
+  void save(Movie movie);
+}
