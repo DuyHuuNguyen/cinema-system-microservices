@@ -6,6 +6,8 @@ import com.james.movieservice.enums.ErrorCode;
 import com.james.movieservice.exception.EntityNotFoundException;
 import com.james.movieservice.exception.PermissionDeniedException;
 import com.james.movieservice.facade.MovieFacade;
+import com.james.movieservice.response.BaseResponse;
+import com.james.movieservice.response.MovieDetailResponse;
 import com.james.movieservice.resquest.UpsertMovieRequest;
 import com.james.movieservice.resquest.ValidAdminTheaterRequest;
 import com.james.movieservice.service.CategoryService;
@@ -59,5 +61,36 @@ public class MovieFacadeImpl implements MovieFacade {
             .build();
     movie.addCategory(category);
     this.movieService.save(movie);
+  }
+
+  @Override
+  public BaseResponse<MovieDetailResponse> getMovieDetailById(Long id) {
+    var movie =
+        this.movieService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MOVIE_NOT_FOUND));
+
+    var theater = this.scheduleService.findById(movie.getTheaterId());
+
+    var isNotFoundTheater = theater == null;
+    if (isNotFoundTheater) throw new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND);
+
+    var movieDetailResponse =
+        MovieDetailResponse.builder()
+            .title(movie.getTitle())
+            .duration(movie.getDuration())
+            .description(movie.getDescription())
+            .language(movie.getLanguage())
+            .releasedAt(movie.getReleasedAt())
+            .poster(movie.getPoster())
+            .trailer(movie.getTrailer())
+            .movie(movie.getMovie())
+            .categoryId(movie.getCategoryId())
+            .categoryName(movie.getCategoryName())
+            .theaterId(theater.getId())
+            .theaterName(theater.getName())
+            .build();
+
+    return BaseResponse.build(movieDetailResponse, true);
   }
 }

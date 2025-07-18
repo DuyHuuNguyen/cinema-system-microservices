@@ -54,4 +54,12 @@ public class Movie extends BaseEntity {
     this.category = category;
     category.addMovie(this);
   }
+
+  public String getCategoryName() {
+    return this.category.getCategoryName();
+  }
+
+  public Long getCategoryId() {
+    return this.category.getId();
+  }
 }
