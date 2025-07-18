@@ -8,13 +8,20 @@ import com.james.movieservice.exception.PermissionDeniedException;
 import com.james.movieservice.facade.MovieFacade;
 import com.james.movieservice.response.BaseResponse;
 import com.james.movieservice.response.MovieDetailResponse;
+import com.james.movieservice.response.MovieResponse;
+import com.james.movieservice.response.PaginationResponse;
+import com.james.movieservice.resquest.MovieCriteria;
 import com.james.movieservice.resquest.UpsertMovieRequest;
 import com.james.movieservice.resquest.ValidAdminTheaterRequest;
 import com.james.movieservice.service.CategoryService;
 import com.james.movieservice.service.MovieService;
 import com.james.movieservice.service.ScheduleService;
+import com.james.movieservice.specification.MovieSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,5 +99,42 @@ public class MovieFacadeImpl implements MovieFacade {
             .build();
 
     return BaseResponse.build(movieDetailResponse, true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<MovieResponse>> getByFilter(MovieCriteria criteria) {
+    Specification<Movie> specification =
+        MovieSpecification.hasTitle(criteria.getTitle())
+            .and(MovieSpecification.hasDescription(criteria.getDescription()))
+            .and(MovieSpecification.hasCategory(criteria.getCategory()))
+            .and(MovieSpecification.hasDuration(criteria.getDuration()))
+            .and(MovieSpecification.hasReleaseAt(criteria.getReleaseAt()))
+            .and(MovieSpecification.hasTheaterId(criteria.getTheaterId()));
+    Pageable pageable = PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize());
+    var moviePage = this.movieService.findAll(specification, pageable);
+
+    var paginationResponse =
+        PaginationResponse.<MovieResponse>builder()
+            .data(
+                moviePage
+                    .get()
+                    .map(
+                        movie ->
+                            MovieResponse.builder()
+                                .id(movie.getId())
+                                .title(movie.getTitle())
+                                .duration(movie.getDuration())
+                                .language(movie.getLanguage())
+                                .poster(movie.getPoster())
+                                .movie(movie.getMovie())
+                                .theaterId(movie.getTheaterId())
+                                .build())
+                    .toList())
+            .currentPage(criteria.getCurrentPage())
+            .totalElements(moviePage.getNumberOfElements())
+            .totalPages(moviePage.getTotalPages())
+            .build();
+
+    return BaseResponse.build(paginationResponse, true);
   }
 }

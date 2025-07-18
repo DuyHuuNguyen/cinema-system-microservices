@@ -5,6 +5,9 @@ import com.james.movieservice.repository.MovieRepository;
 import com.james.movieservice.service.MovieService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,5 +23,10 @@ public class MovieServiceImpl implements MovieService {
   @Override
   public Optional<Movie> findById(Long id) {
     return this.movieRepository.findById(id);
+  }
+
+  @Override
+  public Page<Movie> findAll(Specification<Movie> specification, Pageable pageable) {
+    return this.movieRepository.findAll(specification, pageable);
   }
 }
