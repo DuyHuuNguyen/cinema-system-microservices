@@ -13,4 +13,6 @@ public interface MovieFacade {
   BaseResponse<MovieDetailResponse> getMovieDetailById(Long id);
 
   BaseResponse<PaginationResponse<MovieResponse>> getByFilter(MovieCriteria criteria);
+
+  void updateMovie(UpsertMovieRequest request);
 }

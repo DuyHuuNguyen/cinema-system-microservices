@@ -1,15 +1,15 @@
-package com.james.movieservice.resquest;
+package com.james.movieservice.dto;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpsertMovieRequest {
-  @Hidden private Long id;
+@Builder
+public class UpdateMovieDTO {
   private String title;
   private String description;
   private String duration;
@@ -18,10 +18,4 @@ public class UpsertMovieRequest {
   private String poster;
   private String trailer;
   private String movie;
-  private Long theaterId;
-  private Long categoryId;
-
-  public void attachMovieId(long id) {
-    this.id = id;
-  }
 }

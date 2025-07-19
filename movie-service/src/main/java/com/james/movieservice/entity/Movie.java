@@ -1,5 +1,6 @@
 package com.james.movieservice.entity;
 
+import com.james.movieservice.dto.UpdateMovieDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,5 +62,16 @@ public class Movie extends BaseEntity {
 
   public Long getCategoryId() {
     return this.category.getId();
+  }
+
+  public void updateInfo(UpdateMovieDTO updateMovieDTO) {
+    this.title = updateMovieDTO.getTitle();
+    this.description = updateMovieDTO.getDescription();
+    this.duration = updateMovieDTO.getDuration();
+    this.language = updateMovieDTO.getLanguage();
+    this.releasedAt = updateMovieDTO.getReleasedAt();
+    this.poster = updateMovieDTO.getPoster();
+    this.trailer = updateMovieDTO.getTrailer();
+    this.movie = updateMovieDTO.getMovie();
   }
 }

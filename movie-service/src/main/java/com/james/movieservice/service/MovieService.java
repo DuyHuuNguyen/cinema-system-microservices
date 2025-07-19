@@ -12,4 +12,6 @@ public interface MovieService {
   Optional<Movie> findById(Long id);
 
   Page<Movie> findAll(Specification<Movie> specification, Pageable pageable);
+
+  Optional<Movie> findMovieByTheaterIdAndMovieId(Long theaterId, Long id);
 }

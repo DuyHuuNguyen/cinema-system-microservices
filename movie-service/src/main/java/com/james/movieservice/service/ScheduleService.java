@@ -3,6 +3,8 @@ package com.james.movieservice.service;
 import com.james.movieservice.response.TheaterResponse;
 import com.james.movieservice.resquest.ValidAdminTheaterRequest;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -13,5 +15,6 @@ public interface ScheduleService {
       headers = "secret-key=movie-service")
   boolean validAdminTheater(@RequestBody ValidAdminTheaterRequest request);
 
-  TheaterResponse findById(Long theaterId);
+  @GetMapping(value = "/api/schedules/internal/theater/{id}", headers = "secret-key=movie-service")
+  TheaterResponse findById(@PathVariable(name = "id") Long theaterId);
 }

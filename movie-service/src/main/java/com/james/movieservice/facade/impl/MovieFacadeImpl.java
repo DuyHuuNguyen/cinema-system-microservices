@@ -1,6 +1,7 @@
 package com.james.movieservice.facade.impl;
 
 import com.james.movieservice.config.SecurityUserDetails;
+import com.james.movieservice.dto.UpdateMovieDTO;
 import com.james.movieservice.entity.Movie;
 import com.james.movieservice.enums.ErrorCode;
 import com.james.movieservice.exception.EntityNotFoundException;
@@ -136,5 +137,38 @@ public class MovieFacadeImpl implements MovieFacade {
             .build();
 
     return BaseResponse.build(paginationResponse, true);
+  }
+
+  @Override
+  public void updateMovie(UpsertMovieRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    var validAdminTheaterRequest =
+        ValidAdminTheaterRequest.builder()
+            .adminId(principal.getId())
+            .theaterId(request.getTheaterId())
+            .build();
+    var isValidAdmin = this.scheduleService.validAdminTheater(validAdminTheaterRequest);
+
+    if (!isValidAdmin) throw new PermissionDeniedException(ErrorCode.NOT_ADMIN_THEATER);
+
+    var movie =
+        this.movieService
+            .findMovieByTheaterIdAndMovieId(request.getTheaterId(), request.getId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MOVIE_NOT_FOUND));
+    var updateMovieDTO =
+        UpdateMovieDTO.builder()
+            .title(request.getTitle())
+            .description(request.getDescription())
+            .duration(request.getDuration())
+            .language(request.getLanguage())
+            .releasedAt(request.getReleasedAt())
+            .poster(request.getPoster())
+            .trailer(request.getTrailer())
+            .movie(request.getMovie())
+            .build();
+    movie.updateInfo(updateMovieDTO);
+    this.movieService.save(movie);
   }
 }

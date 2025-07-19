@@ -29,4 +29,9 @@ public class MovieServiceImpl implements MovieService {
   public Page<Movie> findAll(Specification<Movie> specification, Pageable pageable) {
     return this.movieRepository.findAll(specification, pageable);
   }
+
+  @Override
+  public Optional<Movie> findMovieByTheaterIdAndMovieId(Long theaterId, Long id) {
+    return this.movieRepository.findByTheaterIdAndMovieId(theaterId, id);
+  }
 }

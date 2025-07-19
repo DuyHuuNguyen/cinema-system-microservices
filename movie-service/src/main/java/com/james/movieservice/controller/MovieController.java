@@ -27,6 +27,16 @@ public class MovieController {
     return BaseResponse.ok();
   }
 
+  @PutMapping("/{id}")
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public BaseResponse<Void> updateMovie(
+      @PathVariable Long id, @RequestBody UpsertMovieRequest request) {
+    request.attachMovieId(id);
+    this.movieFacade.updateMovie(request);
+    return BaseResponse.ok();
+  }
+
   @GetMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
