@@ -74,4 +74,8 @@ public class Movie extends BaseEntity {
     this.trailer = updateMovieDTO.getTrailer();
     this.movie = updateMovieDTO.getMovie();
   }
+
+  public void addRate(MovieRate rate) {
+    this.movieRates.add(rate);
+  }
 }

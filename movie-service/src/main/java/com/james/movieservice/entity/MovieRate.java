@@ -33,4 +33,8 @@ public class MovieRate extends BaseEntity {
   @OneToMany(mappedBy = "movieRate", orphanRemoval = true)
   @Builder.Default
   private List<MovieRateAsset> movieRateAssets = new ArrayList<>();
+
+  public void addAsset(MovieRateAsset movieRateAsset) {
+    this.movieRateAssets.add(movieRateAsset);
+  }
 }

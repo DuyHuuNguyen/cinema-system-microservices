@@ -3,6 +3,8 @@ package com.james.movieservice.facade.impl;
 import com.james.movieservice.config.SecurityUserDetails;
 import com.james.movieservice.dto.UpdateMovieDTO;
 import com.james.movieservice.entity.Movie;
+import com.james.movieservice.entity.MovieRate;
+import com.james.movieservice.entity.MovieRateAsset;
 import com.james.movieservice.enums.ErrorCode;
 import com.james.movieservice.exception.EntityNotFoundException;
 import com.james.movieservice.exception.PermissionDeniedException;
@@ -12,6 +14,7 @@ import com.james.movieservice.response.MovieDetailResponse;
 import com.james.movieservice.response.MovieResponse;
 import com.james.movieservice.response.PaginationResponse;
 import com.james.movieservice.resquest.MovieCriteria;
+import com.james.movieservice.resquest.RateMovieRequest;
 import com.james.movieservice.resquest.UpsertMovieRequest;
 import com.james.movieservice.resquest.ValidAdminTheaterRequest;
 import com.james.movieservice.service.CategoryService;
@@ -170,5 +173,33 @@ public class MovieFacadeImpl implements MovieFacade {
             .build();
     movie.updateInfo(updateMovieDTO);
     this.movieService.save(movie);
+  }
+
+  @Override
+  public void rateMovie(RateMovieRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var movie =
+        this.movieService
+            .findById(request.getMovieId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MOVIE_NOT_FOUND));
+    var rate =
+        MovieRate.builder()
+            .movie(movie)
+            .starNumber(request.getNumberOfStars())
+            .comment(request.getComment())
+            .ownerId(principal.getId())
+            .build();
+
+    request.getRateAssetDTOS().stream()
+        .map(
+            rateAssetDTO ->
+                MovieRateAsset.builder()
+                    .mediaType(rateAssetDTO.getMediaType())
+                    .mediaKey(rateAssetDTO.getMediaKey())
+                    .movieRate(rate)
+                    .build())
+        .forEach(movieRateAsset -> rate.addAsset(movieRateAsset));
+    movie.addRate(rate);
   }
 }

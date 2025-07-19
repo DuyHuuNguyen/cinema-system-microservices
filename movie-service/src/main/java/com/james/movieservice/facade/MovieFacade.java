@@ -5,6 +5,7 @@ import com.james.movieservice.response.MovieDetailResponse;
 import com.james.movieservice.response.MovieResponse;
 import com.james.movieservice.response.PaginationResponse;
 import com.james.movieservice.resquest.MovieCriteria;
+import com.james.movieservice.resquest.RateMovieRequest;
 import com.james.movieservice.resquest.UpsertMovieRequest;
 
 public interface MovieFacade {
@@ -15,4 +16,6 @@ public interface MovieFacade {
   BaseResponse<PaginationResponse<MovieResponse>> getByFilter(MovieCriteria criteria);
 
   void updateMovie(UpsertMovieRequest request);
+
+  void rateMovie(RateMovieRequest request);
 }
