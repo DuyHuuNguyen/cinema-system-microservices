@@ -66,4 +66,12 @@ public class MovieController {
       @Nullable RateMovieRateCriteria criteria) {
     return movieFacade.getRateMovies(criteria);
   }
+
+  @GetMapping("/rates/{id}")
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<Void> removeMovieRate(Long id) {
+    this.movieFacade.removeRate(id);
+    return BaseResponse.ok();
+  }
 }

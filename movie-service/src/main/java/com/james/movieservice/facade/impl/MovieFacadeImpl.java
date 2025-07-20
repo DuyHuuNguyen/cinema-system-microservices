@@ -203,7 +203,9 @@ public class MovieFacadeImpl implements MovieFacade {
   @Override
   public BaseResponse<PaginationResponse<RateResponse>> getRateMovies(
       RateMovieRateCriteria criteria) {
-    var specification = MovieRateSpecification.hasMovieId(criteria.getMovieId());
+    var specification =
+        MovieRateSpecification.hasMovieId(criteria.getMovieId())
+            .and(MovieRateSpecification.isLive());
     var pageable = PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize());
 
     var movieRatePage = this.movieRateService.findAll(specification, pageable); // bug
@@ -229,5 +231,20 @@ public class MovieFacadeImpl implements MovieFacade {
             .currentPage(criteria.getCurrentPage())
             .build();
     return BaseResponse.build(paginationRate, true);
+  }
+
+  @Override
+  public void removeRate(Long id) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var rate =
+        this.movieRateService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MOVIE_RATE_NOT_FOUND));
+    var isValidMovieRate = rate.getOwnerId().equals(principal.getId());
+    if (!isValidMovieRate) throw new PermissionDeniedException(ErrorCode.NOT_OWNER);
+
+    rate.remove();
+    this.movieRateService.save(rate);
   }
 }

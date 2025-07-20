@@ -11,4 +11,8 @@ public class MovieRateSpecification {
       return cb.equal(root.get("movie").get("id"), movieId);
     };
   }
+
+  public static Specification<MovieRate> isLive() {
+    return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("isActive"), true));
+  }
 }

@@ -15,4 +15,6 @@ public interface MovieFacade {
   void rateMovie(RateMovieRequest request);
 
   BaseResponse<PaginationResponse<RateResponse>> getRateMovies(RateMovieRateCriteria criteria);
+
+  void removeRate(Long id);
 }
