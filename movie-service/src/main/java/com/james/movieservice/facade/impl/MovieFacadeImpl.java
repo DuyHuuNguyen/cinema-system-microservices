@@ -9,17 +9,13 @@ import com.james.movieservice.enums.ErrorCode;
 import com.james.movieservice.exception.EntityNotFoundException;
 import com.james.movieservice.exception.PermissionDeniedException;
 import com.james.movieservice.facade.MovieFacade;
-import com.james.movieservice.response.BaseResponse;
-import com.james.movieservice.response.MovieDetailResponse;
-import com.james.movieservice.response.MovieResponse;
-import com.james.movieservice.response.PaginationResponse;
-import com.james.movieservice.resquest.MovieCriteria;
-import com.james.movieservice.resquest.RateMovieRequest;
-import com.james.movieservice.resquest.UpsertMovieRequest;
-import com.james.movieservice.resquest.ValidAdminTheaterRequest;
+import com.james.movieservice.response.*;
+import com.james.movieservice.resquest.*;
 import com.james.movieservice.service.CategoryService;
+import com.james.movieservice.service.MovieRateService;
 import com.james.movieservice.service.MovieService;
 import com.james.movieservice.service.ScheduleService;
+import com.james.movieservice.specification.MovieRateSpecification;
 import com.james.movieservice.specification.MovieSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +33,7 @@ public class MovieFacadeImpl implements MovieFacade {
   private final MovieService movieService;
   private final ScheduleService scheduleService;
   private final CategoryService categoryService;
+  private final MovieRateService movieRateService;
 
   @Override
   @Transactional
@@ -201,5 +198,36 @@ public class MovieFacadeImpl implements MovieFacade {
                     .build())
         .forEach(movieRateAsset -> rate.addAsset(movieRateAsset));
     movie.addRate(rate);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<RateResponse>> getRateMovies(
+      RateMovieRateCriteria criteria) {
+    var specification = MovieRateSpecification.hasMovieId(criteria.getMovieId());
+    var pageable = PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize());
+
+    var movieRatePage = this.movieRateService.findAll(specification, pageable); // bug
+    var paginationRate =
+        PaginationResponse.<RateResponse>builder()
+            .data(
+                movieRatePage
+                    .get()
+                    .map(
+                        movieRate ->
+                            RateResponse.builder()
+                                .comment(movieRate.getComment())
+                                .numberOfStar(movieRate.getStarNumber())
+                                .ownerId(movieRate.getOwnerId())
+                                .rateAssetDTOS(
+                                    movieRate.getMovieRateAssets().stream()
+                                        .map(MovieRateAsset::getRateAssetDTO)
+                                        .toList())
+                                .build())
+                    .toList())
+            .totalElements(movieRatePage.getNumberOfElements())
+            .totalPages(movieRatePage.getTotalPages())
+            .currentPage(criteria.getCurrentPage())
+            .build();
+    return BaseResponse.build(paginationRate, true);
   }
 }

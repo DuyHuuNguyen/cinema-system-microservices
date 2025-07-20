@@ -1,14 +1,10 @@
 package com.james.movieservice.controller;
 
 import com.james.movieservice.facade.MovieFacade;
-import com.james.movieservice.response.BaseResponse;
-import com.james.movieservice.response.MovieDetailResponse;
-import com.james.movieservice.response.MovieResponse;
-import com.james.movieservice.response.PaginationResponse;
-import com.james.movieservice.resquest.MovieCriteria;
-import com.james.movieservice.resquest.RateMovieRequest;
-import com.james.movieservice.resquest.UpsertMovieRequest;
+import com.james.movieservice.response.*;
+import com.james.movieservice.resquest.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.Nullable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,5 +57,13 @@ public class MovieController {
     request.attachMovieId(id);
     this.movieFacade.rateMovie(request);
     return BaseResponse.ok();
+  }
+
+  @GetMapping("/rates")
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<RateResponse>> getRate(
+      @Nullable RateMovieRateCriteria criteria) {
+    return movieFacade.getRateMovies(criteria);
   }
 }

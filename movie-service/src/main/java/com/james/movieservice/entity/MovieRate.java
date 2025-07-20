@@ -26,7 +26,7 @@ public class MovieRate extends BaseEntity {
   @Column(name = "comment")
   private String comment;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "movie_id", nullable = false)
   private Movie movie;
 

@@ -1,4 +1,4 @@
-package com.james.userservice.dto;
+package com.james.movieservice.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class MovieDTO {
+public class MovieInternalResponse {
   private String title;
   private String duration;
   private String language;

@@ -1,12 +1,7 @@
 package com.james.movieservice.facade;
 
-import com.james.movieservice.response.BaseResponse;
-import com.james.movieservice.response.MovieDetailResponse;
-import com.james.movieservice.response.MovieResponse;
-import com.james.movieservice.response.PaginationResponse;
-import com.james.movieservice.resquest.MovieCriteria;
-import com.james.movieservice.resquest.RateMovieRequest;
-import com.james.movieservice.resquest.UpsertMovieRequest;
+import com.james.movieservice.response.*;
+import com.james.movieservice.resquest.*;
 
 public interface MovieFacade {
   void addMovie(UpsertMovieRequest request);
@@ -18,4 +13,6 @@ public interface MovieFacade {
   void updateMovie(UpsertMovieRequest request);
 
   void rateMovie(RateMovieRequest request);
+
+  BaseResponse<PaginationResponse<RateResponse>> getRateMovies(RateMovieRateCriteria criteria);
 }
