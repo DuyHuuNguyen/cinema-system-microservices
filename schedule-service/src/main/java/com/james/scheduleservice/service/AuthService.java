@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "identification-service")
 public interface AuthService {
-  @PostMapping("/api/v1/auth/authorization")
+  @PostMapping(value = "/api/v1/auth/authorization")
   ValidTokenDTO validToken(@RequestHeader("AccessToken") String accessToken);
 }
