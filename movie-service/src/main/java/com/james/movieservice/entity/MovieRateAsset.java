@@ -23,7 +23,8 @@ public class MovieRateAsset extends BaseEntity {
   @Enumerated(value = EnumType.STRING)
   private MediaType mediaType;
 
-  @ManyToOne
+  @ManyToOne(
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
   @JoinColumn(name = "movie_rate_id", nullable = false)
   private MovieRate movieRate;
 

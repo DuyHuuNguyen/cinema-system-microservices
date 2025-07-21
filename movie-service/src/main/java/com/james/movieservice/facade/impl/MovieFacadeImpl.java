@@ -2,6 +2,7 @@ package com.james.movieservice.facade.impl;
 
 import com.james.movieservice.config.SecurityUserDetails;
 import com.james.movieservice.dto.UpdateMovieDTO;
+import com.james.movieservice.dto.UpdateRateDTO;
 import com.james.movieservice.entity.Movie;
 import com.james.movieservice.entity.MovieRate;
 import com.james.movieservice.entity.MovieRateAsset;
@@ -128,7 +129,6 @@ public class MovieFacadeImpl implements MovieFacade {
                                 .duration(movie.getDuration())
                                 .language(movie.getLanguage())
                                 .poster(movie.getPoster())
-                                .movie(movie.getMovie())
                                 .theaterId(movie.getTheaterId())
                                 .build())
                     .toList())
@@ -141,6 +141,7 @@ public class MovieFacadeImpl implements MovieFacade {
   }
 
   @Override
+  @Transactional
   public void updateMovie(UpsertMovieRequest request) {
     var principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -174,6 +175,7 @@ public class MovieFacadeImpl implements MovieFacade {
   }
 
   @Override
+  @Transactional
   public void rateMovie(RateMovieRequest request) {
     var principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -199,6 +201,7 @@ public class MovieFacadeImpl implements MovieFacade {
                     .build())
         .forEach(movieRateAsset -> rate.addAsset(movieRateAsset));
     movie.addRate(rate);
+    this.movieService.save(movie);
   }
 
   @Override
@@ -235,6 +238,7 @@ public class MovieFacadeImpl implements MovieFacade {
   }
 
   @Override
+  @Transactional
   public void removeRate(Long id) {
     var principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -246,6 +250,30 @@ public class MovieFacadeImpl implements MovieFacade {
     if (!isValidMovieRate) throw new PermissionDeniedException(ErrorCode.NOT_OWNER);
 
     rate.remove();
+    this.movieRateService.save(rate);
+  }
+
+  @Override
+  @Transactional
+  public void updateRateMovie(UpdateRateMovieRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var rate =
+        this.movieRateService
+            .findById(request.getRateId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MOVIE_RATE_NOT_FOUND));
+
+    var isValidMovieRate = rate.getOwnerId().equals(principal.getId());
+    if (!isValidMovieRate) throw new PermissionDeniedException(ErrorCode.NOT_OWNER);
+
+    var updateRateDTO =
+        UpdateRateDTO.builder()
+            .comment(request.getComment())
+            .numberOfStars(request.getNumberOfStars())
+            .rateAssetDTOS(request.getRateAssetDTOS())
+            .build();
+    rate.updateInfo(updateRateDTO);
+
     this.movieRateService.save(rate);
   }
 }

@@ -47,7 +47,10 @@ public class Movie extends BaseEntity {
   @JoinColumn(name = "category_id", nullable = false)
   private Category category;
 
-  @OneToMany(mappedBy = "movie", orphanRemoval = true)
+  @OneToMany(
+      mappedBy = "movie",
+      orphanRemoval = true,
+      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @Builder.Default
   private List<MovieRate> movieRates = new ArrayList<>();
 

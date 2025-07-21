@@ -15,6 +15,5 @@ public class MovieResponse {
   private String duration;
   private String language;
   private String poster;
-  private String movie;
   private Long theaterId;
 }

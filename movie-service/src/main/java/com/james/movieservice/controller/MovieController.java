@@ -36,7 +36,7 @@ public class MovieController {
 
   @GetMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
-  @PreAuthorize("isAuthenticated()")
+  @PreAuthorize("hasRole('ROLE_EMPLOYEE') || hasRole('ROLE_ADMIN')")
   public BaseResponse<MovieDetailResponse> getMovieDetailById(@PathVariable Long id) {
     return this.movieFacade.getMovieDetailById(id);
   }
@@ -67,11 +67,19 @@ public class MovieController {
     return movieFacade.getRateMovies(criteria);
   }
 
-  @PatchMapping("/rates/{id}")
+  @DeleteMapping("/rate/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<Void> removeMovieRate(Long id) {
     this.movieFacade.removeRate(id);
+    return BaseResponse.ok();
+  }
+
+  @PutMapping("/rate")
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<Void> updateMovieRate(@RequestBody UpdateRateMovieRequest request) {
+    this.movieFacade.updateRateMovie(request);
     return BaseResponse.ok();
   }
 }
