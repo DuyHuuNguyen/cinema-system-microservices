@@ -1,5 +1,6 @@
 package com.james.scheduleservice.entity;
 
+import com.james.scheduleservice.dto.LocationDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,11 +23,19 @@ public class MovieSchedule extends BaseEntity {
   @Column(name = "movie_id", nullable = false)
   private Long movieId;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "theater_id", nullable = false)
   private Theater theater;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "room_id", nullable = false)
   private Room room;
+
+  public String getTheaterName() {
+    return this.theater.getTheaterName();
+  }
+
+  public LocationDTO getLocationTheater() {
+    return this.theater.getLocationDTO();
+  }
 }

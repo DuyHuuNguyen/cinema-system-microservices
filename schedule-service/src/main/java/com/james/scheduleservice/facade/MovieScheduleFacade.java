@@ -1,3 +1,7 @@
 package com.james.scheduleservice.facade;
 
-public interface MovieScheduleFacade {}
+import com.james.scheduleservice.dto.ScheduleDTO;
+
+public interface MovieScheduleFacade {
+  ScheduleDTO findScheduleById(Long id);
+}

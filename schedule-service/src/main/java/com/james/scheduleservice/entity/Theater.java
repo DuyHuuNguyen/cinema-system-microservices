@@ -1,5 +1,6 @@
 package com.james.scheduleservice.entity;
 
+import com.james.scheduleservice.dto.LocationDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,4 +42,11 @@ public class Theater extends BaseEntity {
   @OneToMany(mappedBy = "theater", orphanRemoval = true)
   @Builder.Default
   private List<FingerFood> fingerFoods = new ArrayList<>();
+
+  public LocationDTO getLocationDTO() {
+    return LocationDTO.builder()
+        .longitude(location.getLongitude())
+        .latitude(location.getLatitude())
+        .build();
+  }
 }

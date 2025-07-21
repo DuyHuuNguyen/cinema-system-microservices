@@ -1,3 +1,8 @@
 package com.james.scheduleservice.service;
 
-public interface MovieScheduleService {}
+import com.james.scheduleservice.entity.MovieSchedule;
+import java.util.Optional;
+
+public interface MovieScheduleService {
+  Optional<MovieSchedule> findById(Long id);
+}
