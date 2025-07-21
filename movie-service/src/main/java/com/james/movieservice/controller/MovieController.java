@@ -67,7 +67,7 @@ public class MovieController {
     return movieFacade.getRateMovies(criteria);
   }
 
-  @GetMapping("/rates/{id}")
+  @PatchMapping("/rates/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<Void> removeMovieRate(Long id) {

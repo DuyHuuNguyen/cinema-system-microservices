@@ -11,5 +11,7 @@ public interface MovieRateService {
 
   void save(MovieRate movieRate);
 
+  Double getAverageRatingByMovieId(Long movieId);
+
   Page<MovieRate> findAll(Specification<MovieRate> specification, Pageable pageable);
 }

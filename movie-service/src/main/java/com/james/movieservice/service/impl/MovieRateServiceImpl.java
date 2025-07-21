@@ -26,6 +26,11 @@ public class MovieRateServiceImpl implements MovieRateService {
   }
 
   @Override
+  public Double getAverageRatingByMovieId(Long movieId) {
+    return this.movieRateRepository.getAverageRatingByMovieId(movieId);
+  }
+
+  @Override
   public Page<MovieRate> findAll(Specification<MovieRate> specification, Pageable pageable) {
     return movieRateRepository.findAll(specification, pageable);
   }

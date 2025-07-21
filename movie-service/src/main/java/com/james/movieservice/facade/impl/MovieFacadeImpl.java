@@ -82,7 +82,7 @@ public class MovieFacadeImpl implements MovieFacade {
 
     var isNotFoundTheater = theater == null;
     if (isNotFoundTheater) throw new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND);
-
+    Double averageStar = this.movieRateService.getAverageRatingByMovieId(movie.getId());
     var movieDetailResponse =
         MovieDetailResponse.builder()
             .title(movie.getTitle())
@@ -97,6 +97,7 @@ public class MovieFacadeImpl implements MovieFacade {
             .categoryName(movie.getCategoryName())
             .theaterId(theater.getId())
             .theaterName(theater.getName())
+            .starNumber(averageStar)
             .build();
 
     return BaseResponse.build(movieDetailResponse, true);
