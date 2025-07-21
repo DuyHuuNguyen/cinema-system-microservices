@@ -1,5 +1,6 @@
 package com.james.movieservice.interceptor;
 
+import com.james.movieservice.config.SecurityUserDetails;
 import com.james.movieservice.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,6 +23,7 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
   private final AuthService authService;
 
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
+  private final String ROLE_PATTERN = "ROLE_%s";
 
   @Override
   protected void doFilterInternal(
@@ -45,11 +47,11 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
 
       List<GrantedAuthority> authorityList =
           validTokenDTO.getRoles().stream()
-              .map(role -> new SimpleGrantedAuthority(role.name()))
+              .map(role -> new SimpleGrantedAuthority(String.format(ROLE_PATTERN, role.toString())))
               .collect(Collectors.toList());
-
+      var principle = SecurityUserDetails.build(validTokenDTO.getUserDTO(), authorityList);
       UsernamePasswordAuthenticationToken authenticationToken =
-          new UsernamePasswordAuthenticationToken(validTokenDTO.getUserDTO(), null, authorityList);
+          new UsernamePasswordAuthenticationToken(principle, null, authorityList);
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
     } catch (Exception e) {

@@ -19,6 +19,7 @@ import com.james.userservice.resquest.*;
 import com.james.userservice.service.*;
 import com.james.userservice.specification.UserSpecification;
 import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -238,5 +239,14 @@ public class UserFacadeImpl implements UserFacade {
             .totalPages(userPage.getTotalPages())
             .build(),
         true);
+  }
+
+  @Override
+  public List<String> getAllHobbies(Long id) {
+    var user =
+        this.userService
+            .findUserById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    return user.getHobbies().stream().map(hobby -> hobby.getHobbyName().name()).toList();
   }
 }

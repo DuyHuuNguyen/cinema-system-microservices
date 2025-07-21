@@ -6,6 +6,7 @@ import com.james.userservice.response.PaginationResponse;
 import com.james.userservice.response.ProfileResponse;
 import com.james.userservice.response.UserResponse;
 import com.james.userservice.resquest.*;
+import java.util.List;
 
 public interface UserFacade {
 
@@ -24,4 +25,6 @@ public interface UserFacade {
   void changeRole(ChangeRoleRequest request);
 
   BaseResponse<PaginationResponse<UserResponse>> getByFilter(UserCriteria userCriteria);
+
+  List<String> getAllHobbies(Long id);
 }

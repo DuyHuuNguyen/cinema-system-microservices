@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(servers = {@Server(url = "http://localhost:9090/movie-service")})
+@OpenAPIDefinition(servers = {@Server(url = "/movie-service"), @Server(url = "/")})
 @SecurityScheme(
     name = "Bearer Authentication",
     type = SecuritySchemeType.HTTP,
@@ -23,7 +23,7 @@ public class SwaggerConfig {
   public GroupedOpenApi openApi() {
     String[] paths = {"/api/**"};
     return GroupedOpenApi.builder()
-        .group("identification-service")
+        .group("movie-service")
         .packagesToScan("com.james.movieservice.controller")
         .pathsToMatch(paths)
         .build();

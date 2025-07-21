@@ -1,18 +1,21 @@
-package com.james.userservice.dto;
+package com.james.movieservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class MovieDTO {
+@Builder
+public class UpdateMovieDTO {
   private String title;
+  private String description;
   private String duration;
   private String language;
+  private Long releasedAt;
   private String poster;
-  private Integer star;
+  private String trailer;
+  private String movie;
 }

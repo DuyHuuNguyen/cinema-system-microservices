@@ -1,3 +1,8 @@
 package com.james.movieservice.service;
 
-public interface CategoryService {}
+import com.james.movieservice.entity.Category;
+import java.util.Optional;
+
+public interface CategoryService {
+  Optional<Category> findById(Long id);
+}

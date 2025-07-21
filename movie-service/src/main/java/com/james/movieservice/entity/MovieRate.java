@@ -1,5 +1,6 @@
 package com.james.movieservice.entity;
 
+import com.james.movieservice.dto.UpdateRateDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,33 @@ public class MovieRate extends BaseEntity {
   @Column(name = "comment")
   private String comment;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "movie_id", nullable = false)
   private Movie movie;
 
-  @OneToMany(mappedBy = "movieRate", orphanRemoval = true)
+  @OneToMany(
+      mappedBy = "movieRate",
+      orphanRemoval = true,
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
   @Builder.Default
   private List<MovieRateAsset> movieRateAssets = new ArrayList<>();
+
+  public void addAsset(MovieRateAsset movieRateAsset) {
+    this.movieRateAssets.add(movieRateAsset);
+  }
+
+  public void updateInfo(UpdateRateDTO updateRateDTO) {
+    this.starNumber = updateRateDTO.getNumberOfStars();
+    this.comment = updateRateDTO.getComment();
+    this.movieRateAssets.clear();
+    updateRateDTO.getRateAssetDTOS().stream()
+        .map(
+            rateAssetDTO ->
+                MovieRateAsset.builder()
+                    .movieRate(this)
+                    .mediaKey(rateAssetDTO.getMediaKey())
+                    .mediaType(rateAssetDTO.getMediaType())
+                    .build())
+        .forEach(movieRateAssets::add);
+  }
 }

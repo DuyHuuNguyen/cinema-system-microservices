@@ -7,8 +7,10 @@ import com.james.userservice.response.PaginationResponse;
 import com.james.userservice.response.ProfileResponse;
 import com.james.userservice.response.UserResponse;
 import com.james.userservice.resquest.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -89,5 +91,11 @@ public class UserController {
   public BaseResponse<PaginationResponse<UserResponse>> getByFilter(
       @NonNull UserCriteria userCriteria) {
     return this.userFacade.getByFilter(userCriteria);
+  }
+
+  @Hidden
+  @GetMapping(value = "/hobbies/{id}", headers = "secret-key=movie-service")
+  public List<String> getAllHobbies(@PathVariable Long id) {
+    return this.userFacade.getAllHobbies(id);
   }
 }
