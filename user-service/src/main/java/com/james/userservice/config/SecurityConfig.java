@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.AntPathMatcher;
 
 @Configuration
 @EnableMethodSecurity
@@ -28,8 +29,14 @@ public class SecurityConfig {
     "/swagger-ui/**",
     "/v3/api-docs/**",
     "/api/v1/auth",
-    "/api/v1/users/sign-up"
+    "/api/v1/users/sign-up",
+    "/api/v1/users/hobbies/**"
   };
+
+  @Bean
+  public AntPathMatcher antPathMatcher() {
+    return new AntPathMatcher();
+  }
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -38,7 +45,7 @@ public class SecurityConfig {
 
   @Bean
   public AuthenticationTokenProviderInterceptor authenticationTokenProviderInterceptor() {
-    return new AuthenticationTokenProviderInterceptor(this.authService);
+    return new AuthenticationTokenProviderInterceptor(this.authService, this.antPathMatcher());
   }
 
   @Bean

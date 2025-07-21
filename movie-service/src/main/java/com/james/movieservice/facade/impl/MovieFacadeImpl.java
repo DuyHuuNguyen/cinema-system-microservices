@@ -12,12 +12,10 @@ import com.james.movieservice.exception.PermissionDeniedException;
 import com.james.movieservice.facade.MovieFacade;
 import com.james.movieservice.response.*;
 import com.james.movieservice.resquest.*;
-import com.james.movieservice.service.CategoryService;
-import com.james.movieservice.service.MovieRateService;
-import com.james.movieservice.service.MovieService;
-import com.james.movieservice.service.ScheduleService;
+import com.james.movieservice.service.*;
 import com.james.movieservice.specification.MovieRateSpecification;
 import com.james.movieservice.specification.MovieSpecification;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +33,7 @@ public class MovieFacadeImpl implements MovieFacade {
   private final ScheduleService scheduleService;
   private final CategoryService categoryService;
   private final MovieRateService movieRateService;
+  private final UserService userService;
 
   @Override
   @Transactional
@@ -106,13 +105,18 @@ public class MovieFacadeImpl implements MovieFacade {
 
   @Override
   public BaseResponse<PaginationResponse<MovieResponse>> getByFilter(MovieCriteria criteria) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    List<String> hobbies = this.userService.getAllHobbies(principal.getId());
     Specification<Movie> specification =
         MovieSpecification.hasTitle(criteria.getTitle())
             .and(MovieSpecification.hasDescription(criteria.getDescription()))
             .and(MovieSpecification.hasCategory(criteria.getCategory()))
             .and(MovieSpecification.hasDuration(criteria.getDuration()))
             .and(MovieSpecification.hasReleaseAt(criteria.getReleaseAt()))
-            .and(MovieSpecification.hasTheaterId(criteria.getTheaterId()));
+            .and(MovieSpecification.hasTheaterId(criteria.getTheaterId()))
+            .and(MovieSpecification.hasHobbies(hobbies));
+
     Pageable pageable = PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize());
     var moviePage = this.movieService.findAll(specification, pageable);
 

@@ -15,15 +15,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @RequiredArgsConstructor
 public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter {
   private final AuthService authService;
-
+  private final AntPathMatcher matcher;
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
-  private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/v1/users/sign-up");
+  private static final List<String> PUBLIC_ENDPOINTS =
+      List.of("/api/v1/users/sign-up", "/api/v1/users/hobbies/**");
 
   private final String ROLE_PATTERN = "ROLE_%s";
 
@@ -34,7 +36,10 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
     String path = request.getRequestURI();
     log.info("path : {}", path);
     var isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);
-    var isPublicEndPoint = PUBLIC_ENDPOINTS.stream().anyMatch(path::startsWith);
+
+    var isPublicEndPoint =
+        PUBLIC_ENDPOINTS.stream().anyMatch(publicEndpoint -> matcher.match(publicEndpoint, path));
+
     log.info("swagger {}", isSwagger);
     log.info("public endpoint {}", isPublicEndPoint);
     String token = getTokenFromHeader(request);

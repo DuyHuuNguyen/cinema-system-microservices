@@ -1,6 +1,10 @@
 package com.james.movieservice.specification;
 
+import com.james.movieservice.entity.Category;
 import com.james.movieservice.entity.Movie;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Join;
+import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
 public class MovieSpecification {
@@ -40,5 +44,22 @@ public class MovieSpecification {
   public static Specification<Movie> hasTheaterId(Long theaterId) {
     return (root, query, cb) ->
         theaterId == null ? null : cb.equal(root.get("theaterId"), theaterId);
+  }
+
+  public static Specification<Movie> hasHobbies(List<String> hobbies) {
+    return ((root, query, criteriaBuilder) -> {
+      Join<Movie, Category> movieCategoryJoin = root.join("category");
+
+      if (hobbies == null || hobbies.isEmpty()) {
+        return criteriaBuilder.conjunction();
+      }
+
+      CriteriaBuilder.In<String> inClause =
+          criteriaBuilder.in(movieCategoryJoin.get("categoryName"));
+      for (String hobby : hobbies) {
+        inClause.value(hobby);
+      }
+      return inClause;
+    });
   }
 }

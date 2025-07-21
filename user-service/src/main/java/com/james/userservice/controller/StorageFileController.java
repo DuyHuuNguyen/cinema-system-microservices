@@ -1,7 +1,7 @@
 package com.james.userservice.controller;
 
 import com.james.userservice.enums.ResourceType;
-import com.james.userservice.facade.StoreFileFacade;
+import com.james.userservice.facade.StorageFacade;
 import com.james.userservice.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/stores")
 @RequiredArgsConstructor
 public class StorageFileController {
-  private final StoreFileFacade storeFileFacade;
+  private final StorageFacade storageFacade;
 
   @PostMapping(value = "/upload", consumes = "multipart/form-data", produces = "application/json")
   @ResponseStatus(HttpStatus.OK)
@@ -29,7 +29,6 @@ public class StorageFileController {
   public BaseResponse<String> uploadImage(
       @RequestPart("image") MultipartFile image,
       @RequestParam("resourceType") ResourceType resourceType) {
-    return BaseResponse.build(
-        this.storeFileFacade.uploadImage(image.getBytes(), resourceType), true);
+    return BaseResponse.build(this.storageFacade.uploadImage(image.getBytes(), resourceType), true);
   }
 }
