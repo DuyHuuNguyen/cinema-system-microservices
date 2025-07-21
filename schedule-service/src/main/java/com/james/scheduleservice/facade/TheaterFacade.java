@@ -1,3 +1,7 @@
 package com.james.scheduleservice.facade;
 
-public interface TheaterFacade {}
+import com.james.scheduleservice.dto.TheaterDTO;
+
+public interface TheaterFacade {
+  TheaterDTO findTheaterById(Long id);
+}

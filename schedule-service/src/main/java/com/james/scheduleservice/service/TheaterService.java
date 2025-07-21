@@ -1,3 +1,8 @@
 package com.james.scheduleservice.service;
 
-public interface TheaterService {}
+import com.james.scheduleservice.entity.Theater;
+import java.util.Optional;
+
+public interface TheaterService {
+  Optional<Theater> findById(Long id);
+}

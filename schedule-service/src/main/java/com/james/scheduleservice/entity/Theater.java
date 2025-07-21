@@ -27,19 +27,29 @@ public class Theater extends BaseEntity {
   @Column(name = "director_id")
   private Long directorId;
 
-  @ManyToOne
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @JoinColumn(name = "location_id")
   private Location location;
 
-  @OneToMany(mappedBy = "theater")
+  @OneToMany(
+      mappedBy = "theater",
+      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @Builder.Default
   private List<Room> rooms = new ArrayList<>();
 
-  @OneToMany(mappedBy = "theater", orphanRemoval = true)
+  @OneToMany(
+      mappedBy = "theater",
+      orphanRemoval = true,
+      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @Builder.Default
   private List<TheaterRate> theaterRates = new ArrayList<>();
 
-  @OneToMany(mappedBy = "theater", orphanRemoval = true)
+  @OneToMany(
+      mappedBy = "theater",
+      orphanRemoval = true,
+      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @Builder.Default
   private List<FingerFood> fingerFoods = new ArrayList<>();
 

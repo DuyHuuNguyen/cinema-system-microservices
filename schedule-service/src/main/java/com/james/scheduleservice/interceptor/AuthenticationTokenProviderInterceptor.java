@@ -23,7 +23,8 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
   private final AuthService authService;
 
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
-  private static final List<String> PUBLIC_URLS = List.of("/api/v1/schedules/internal/");
+  private static final List<String> PUBLIC_URLS =
+      List.of("/api/v1/schedules/internal/", "/api/v1/theaters/internal/");
   private final String ROLE_PATTERN = "ROLE_%s";
 
   @Override
