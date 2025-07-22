@@ -27,11 +27,17 @@ public class Theater extends BaseEntity {
   @Column(name = "director_id")
   private Long directorId;
 
-  @ManyToOne(
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
-  @JoinColumn(name = "location_id")
+  @OneToOne(
+      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE},
+      optional = false)
+  @JoinColumn(name = "location_id", nullable = false)
   private Location location;
+
+  @OneToMany(
+      mappedBy = "theater",
+      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
+  @Builder.Default
+  private List<TheaterAsset> theaterAssets = new ArrayList<>();
 
   @OneToMany(
       mappedBy = "theater",
@@ -58,5 +64,25 @@ public class Theater extends BaseEntity {
         .longitude(location.getLongitude())
         .latitude(location.getLatitude())
         .build();
+  }
+
+  public void addRoom(Room room) {
+    this.rooms.add(room);
+    room.addTheater(this);
+  }
+
+  public void addFingerFood(FingerFood fingerFood) {
+    this.fingerFoods.add(fingerFood);
+    fingerFood.addTheater(this);
+  }
+
+  public void addLocation(Location location) {
+    location.addTheater(this);
+    this.location = location;
+  }
+
+  public void addTheaterAsset(TheaterAsset theaterAsset) {
+    this.theaterAssets.add(theaterAsset);
+    theaterAsset.addTheater(this);
   }
 }

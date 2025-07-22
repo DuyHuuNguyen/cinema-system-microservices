@@ -8,13 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "finger_food_assets")
+@Table(name = "theater_assets")
 @Getter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FingerFoodAsset extends BaseEntity {
-
+public class TheaterAsset extends BaseEntity {
   @Column(name = "media_key")
   private String mediaKey;
 
@@ -23,10 +22,10 @@ public class FingerFoodAsset extends BaseEntity {
   private MediaType mediaType;
 
   @ManyToOne
-  @JoinColumn(name = "finger_food_id")
-  private FingerFood fingerFood;
+  @JoinColumn(name = "theater_id")
+  private Theater theater;
 
-  public void addFingerFood(FingerFood fingerFood) {
-    this.fingerFood = fingerFood;
+  public void addTheater(Theater theater) {
+    this.theater = theater;
   }
 }

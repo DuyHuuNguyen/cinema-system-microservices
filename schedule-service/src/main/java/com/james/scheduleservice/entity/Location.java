@@ -1,10 +1,7 @@
 package com.james.scheduleservice.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -22,5 +19,11 @@ public class Location extends BaseEntity {
   @Column(name = "latitude", nullable = false)
   private Long latitude;
 
-  @OneToMany @Builder.Default private List<Theater> theater = new ArrayList<>();
+  //  @OneToOne(mappedBy = "location",optional = false)
+  //  private Theater theater;
+  //  @OneToMany @Builder.Default private List<Theater> theaters = new ArrayList<>();
+  //
+  public void addTheater(Theater theater) {
+    //    this.theater = theater;
+  }
 }

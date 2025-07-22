@@ -23,9 +23,13 @@ public class Room extends BaseEntity {
   private Integer monitorHeight;
 
   @Column(name = "seat_number", nullable = false)
-  private Integer seatNumber;
+  private Integer totalSeatNumber;
 
   @ManyToOne
   @JoinColumn(name = "theater_id", nullable = false)
   private Theater theater;
+
+  public void addTheater(Theater theater) {
+    this.theater = theater;
+  }
 }
