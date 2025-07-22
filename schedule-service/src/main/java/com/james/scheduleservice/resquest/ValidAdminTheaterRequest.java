@@ -1,16 +1,15 @@
-package com.james.scheduleservice.dto;
+package com.james.scheduleservice.resquest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Builder
-public class TheaterDTO {
-  private Long id;
-  private String theaterName;
-  private String description;
+public class ValidAdminTheaterRequest {
+  private Long adminId;
+  private Long theaterId;
 }
