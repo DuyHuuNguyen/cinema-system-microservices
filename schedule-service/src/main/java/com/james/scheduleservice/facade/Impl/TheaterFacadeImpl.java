@@ -8,16 +8,20 @@ import com.james.scheduleservice.enums.RoleEnums;
 import com.james.scheduleservice.exception.EntityNotFoundException;
 import com.james.scheduleservice.facade.TheaterFacade;
 import com.james.scheduleservice.response.BaseResponse;
+import com.james.scheduleservice.response.PaginationResponse;
 import com.james.scheduleservice.response.TheaterDetailResponse;
-import com.james.scheduleservice.resquest.AddFingerFoodRequest;
-import com.james.scheduleservice.resquest.AddRoleRequest;
-import com.james.scheduleservice.resquest.UpsertTheaterRequest;
-import com.james.scheduleservice.resquest.ValidAdminTheaterRequest;
+import com.james.scheduleservice.response.TheaterResponse;
+import com.james.scheduleservice.resquest.*;
+import com.james.scheduleservice.service.NotificationService;
 import com.james.scheduleservice.service.TheaterRateService;
 import com.james.scheduleservice.service.TheaterService;
 import com.james.scheduleservice.service.UserService;
+import com.james.scheduleservice.specification.TheaterSpecification;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +32,7 @@ public class TheaterFacadeImpl implements TheaterFacade {
   private final TheaterService theaterService;
   private final UserService userService;
   private final TheaterRateService theaterRateService;
+  private final NotificationService notificationService;
 
   @Override
   public TheaterDTO findTheaterById(Long id) {
@@ -82,11 +87,19 @@ public class TheaterFacadeImpl implements TheaterFacade {
         request.getFingerFoodDTOS() == null || request.getFingerFoodDTOS().isEmpty();
     if (!isMissFingerFoodData) this.addFingerFoodIntoTheater(request.getFingerFoodDTOS(), theater);
 
-    this.theaterService.save(theater);
+    var newTheater = this.theaterService.saveAndFlush(theater);
     if (!principal.isAdmin()) {
       var addRoleRequest = AddRoleRequest.builder().roleEnums(RoleEnums.ADMIN).build();
       userService.addRole(principal.getId(), addRoleRequest);
     }
+
+    var notificationNewTheaterRequest =
+        NotificationNewTheaterRequest.builder()
+            .theaterId(newTheater.getId())
+            .description(newTheater.getDescription())
+            .firstImage(newTheater.getFirstImage())
+            .build();
+    this.notificationService.notificationNewTheater(notificationNewTheaterRequest);
   }
 
   @Override
@@ -156,6 +169,37 @@ public class TheaterFacadeImpl implements TheaterFacade {
             .averageStars(averageStarTheater)
             .build();
     return BaseResponse.build(theaterDetailResponse, true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<TheaterResponse>> findByFilter(TheaterCriteria criteria) {
+    Specification<Theater> specification =
+        TheaterSpecification.hasTheaterName(criteria.getName())
+            .and(TheaterSpecification.hasLocation(criteria.getLocationCriteriaDTO()));
+
+    Pageable pageable = PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize());
+    var theaterPages = this.theaterService.findAll(specification, pageable);
+
+    var paginationResponse =
+        PaginationResponse.<TheaterResponse>builder()
+            .data(
+                theaterPages
+                    .get()
+                    .map(
+                        theater ->
+                            TheaterResponse.builder()
+                                .id(theater.getId())
+                                .name(theater.getTheaterName())
+                                .description(theater.getDescription())
+                                .firstImage(theater.getFirstImage())
+                                .build())
+                    .toList())
+            .currentPage(criteria.getCurrentPage())
+            .totalElements(theaterPages.getNumberOfElements())
+            .totalPages(theaterPages.getTotalPages())
+            .build();
+
+    return BaseResponse.build(paginationResponse, true);
   }
 
   public void addLocationIntoTheater(LocationDTO locationDTO, Theater theater) {

@@ -1,6 +1,6 @@
 package com.james.scheduleservice.entity;
 
-import com.james.movieservice.enums.MediaType;
+import com.james.scheduleservice.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,5 +27,9 @@ public class TheaterAsset extends BaseEntity {
 
   public void addTheater(Theater theater) {
     this.theater = theater;
+  }
+
+  public boolean isImage() {
+    return this.mediaType.isImage();
   }
 }

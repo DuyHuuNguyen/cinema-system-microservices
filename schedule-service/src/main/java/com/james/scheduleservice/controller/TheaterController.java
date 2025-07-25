@@ -3,13 +3,16 @@ package com.james.scheduleservice.controller;
 import com.james.scheduleservice.dto.TheaterDTO;
 import com.james.scheduleservice.facade.TheaterFacade;
 import com.james.scheduleservice.response.BaseResponse;
+import com.james.scheduleservice.response.PaginationResponse;
 import com.james.scheduleservice.response.TheaterDetailResponse;
 import com.james.scheduleservice.resquest.AddFingerFoodRequest;
+import com.james.scheduleservice.resquest.TheaterCriteria;
 import com.james.scheduleservice.resquest.UpsertTheaterRequest;
 import com.james.scheduleservice.resquest.ValidAdminTheaterRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,6 +66,16 @@ public class TheaterController {
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<TheaterDetailResponse> findDetailTheaterById(@PathVariable Long id) {
     return this.theaterFacade.findDetailTheaterById(id);
+  }
+
+  @GetMapping()
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Theater APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<TheaterDetailResponse>> findByFilter(
+      @Nullable TheaterCriteria criteria) {
+    return this.theaterFacade.findByFilter(criteria);
   }
 
   @Hidden

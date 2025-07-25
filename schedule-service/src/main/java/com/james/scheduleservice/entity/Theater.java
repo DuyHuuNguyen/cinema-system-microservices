@@ -101,4 +101,12 @@ public class Theater extends BaseEntity {
   public void changeTheaterName(String theaterName) {
     this.theaterName = theaterName;
   }
+
+  public String getFirstImage() {
+    return this.theaterAssets.stream()
+        .filter(theaterAsset -> theaterAsset.isImage())
+        .map(theaterAsset -> theaterAsset.getMediaKey())
+        .findFirst()
+        .orElse("NO_IMAGE");
+  }
 }

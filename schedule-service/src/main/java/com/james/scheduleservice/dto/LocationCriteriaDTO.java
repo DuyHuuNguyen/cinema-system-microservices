@@ -1,16 +1,16 @@
 package com.james.scheduleservice.dto;
 
-import com.james.scheduleservice.enums.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Builder
-public class AssetDTO {
-  private String mediaKey;
-  private MediaType mediaType;
+public class LocationCriteriaDTO {
+  private Long longitude;
+  private Long latitude;
+  private Long radiusInKm;
 }
