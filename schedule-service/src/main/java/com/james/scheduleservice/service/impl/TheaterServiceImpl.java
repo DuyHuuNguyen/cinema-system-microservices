@@ -21,4 +21,9 @@ public class TheaterServiceImpl implements TheaterService {
   public void save(Theater theater) {
     this.theaterRepository.save(theater);
   }
+
+  @Override
+  public Optional<Theater> findTheaterByDirectorIdAndTheaterId(Long directorId, Long theaterId) {
+    return this.theaterRepository.findTheaterByDirectorIdAndTheaterId(directorId, theaterId);
+  }
 }

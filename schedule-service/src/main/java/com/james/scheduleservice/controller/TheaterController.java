@@ -3,6 +3,7 @@ package com.james.scheduleservice.controller;
 import com.james.scheduleservice.dto.TheaterDTO;
 import com.james.scheduleservice.facade.TheaterFacade;
 import com.james.scheduleservice.response.BaseResponse;
+import com.james.scheduleservice.resquest.AddFingerFoodRequest;
 import com.james.scheduleservice.resquest.UpsertTheaterRequest;
 import com.james.scheduleservice.resquest.ValidAdminTheaterRequest;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -27,6 +28,30 @@ public class TheaterController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<Void> createTheater(@RequestBody @Validated UpsertTheaterRequest request) {
     this.theaterFacade.createTheater(request);
+    return BaseResponse.ok();
+  }
+
+  @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Theater APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public BaseResponse<Void> updateTheater(
+      @PathVariable Long id, @RequestBody @Validated UpsertTheaterRequest request) {
+    request.attendId(id);
+    this.theaterFacade.updateTheater(request);
+    return BaseResponse.ok();
+  }
+
+  @PatchMapping("/finger-foods/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Theater APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public BaseResponse<Void> addFingerFood(
+      @PathVariable Long id, @RequestBody AddFingerFoodRequest request) {
+    request.attachTheaterId(id);
+    this.theaterFacade.addFingerFood(request);
     return BaseResponse.ok();
   }
 

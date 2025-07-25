@@ -85,4 +85,16 @@ public class Theater extends BaseEntity {
     this.theaterAssets.add(theaterAsset);
     theaterAsset.addTheater(this);
   }
+
+  public void removeAllRooms() {
+    this.rooms.clear();
+  }
+
+  public void removeAllTheaterAssets() {
+    this.theaterAssets.clear();
+  }
+
+  public void removeAllFingerFoods() {
+    this.fingerFoods.clear();
+  }
 }

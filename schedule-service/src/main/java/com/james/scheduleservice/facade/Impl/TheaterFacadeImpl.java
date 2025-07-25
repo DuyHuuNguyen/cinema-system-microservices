@@ -4,11 +4,15 @@ import com.james.scheduleservice.config.SecurityUserDetails;
 import com.james.scheduleservice.dto.*;
 import com.james.scheduleservice.entity.*;
 import com.james.scheduleservice.enums.ErrorCode;
+import com.james.scheduleservice.enums.RoleEnums;
 import com.james.scheduleservice.exception.EntityNotFoundException;
 import com.james.scheduleservice.facade.TheaterFacade;
+import com.james.scheduleservice.resquest.AddFingerFoodRequest;
+import com.james.scheduleservice.resquest.AddRoleRequest;
 import com.james.scheduleservice.resquest.UpsertTheaterRequest;
 import com.james.scheduleservice.resquest.ValidAdminTheaterRequest;
 import com.james.scheduleservice.service.TheaterService;
+import com.james.scheduleservice.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TheaterFacadeImpl implements TheaterFacade {
   private final TheaterService theaterService;
+  private final UserService userService;
 
   @Override
   public TheaterDTO findTheaterById(Long id) {
@@ -72,6 +77,53 @@ public class TheaterFacadeImpl implements TheaterFacade {
     var isMissFingerFoodData =
         request.getFingerFoodDTOS() == null || request.getFingerFoodDTOS().isEmpty();
     if (!isMissFingerFoodData) this.addFingerFoodIntoTheater(request.getFingerFoodDTOS(), theater);
+
+    this.theaterService.save(theater);
+    if (!principal.isAdmin()) {
+      var addRoleRequest = AddRoleRequest.builder().roleEnums(RoleEnums.ADMIN).build();
+      userService.addRole(principal.getId(), addRoleRequest);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void addFingerFood(AddFingerFoodRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var theater =
+        theaterService
+            .findTheaterByDirectorIdAndTheaterId(principal.getId(), request.getTheaterId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND));
+
+    this.addFingerFoodIntoTheater(request.getFingerFoodDTOS(), theater);
+    this.theaterService.save(theater);
+  }
+
+  @Override
+  public void updateTheater(UpsertTheaterRequest request) {
+    var isMissingLocation =
+        request.getLocationDTO() == null
+            || request.getLocationDTO().getLatitude() == null
+            || request.getLocationDTO().getLongitude() == null;
+    if (isMissingLocation) throw new EntityNotFoundException(ErrorCode.LOCATION_INVALID);
+
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var theater =
+        this.theaterService
+            .findTheaterByDirectorIdAndTheaterId(principal.getId(), request.getId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND));
+
+    this.addLocationIntoTheater(request.getLocationDTO(), theater);
+
+    theater.removeAllRooms();
+    this.addRoomsIntoTheater(request.getRoomDTOS(), theater);
+
+    theater.removeAllFingerFoods();
+    this.addFingerFoodIntoTheater(request.getFingerFoodDTOS(), theater);
+
+    theater.removeAllTheaterAssets();
+    this.addTheaterAssets(request.getTheaterAssetDTOS(), theater);
 
     this.theaterService.save(theater);
   }
