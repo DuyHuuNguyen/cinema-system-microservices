@@ -3,6 +3,7 @@ package com.james.scheduleservice.controller;
 import com.james.scheduleservice.dto.TheaterDTO;
 import com.james.scheduleservice.facade.TheaterFacade;
 import com.james.scheduleservice.response.BaseResponse;
+import com.james.scheduleservice.response.TheaterDetailResponse;
 import com.james.scheduleservice.resquest.AddFingerFoodRequest;
 import com.james.scheduleservice.resquest.UpsertTheaterRequest;
 import com.james.scheduleservice.resquest.ValidAdminTheaterRequest;
@@ -53,6 +54,15 @@ public class TheaterController {
     request.attachTheaterId(id);
     this.theaterFacade.addFingerFood(request);
     return BaseResponse.ok();
+  }
+
+  @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Theater APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<TheaterDetailResponse> findDetailTheaterById(@PathVariable Long id) {
+    return this.theaterFacade.findDetailTheaterById(id);
   }
 
   @Hidden

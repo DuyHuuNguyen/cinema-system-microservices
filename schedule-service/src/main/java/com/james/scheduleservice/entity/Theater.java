@@ -97,4 +97,8 @@ public class Theater extends BaseEntity {
   public void removeAllFingerFoods() {
     this.fingerFoods.clear();
   }
+
+  public void changeTheaterName(String theaterName) {
+    this.theaterName = theaterName;
+  }
 }

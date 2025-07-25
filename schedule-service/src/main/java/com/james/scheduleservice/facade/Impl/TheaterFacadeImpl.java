@@ -7,10 +7,13 @@ import com.james.scheduleservice.enums.ErrorCode;
 import com.james.scheduleservice.enums.RoleEnums;
 import com.james.scheduleservice.exception.EntityNotFoundException;
 import com.james.scheduleservice.facade.TheaterFacade;
+import com.james.scheduleservice.response.BaseResponse;
+import com.james.scheduleservice.response.TheaterDetailResponse;
 import com.james.scheduleservice.resquest.AddFingerFoodRequest;
 import com.james.scheduleservice.resquest.AddRoleRequest;
 import com.james.scheduleservice.resquest.UpsertTheaterRequest;
 import com.james.scheduleservice.resquest.ValidAdminTheaterRequest;
+import com.james.scheduleservice.service.TheaterRateService;
 import com.james.scheduleservice.service.TheaterService;
 import com.james.scheduleservice.service.UserService;
 import java.util.List;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TheaterFacadeImpl implements TheaterFacade {
   private final TheaterService theaterService;
   private final UserService userService;
+  private final TheaterRateService theaterRateService;
 
   @Override
   public TheaterDTO findTheaterById(Long id) {
@@ -126,6 +130,32 @@ public class TheaterFacadeImpl implements TheaterFacade {
     this.addTheaterAssets(request.getTheaterAssetDTOS(), theater);
 
     this.theaterService.save(theater);
+  }
+
+  @Override
+  public BaseResponse<TheaterDetailResponse> findDetailTheaterById(Long id) {
+    var theater =
+        this.theaterService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND));
+    var averageStarTheater = this.theaterRateService.getAverageStarByTheaterId(id);
+    var theaterDetailResponse =
+        TheaterDetailResponse.builder()
+            .theaterName(theater.getTheaterName())
+            .description(theater.getDescription())
+            .locationDTO(theater.getLocationDTO())
+            .theaterAssetDTOS(
+                theater.getTheaterAssets().stream()
+                    .map(
+                        theaterAsset ->
+                            AssetDTO.builder()
+                                .mediaKey(theaterAsset.getMediaKey())
+                                .mediaType(theaterAsset.getMediaType())
+                                .build())
+                    .toList())
+            .averageStars(averageStarTheater)
+            .build();
+    return BaseResponse.build(theaterDetailResponse, true);
   }
 
   public void addLocationIntoTheater(LocationDTO locationDTO, Theater theater) {
