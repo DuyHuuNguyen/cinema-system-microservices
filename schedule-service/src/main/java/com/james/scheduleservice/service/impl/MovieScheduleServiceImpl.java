@@ -16,4 +16,9 @@ public class MovieScheduleServiceImpl implements MovieScheduleService {
   public Optional<MovieSchedule> findById(Long id) {
     return movieScheduleRepository.findById(id);
   }
+
+  @Override
+  public void save(MovieSchedule movieSchedule) {
+    this.movieScheduleRepository.save(movieSchedule);
+  }
 }

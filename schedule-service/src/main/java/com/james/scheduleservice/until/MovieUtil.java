@@ -1,4 +1,4 @@
-package com.james.movieservice.response;
+package com.james.scheduleservice.until;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,14 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
-public class MovieResponse {
+public class MovieUtil {
   private Long id;
-  private String title;
+  private String name;
+  private String firstImage;
   private Long duration;
-  private String language;
-  private String poster;
-  private Long theaterId;
 }

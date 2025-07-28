@@ -5,6 +5,7 @@ import com.james.scheduleservice.facade.TheaterFacade;
 import com.james.scheduleservice.response.BaseResponse;
 import com.james.scheduleservice.response.PaginationResponse;
 import com.james.scheduleservice.response.TheaterDetailResponse;
+import com.james.scheduleservice.response.TheaterResponse;
 import com.james.scheduleservice.resquest.AddFingerFoodRequest;
 import com.james.scheduleservice.resquest.TheaterCriteria;
 import com.james.scheduleservice.resquest.UpsertTheaterRequest;
@@ -73,7 +74,7 @@ public class TheaterController {
   @Operation(tags = {"Theater APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
-  public BaseResponse<PaginationResponse<TheaterDetailResponse>> findByFilter(
+  public BaseResponse<PaginationResponse<TheaterResponse>> findByFilter(
       @Nullable TheaterCriteria criteria) {
     return this.theaterFacade.findByFilter(criteria);
   }

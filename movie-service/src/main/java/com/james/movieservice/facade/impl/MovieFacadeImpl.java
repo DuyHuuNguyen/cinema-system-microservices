@@ -15,6 +15,7 @@ import com.james.movieservice.resquest.*;
 import com.james.movieservice.service.*;
 import com.james.movieservice.specification.MovieRateSpecification;
 import com.james.movieservice.specification.MovieSpecification;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -279,5 +280,22 @@ public class MovieFacadeImpl implements MovieFacade {
     rate.updateInfo(updateRateDTO);
 
     this.movieRateService.save(rate);
+  }
+
+  @Override
+  public List<MovieIdAndDurationResponse> findMovieByIds(Long theaterId, List<Long> movieIds) {
+    List<MovieIdAndDurationResponse> movieIdAndDurationResponses = new ArrayList<>();
+    for (var id : movieIds) {
+      var movie = this.movieService.findMovieByTheaterIdAndMovieId(theaterId, id).orElse(null);
+      if (movie == null) return null;
+      movieIdAndDurationResponses.add(
+          MovieIdAndDurationResponse.builder()
+              .id(movie.getId())
+              .name(movie.getTitle())
+              .firstImage(movie.getPoster())
+              .duration(movie.getDuration())
+              .build());
+    }
+    return movieIdAndDurationResponses;
   }
 }

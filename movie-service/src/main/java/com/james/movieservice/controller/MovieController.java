@@ -3,8 +3,10 @@ package com.james.movieservice.controller;
 import com.james.movieservice.facade.MovieFacade;
 import com.james.movieservice.response.*;
 import com.james.movieservice.resquest.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.Nullable;
+import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -81,5 +83,12 @@ public class MovieController {
   public BaseResponse<Void> updateMovieRate(@RequestBody UpdateRateMovieRequest request) {
     this.movieFacade.updateRateMovie(request);
     return BaseResponse.ok();
+  }
+
+  @Hidden
+  @GetMapping(value = "/internal", headers = "secret-key=schedule-service")
+  public List<MovieIdAndDurationResponse> findMovieIdByIds(
+      @RequestParam Long theaterId, @RequestParam List<Long> movieIds) {
+    return this.movieFacade.findMovieByIds(theaterId, movieIds);
   }
 }

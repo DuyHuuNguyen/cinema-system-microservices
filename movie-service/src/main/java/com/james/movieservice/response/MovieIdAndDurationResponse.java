@@ -5,15 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
-public class MovieResponse {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class MovieIdAndDurationResponse {
   private Long id;
-  private String title;
+  private String name;
+  private String firstImage;
   private Long duration;
-  private String language;
-  private String poster;
-  private Long theaterId;
 }
