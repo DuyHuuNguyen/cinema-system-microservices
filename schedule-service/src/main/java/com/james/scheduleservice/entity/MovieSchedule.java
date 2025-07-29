@@ -27,11 +27,11 @@ public class MovieSchedule extends BaseEntity {
   @Column(name = "movie_id", nullable = false)
   private Long movieId;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "theater_id", nullable = false)
   private Theater theater;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "room_id", nullable = false)
   private Room room;
 

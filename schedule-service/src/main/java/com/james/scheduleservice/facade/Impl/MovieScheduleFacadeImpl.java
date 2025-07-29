@@ -118,6 +118,25 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
         DoScheduleResponse.builder().allocateScreeningDTOS(allocateScreeningDTOS).build(), true);
   }
 
+  @Override
+  @Transactional
+  public void deleteScheduleById(Long id, Long theaterId) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var theater =
+        this.theaterService
+            .findById(theaterId)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND));
+    var isValidAdminTheater = theater.getDirectorId().equals(principal.getId());
+    if (!isValidAdminTheater) throw new PermissionDeniedException(ErrorCode.NOT_ADMIN);
+
+    var movieSchedule =
+        this.movieScheduleService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND));
+    this.movieScheduleService.remove(movieSchedule);
+  }
+
   private void saveMovieSchedule(List<MovieSchedule> movieSchedules) {
     movieSchedules.stream().forEach(movieScheduleService::save);
   }

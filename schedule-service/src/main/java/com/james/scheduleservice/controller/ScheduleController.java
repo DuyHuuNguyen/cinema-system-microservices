@@ -30,6 +30,17 @@ public class ScheduleController {
     return this.scheduleFacade.doSchedule(request);
   }
 
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Schedule APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public BaseResponse<Void> deleteScheduleById(
+      @PathVariable Long id, @RequestParam Long theaterId) {
+    this.scheduleFacade.deleteScheduleById(id, theaterId);
+    return BaseResponse.ok();
+  }
+
   @Hidden
   @GetMapping(value = "/internal/{id}", headers = "secret-key=user-service001")
   @ResponseStatus(HttpStatus.OK)

@@ -11,4 +11,6 @@ public interface MovieScheduleService {
 
   List<MovieSchedule> findMovieSchedulesByDateAndTheaterIdAndRoomId(
       Long createdAt, Long roomId, Long theaterId);
+
+  void remove(MovieSchedule movieSchedule);
 }

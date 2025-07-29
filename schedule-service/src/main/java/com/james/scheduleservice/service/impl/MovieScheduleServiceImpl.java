@@ -31,4 +31,9 @@ public class MovieScheduleServiceImpl implements MovieScheduleService {
     return this.movieScheduleRepository.findMovieSchedulesByDateAndTheaterIdAndRoomId(
         createdAt, roomId, theaterId);
   }
+
+  @Override
+  public void remove(MovieSchedule movieSchedule) {
+    this.movieScheduleRepository.delete(movieSchedule);
+  }
 }

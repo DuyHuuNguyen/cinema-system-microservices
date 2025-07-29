@@ -9,4 +9,6 @@ public interface MovieScheduleFacade {
   ScheduleDTO findScheduleById(Long id);
 
   BaseResponse<DoScheduleResponse> doSchedule(DoScheduleRequest request);
+
+  void deleteScheduleById(Long id, Long theaterId);
 }
