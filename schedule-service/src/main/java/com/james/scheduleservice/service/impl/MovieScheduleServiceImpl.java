@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -35,5 +38,10 @@ public class MovieScheduleServiceImpl implements MovieScheduleService {
   @Override
   public void remove(MovieSchedule movieSchedule) {
     this.movieScheduleRepository.delete(movieSchedule);
+  }
+
+  @Override
+  public Page<MovieSchedule> findAll(Specification<MovieSchedule> specification, Pageable pageable) {
+    return this.movieScheduleRepository.findAll(specification,pageable);
   }
 }

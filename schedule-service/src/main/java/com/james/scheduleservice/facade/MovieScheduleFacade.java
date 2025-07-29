@@ -1,10 +1,9 @@
 package com.james.scheduleservice.facade;
 
 import com.james.scheduleservice.dto.ScheduleDTO;
-import com.james.scheduleservice.response.BaseResponse;
-import com.james.scheduleservice.response.DoScheduleResponse;
-import com.james.scheduleservice.response.ScheduleDetailResponse;
+import com.james.scheduleservice.response.*;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
+import com.james.scheduleservice.resquest.ScheduleCriteria;
 
 public interface MovieScheduleFacade {
   ScheduleDTO findScheduleById(Long id);
@@ -14,4 +13,6 @@ public interface MovieScheduleFacade {
   void deleteScheduleById(Long id, Long theaterId);
 
   BaseResponse<ScheduleDetailResponse> findDetailScheduleById(Long id);
+
+  BaseResponse<PaginationResponse<ScheduleResponse>> findByFilter(ScheduleCriteria criteria);
 }

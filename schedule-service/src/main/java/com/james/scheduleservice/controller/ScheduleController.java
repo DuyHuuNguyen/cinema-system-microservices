@@ -2,13 +2,14 @@ package com.james.scheduleservice.controller;
 
 import com.james.scheduleservice.dto.ScheduleDTO;
 import com.james.scheduleservice.facade.MovieScheduleFacade;
-import com.james.scheduleservice.response.BaseResponse;
-import com.james.scheduleservice.response.DoScheduleResponse;
-import com.james.scheduleservice.response.ScheduleDetailResponse;
+import com.james.scheduleservice.response.*;
+import com.james.scheduleservice.resquest.BaseCriteria;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
+import com.james.scheduleservice.resquest.ScheduleCriteria;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,6 +50,15 @@ public class ScheduleController {
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<ScheduleDetailResponse> findDetailScheduleById(@PathVariable Long id) {
     return this.scheduleFacade.findDetailScheduleById(id);
+  }
+
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Schedule APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<ScheduleResponse>> findByFilter(@NonNull ScheduleCriteria criteria) {
+    return this.scheduleFacade.findByFilter(criteria);
   }
 
   @Hidden

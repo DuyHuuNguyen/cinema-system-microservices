@@ -71,4 +71,8 @@ public class MovieSchedule extends BaseEntity {
   public LocationDTO getTheaterLocationDTO() {
     return this.theater.getLocationDTO();
   }
+
+  public String getRoomName() {
+    return this.room.getRoomName();
+  }
 }

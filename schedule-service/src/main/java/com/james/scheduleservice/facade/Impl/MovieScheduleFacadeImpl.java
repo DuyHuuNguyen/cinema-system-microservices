@@ -10,14 +10,14 @@ import com.james.scheduleservice.exception.EntityNotFoundException;
 import com.james.scheduleservice.exception.PermissionDeniedException;
 import com.james.scheduleservice.exception.ScheduleIsDoneException;
 import com.james.scheduleservice.facade.MovieScheduleFacade;
-import com.james.scheduleservice.response.BaseResponse;
-import com.james.scheduleservice.response.DoScheduleResponse;
-import com.james.scheduleservice.response.ScheduleDetailResponse;
+import com.james.scheduleservice.response.*;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
+import com.james.scheduleservice.resquest.ScheduleCriteria;
 import com.james.scheduleservice.service.CacheService;
 import com.james.scheduleservice.service.MovieScheduleService;
 import com.james.scheduleservice.service.MovieService;
 import com.james.scheduleservice.service.TheaterService;
+import com.james.scheduleservice.specification.MovieScheduleSpecification;
 import com.james.scheduleservice.until.MovieUtil;
 import com.james.scheduleservice.until.TimeConverter;
 import com.james.scheduleservice.until.TimeLineUtil;
@@ -26,6 +26,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -160,6 +163,36 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
             .build();
 
     return BaseResponse.build(scheduleDetailResponse, true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<ScheduleResponse>> findByFilter(ScheduleCriteria criteria) {
+    var sortByProperties =Sort.by("startedAt");
+    var pageable = PageRequest.of(criteria.getCurrentPage(),criteria.getPageSize(),sortByProperties );
+    Specification<MovieSchedule> specification = MovieScheduleSpecification
+            .hasStartedAt(criteria.getStartedAt())
+            .and(MovieScheduleSpecification.hasTheaterId(criteria.getTheaterId()))
+            .and(MovieScheduleSpecification.hasMovieId(criteria.getMovieId()));
+
+    var movieSchedulePage = this.movieScheduleService.findAll(specification,pageable);
+
+    return BaseResponse.build(
+            PaginationResponse.<ScheduleResponse>builder()
+                    .data(movieSchedulePage.get().map(movieSchedule -> ScheduleResponse.builder()
+                                    .id(movieSchedule.getId())
+                                    .roomId(movieSchedule.getRoomId())
+                                    .roomName(movieSchedule.getRoomName())
+                                    .startedAt(movieSchedule.getStartedAt())
+                                    .finishedAt(movieSchedule.getFinishedAt())
+                                    .build())
+                            .toList())
+                    .currentPage(criteria.getCurrentPage())
+                    .totalElements(movieSchedulePage.getNumberOfElements())
+                    .totalPages(movieSchedulePage.getTotalPages())
+                    .build()
+            ,
+            true
+    ) ;
   }
 
   private void saveMovieSchedule(List<MovieSchedule> movieSchedules) {
