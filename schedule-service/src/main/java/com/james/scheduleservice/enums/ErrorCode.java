@@ -12,7 +12,9 @@ public enum ErrorCode {
   LOCATION_INVALID("3334", "Location invalid"),
   NOT_ADMIN("3335", "User is not admin theater"),
   MOVIE_NOT_FOUND("3336", "Movie not found"),
-  ROOM_NOT_FOUND("3336", "Movie not found");
+  ROOM_NOT_FOUND("3336", "Movie not found"),
+  NOT_CREATE_SCHEDULE_IN_THE_PAST("3337", "Not create schedule in the past"),
+  SCHEDULED("3338", "The schedule is done");
   private final String code;
   private final String message;
 }

@@ -21,7 +21,9 @@ public class ScheduleController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Schedule APIs"})
+  @Operation(
+      tags = {"Schedule APIs"},
+      summary = "You can not create schedule in now and in the past.")
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public BaseResponse<DoScheduleResponse> doSchedule(@RequestBody DoScheduleRequest request) {

@@ -3,10 +3,13 @@ package com.james.scheduleservice.service.impl;
 import com.james.scheduleservice.entity.MovieSchedule;
 import com.james.scheduleservice.repository.MovieScheduleRepository;
 import com.james.scheduleservice.service.MovieScheduleService;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MovieScheduleServiceImpl implements MovieScheduleService {
@@ -20,5 +23,12 @@ public class MovieScheduleServiceImpl implements MovieScheduleService {
   @Override
   public void save(MovieSchedule movieSchedule) {
     this.movieScheduleRepository.save(movieSchedule);
+  }
+
+  @Override
+  public List<MovieSchedule> findMovieSchedulesByDateAndTheaterIdAndRoomId(
+      Long createdAt, Long roomId, Long theaterId) {
+    return this.movieScheduleRepository.findMovieSchedulesByDateAndTheaterIdAndRoomId(
+        createdAt, roomId, theaterId);
   }
 }

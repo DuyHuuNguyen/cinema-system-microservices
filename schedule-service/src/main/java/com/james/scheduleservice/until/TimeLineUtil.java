@@ -29,6 +29,7 @@ public class TimeLineUtil {
   private Long startMinute;
   private Long endMinute;
   private Long restMinute;
+  private Long middleSection;
   private Queue<Room> rooms;
   private List<MovieUtil> movies;
 
@@ -88,6 +89,10 @@ public class TimeLineUtil {
     this.theater = theater;
   }
 
+  public void addMiddleSection(Long middleSection) {
+    this.middleSection = middleSection;
+  }
+
   public List<AllocateScreeningDTO> buildAllocateScreeningDTOS() {
     this.movieSchedules = new ArrayList<>();
     this.allocateScreeningDTOS = new ArrayList<>();
@@ -129,6 +134,7 @@ public class TimeLineUtil {
               .build());
 
       start += movie.getDuration();
+      start += this.middleSection;
     }
 
     return allocateScreeningDTOS;

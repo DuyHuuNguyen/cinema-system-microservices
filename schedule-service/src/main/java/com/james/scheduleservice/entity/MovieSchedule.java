@@ -1,7 +1,9 @@
 package com.james.scheduleservice.entity;
 
 import com.james.scheduleservice.dto.LocationDTO;
+import com.james.scheduleservice.until.TimeConverter;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,5 +45,17 @@ public class MovieSchedule extends BaseEntity {
 
   public void addMovieId(Long id) {
     this.movieId = id;
+  }
+
+  public LocalDateTime getStartedAtToLocalDateTime() {
+    return TimeConverter.convertStringToDateTime(this.startedAt);
+  }
+
+  public LocalDateTime getFinishedAtToLocalDateTime() {
+    return TimeConverter.convertStringToDateTime(this.finishedAt);
+  }
+
+  public Long getRoomId() {
+    return this.room.getId();
   }
 }
