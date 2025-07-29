@@ -3,6 +3,7 @@ package com.james.scheduleservice.facade;
 import com.james.scheduleservice.dto.ScheduleDTO;
 import com.james.scheduleservice.response.BaseResponse;
 import com.james.scheduleservice.response.DoScheduleResponse;
+import com.james.scheduleservice.response.ScheduleDetailResponse;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 
 public interface MovieScheduleFacade {
@@ -11,4 +12,6 @@ public interface MovieScheduleFacade {
   BaseResponse<DoScheduleResponse> doSchedule(DoScheduleRequest request);
 
   void deleteScheduleById(Long id, Long theaterId);
+
+  BaseResponse<ScheduleDetailResponse> findDetailScheduleById(Long id);
 }

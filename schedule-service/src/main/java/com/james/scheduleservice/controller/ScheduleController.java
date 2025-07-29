@@ -4,6 +4,7 @@ import com.james.scheduleservice.dto.ScheduleDTO;
 import com.james.scheduleservice.facade.MovieScheduleFacade;
 import com.james.scheduleservice.response.BaseResponse;
 import com.james.scheduleservice.response.DoScheduleResponse;
+import com.james.scheduleservice.response.ScheduleDetailResponse;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,6 +40,15 @@ public class ScheduleController {
       @PathVariable Long id, @RequestParam Long theaterId) {
     this.scheduleFacade.deleteScheduleById(id, theaterId);
     return BaseResponse.ok();
+  }
+
+  @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Schedule APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<ScheduleDetailResponse> findDetailScheduleById(@PathVariable Long id) {
+    return this.scheduleFacade.findDetailScheduleById(id);
   }
 
   @Hidden

@@ -1,6 +1,7 @@
 package com.james.scheduleservice.entity;
 
 import com.james.scheduleservice.dto.LocationDTO;
+import com.james.scheduleservice.dto.RoomDTO;
 import com.james.scheduleservice.until.TimeConverter;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -57,5 +58,17 @@ public class MovieSchedule extends BaseEntity {
 
   public Long getRoomId() {
     return this.room.getId();
+  }
+
+  public RoomDTO getRoomDTO() {
+    return room.getRoomDTO();
+  }
+
+  private String theaterName() {
+    return theater.getTheaterName();
+  }
+
+  public LocationDTO getTheaterLocationDTO() {
+    return this.theater.getLocationDTO();
   }
 }

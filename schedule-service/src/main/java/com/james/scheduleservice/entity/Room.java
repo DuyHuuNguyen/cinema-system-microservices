@@ -1,5 +1,6 @@
 package com.james.scheduleservice.entity;
 
+import com.james.scheduleservice.dto.RoomDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,5 +32,14 @@ public class Room extends BaseEntity {
 
   public void addTheater(Theater theater) {
     this.theater = theater;
+  }
+
+  public RoomDTO getRoomDTO() {
+    return RoomDTO.builder()
+        .name(roomName)
+        .monitorHeight(monitorHeight)
+        .monitorWidth(monitorWidth)
+        .totalSeatNumber(totalSeatNumber)
+        .build();
   }
 }

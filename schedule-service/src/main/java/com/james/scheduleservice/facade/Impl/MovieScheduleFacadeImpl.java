@@ -12,6 +12,7 @@ import com.james.scheduleservice.exception.ScheduleIsDoneException;
 import com.james.scheduleservice.facade.MovieScheduleFacade;
 import com.james.scheduleservice.response.BaseResponse;
 import com.james.scheduleservice.response.DoScheduleResponse;
+import com.james.scheduleservice.response.ScheduleDetailResponse;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 import com.james.scheduleservice.service.CacheService;
 import com.james.scheduleservice.service.MovieScheduleService;
@@ -135,6 +136,30 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND));
     this.movieScheduleService.remove(movieSchedule);
+  }
+
+  @Override
+  public BaseResponse<ScheduleDetailResponse> findDetailScheduleById(Long id) {
+    var movieSchedule =
+        this.movieScheduleService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND));
+    var movieDTO = movieService.findMovieById(movieSchedule.getMovieId());
+
+    var scheduleDetailResponse =
+        ScheduleDetailResponse.builder()
+            .startedAt(movieSchedule.getStartedAt())
+            .finishedAt(movieSchedule.getFinishedAt())
+            .movieName(movieDTO.getTitle())
+            .moviePoster(movieDTO.getPoster())
+            .theaterId(movieSchedule.getMovieId())
+            .theaterLocation(movieSchedule.getTheaterLocationDTO())
+            .theaterName(movieSchedule.getTheaterName())
+            .roomId(movieSchedule.getRoomId())
+            .roomDTO(movieSchedule.getRoomDTO())
+            .build();
+
+    return BaseResponse.build(scheduleDetailResponse, true);
   }
 
   private void saveMovieSchedule(List<MovieSchedule> movieSchedules) {
