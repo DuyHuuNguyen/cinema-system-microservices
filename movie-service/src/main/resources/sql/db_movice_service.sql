@@ -15,7 +15,7 @@ CREATE TABLE "movies"
     "id"          BIGSERIAL PRIMARY KEY NOT NULL,
     "title"       varchar               NOT NULL,
     "description" varchar               NOT NULL,
-    "duration"    varchar               NOT NULL,
+    "duration"    bigint                NOT NULL,
     "language"    varchar(50)           NOT NULL,
     "released_at" bigint                NOT NULL,
     "poster_url"  varchar(255)          NOT NULL,

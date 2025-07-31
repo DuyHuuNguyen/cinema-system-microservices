@@ -15,6 +15,6 @@ public interface ScheduleService {
       headers = "secret-key=movie-service")
   boolean validAdminTheater(@RequestBody ValidAdminTheaterRequest request);
 
-  @GetMapping(value = "/api/schedules/internal/theater/{id}", headers = "secret-key=movie-service")
+  @GetMapping(value = "/api/theaters/internal/{id}", headers = "secret-key=movie-service")
   TheaterResponse findById(@PathVariable(name = "id") Long theaterId);
 }

@@ -1,6 +1,6 @@
 package com.james.scheduleservice.entity;
 
-import com.james.movieservice.enums.MediaType;
+import com.james.scheduleservice.enums.MediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,4 +25,8 @@ public class FingerFoodAsset extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "finger_food_id")
   private FingerFood fingerFood;
+
+  public void addFingerFood(FingerFood fingerFood) {
+    this.fingerFood = fingerFood;
+  }
 }

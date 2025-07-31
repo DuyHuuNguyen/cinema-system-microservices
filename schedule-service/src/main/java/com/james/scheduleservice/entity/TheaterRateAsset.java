@@ -1,6 +1,6 @@
 package com.james.scheduleservice.entity;
 
-import com.james.movieservice.enums.MediaType;
+import com.james.scheduleservice.enums.MediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

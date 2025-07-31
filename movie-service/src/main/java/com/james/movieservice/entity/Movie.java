@@ -23,7 +23,7 @@ public class Movie extends BaseEntity {
   private String description;
 
   @Column(name = "duration", nullable = false)
-  private String duration;
+  private Long duration;
 
   @Column(name = "language", nullable = false)
   private String language;

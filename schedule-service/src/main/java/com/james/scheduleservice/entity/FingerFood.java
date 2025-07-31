@@ -1,5 +1,6 @@
 package com.james.scheduleservice.entity;
 
+import com.james.scheduleservice.enums.FoodType;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,8 @@ public class FingerFood extends BaseEntity {
   private String foodName;
 
   @Column(name = "food_type", nullable = false)
-  private String foodType;
+  @Enumerated(EnumType.STRING)
+  private FoodType foodType;
 
   @Column(name = "price", nullable = false)
   private Float price;
@@ -29,7 +31,18 @@ public class FingerFood extends BaseEntity {
   @JoinColumn(name = "theater_id")
   private Theater theater;
 
-  @OneToMany(mappedBy = "fingerFood")
+  @OneToMany(
+      mappedBy = "fingerFood",
+      cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @Builder.Default
   private List<FingerFoodAsset> fingerFoodAssets = new ArrayList<>();
+
+  public void addTheater(Theater theater) {
+    this.theater = theater;
+  }
+
+  public void addAsset(FingerFoodAsset fingerFoodAsset) {
+    this.fingerFoodAssets.add(fingerFoodAsset);
+    fingerFoodAsset.addFingerFood(this);
+  }
 }

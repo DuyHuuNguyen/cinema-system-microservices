@@ -48,4 +48,14 @@ public class SecurityUserDetails implements UserDetails {
   public String getUsername() {
     return this.email;
   }
+
+  public Boolean isAdmin() {
+    return this.getAuthorities().stream()
+        .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+  }
+
+  public Boolean isEmployee() {
+    return this.getAuthorities().stream()
+        .anyMatch(authority -> authority.getAuthority().equals("ROLE_EMPLOYEE"));
+  }
 }
