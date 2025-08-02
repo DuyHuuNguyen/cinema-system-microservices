@@ -1,14 +1,8 @@
 package com.james.scheduleservice.facade;
 
 import com.james.scheduleservice.dto.TheaterDTO;
-import com.james.scheduleservice.response.BaseResponse;
-import com.james.scheduleservice.response.PaginationResponse;
-import com.james.scheduleservice.response.TheaterDetailResponse;
-import com.james.scheduleservice.response.TheaterResponse;
-import com.james.scheduleservice.resquest.AddFingerFoodRequest;
-import com.james.scheduleservice.resquest.TheaterCriteria;
-import com.james.scheduleservice.resquest.UpsertTheaterRequest;
-import com.james.scheduleservice.resquest.ValidAdminTheaterRequest;
+import com.james.scheduleservice.response.*;
+import com.james.scheduleservice.resquest.*;
 
 public interface TheaterFacade {
   TheaterDTO findTheaterById(Long id);
@@ -24,4 +18,6 @@ public interface TheaterFacade {
   BaseResponse<TheaterDetailResponse> findDetailTheaterById(Long id);
 
   BaseResponse<PaginationResponse<TheaterResponse>> findByFilter(TheaterCriteria criteria);
+
+  BaseResponse<PaginationResponse<RoomResponse>> findRoomByFilter(RoomCriteria criteria);
 }

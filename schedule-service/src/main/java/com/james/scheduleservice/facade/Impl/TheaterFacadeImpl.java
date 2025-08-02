@@ -7,15 +7,10 @@ import com.james.scheduleservice.enums.ErrorCode;
 import com.james.scheduleservice.enums.RoleEnums;
 import com.james.scheduleservice.exception.EntityNotFoundException;
 import com.james.scheduleservice.facade.TheaterFacade;
-import com.james.scheduleservice.response.BaseResponse;
-import com.james.scheduleservice.response.PaginationResponse;
-import com.james.scheduleservice.response.TheaterDetailResponse;
-import com.james.scheduleservice.response.TheaterResponse;
+import com.james.scheduleservice.response.*;
 import com.james.scheduleservice.resquest.*;
-import com.james.scheduleservice.service.NotificationService;
-import com.james.scheduleservice.service.TheaterRateService;
-import com.james.scheduleservice.service.TheaterService;
-import com.james.scheduleservice.service.UserService;
+import com.james.scheduleservice.service.*;
+import com.james.scheduleservice.specification.RoomSpecification;
 import com.james.scheduleservice.specification.TheaterSpecification;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +28,7 @@ public class TheaterFacadeImpl implements TheaterFacade {
   private final UserService userService;
   private final TheaterRateService theaterRateService;
   private final NotificationService notificationService;
+  private final RoomService roomService;
 
   @Override
   public TheaterDTO findTheaterById(Long id) {
@@ -200,6 +196,35 @@ public class TheaterFacadeImpl implements TheaterFacade {
             .build();
 
     return BaseResponse.build(paginationResponse, true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<RoomResponse>> findRoomByFilter(RoomCriteria criteria) {
+    Specification<Room> specification = RoomSpecification.hasTheaterId(criteria.getTheaterId());
+
+    Pageable pageable = PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize());
+    var roomPages = this.roomService.getAllRooms(specification, pageable);
+    var roomResponse =
+        PaginationResponse.<RoomResponse>builder()
+            .data(
+                roomPages
+                    .get()
+                    .map(
+                        room ->
+                            RoomResponse.builder()
+                                .Id(room.getId())
+                                .roomName(room.getRoomName())
+                                .monitorHeight(room.getMonitorHeight())
+                                .monitorWidth(room.getMonitorWidth())
+                                .totalSeatNumber(room.getTotalSeatNumber())
+                                .theaterId(room.getTheaterId())
+                                .build())
+                    .toList())
+            .currentPage(criteria.getCurrentPage())
+            .totalElements(roomPages.getNumberOfElements())
+            .totalPages(roomPages.getTotalPages())
+            .build();
+    return BaseResponse.build(null, true);
   }
 
   public void addLocationIntoTheater(LocationDTO locationDTO, Theater theater) {

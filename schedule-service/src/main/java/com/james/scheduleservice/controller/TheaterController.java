@@ -2,17 +2,12 @@ package com.james.scheduleservice.controller;
 
 import com.james.scheduleservice.dto.TheaterDTO;
 import com.james.scheduleservice.facade.TheaterFacade;
-import com.james.scheduleservice.response.BaseResponse;
-import com.james.scheduleservice.response.PaginationResponse;
-import com.james.scheduleservice.response.TheaterDetailResponse;
-import com.james.scheduleservice.response.TheaterResponse;
-import com.james.scheduleservice.resquest.AddFingerFoodRequest;
-import com.james.scheduleservice.resquest.TheaterCriteria;
-import com.james.scheduleservice.resquest.UpsertTheaterRequest;
-import com.james.scheduleservice.resquest.ValidAdminTheaterRequest;
+import com.james.scheduleservice.response.*;
+import com.james.scheduleservice.resquest.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,7 +25,7 @@ public class TheaterController {
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Theater APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public BaseResponse<Void> createTheater(@RequestBody @Validated UpsertTheaterRequest request) {
     this.theaterFacade.createTheater(request);
     return BaseResponse.ok();
@@ -77,6 +72,16 @@ public class TheaterController {
   public BaseResponse<PaginationResponse<TheaterResponse>> findByFilter(
       @Nullable TheaterCriteria criteria) {
     return this.theaterFacade.findByFilter(criteria);
+  }
+
+  @GetMapping("/rooms")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Theater APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<RoomResponse>> findRoomByFilter(
+      @Nonnull RoomCriteria criteria) {
+    return this.theaterFacade.findRoomByFilter(criteria);
   }
 
   @Hidden

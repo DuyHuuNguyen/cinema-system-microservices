@@ -11,10 +11,7 @@ import com.james.scheduleservice.response.*;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 import com.james.scheduleservice.resquest.ScheduleCriteria;
 import com.james.scheduleservice.resquest.UpsertScheduleRequest;
-import com.james.scheduleservice.service.CacheService;
-import com.james.scheduleservice.service.MovieScheduleService;
-import com.james.scheduleservice.service.MovieService;
-import com.james.scheduleservice.service.TheaterService;
+import com.james.scheduleservice.service.*;
 import com.james.scheduleservice.specification.MovieScheduleSpecification;
 import com.james.scheduleservice.until.MovieUtil;
 import com.james.scheduleservice.until.TimeConverter;
@@ -39,6 +36,7 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
   private final TheaterService theaterService;
   private final MovieService movieService;
   private final CacheService cacheService;
+  private final ProducerHandleScheduleService producerHandleScheduleService;
 
   @Override
   public ScheduleDTO findScheduleById(Long id) {
@@ -109,7 +107,8 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
     var movieSchedules = timeLine.getMovieSchedules();
     var isDemoSchedule = request.getIsDemoSchedule();
     if (!isDemoSchedule) {
-      saveMovieSchedule(movieSchedules);
+
+      this.producerHandleScheduleService.saveMovieSchedule(movieSchedules);
 
       var cacheValueSchedule = UUID.randomUUID().toString();
       int timeout = request.getCreatedAt().compareTo(LocalDate.now()) + 2;
@@ -233,10 +232,6 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
       throw new ConflictMovieScheduleException(ErrorCode.CONFLICT_SCHEDULE);
 
     this.movieScheduleService.save(movieSchedule);
-  }
-
-  private void saveMovieSchedule(List<MovieSchedule> movieSchedules) {
-    movieSchedules.stream().forEach(movieScheduleService::save);
   }
 
   private Boolean validateConflictMovieSchedule(

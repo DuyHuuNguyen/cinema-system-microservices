@@ -16,6 +16,11 @@ spring:
     username: postgres
     password: 1111
     driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   jpa:
     show-sql: true
     properties:
@@ -25,3 +30,9 @@ spring:
     type: redis
     redis:
       time-to-live: 600000ms
+---
+rabbitmq:
+  variable:
+    movie-schedule-queue: "QUEUE_HANDLE_MOVIE_SCHEDULE_23130075"
+    movie-schedule-exchange: "EXCHANGE_HANDLE_MOVIE_SCHEDULE_23130075"
+    handle-movie-schedule-routing-key: "ROUTING_KEY_HANDLE_MOVIE_SCHEDULE_23130075"

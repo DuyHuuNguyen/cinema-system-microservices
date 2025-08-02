@@ -42,4 +42,8 @@ public class Room extends BaseEntity {
         .totalSeatNumber(totalSeatNumber)
         .build();
   }
+
+  public Long getTheaterId() {
+    return this.theater.getId();
+  }
 }
