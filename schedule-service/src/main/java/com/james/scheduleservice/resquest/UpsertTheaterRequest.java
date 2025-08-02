@@ -23,7 +23,7 @@ public class UpsertTheaterRequest {
   private List<RoomDTO> roomDTOS;
   private List<FingerFoodDTO> fingerFoodDTOS;
 
-  public void attendId(Long theaterId) {
+  public void attachId(Long theaterId) {
     this.id = theaterId;
   }
 }

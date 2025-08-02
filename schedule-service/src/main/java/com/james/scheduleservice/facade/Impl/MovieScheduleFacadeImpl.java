@@ -5,14 +5,12 @@ import com.james.scheduleservice.dto.ScheduleDTO;
 import com.james.scheduleservice.entity.MovieSchedule;
 import com.james.scheduleservice.enums.ErrorCode;
 import com.james.scheduleservice.enums.ScheduleKeyEnum;
-import com.james.scheduleservice.exception.CreateScheduleInThePastException;
-import com.james.scheduleservice.exception.EntityNotFoundException;
-import com.james.scheduleservice.exception.PermissionDeniedException;
-import com.james.scheduleservice.exception.ScheduleIsDoneException;
+import com.james.scheduleservice.exception.*;
 import com.james.scheduleservice.facade.MovieScheduleFacade;
 import com.james.scheduleservice.response.*;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 import com.james.scheduleservice.resquest.ScheduleCriteria;
+import com.james.scheduleservice.resquest.UpsertScheduleRequest;
 import com.james.scheduleservice.service.CacheService;
 import com.james.scheduleservice.service.MovieScheduleService;
 import com.james.scheduleservice.service.MovieService;
@@ -59,7 +57,7 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
 
   @Override
   @Transactional
-  public BaseResponse<DoScheduleResponse> doSchedule(DoScheduleRequest request) {
+  public BaseResponse<DoScheduleResponse> doSchedules(DoScheduleRequest request) {
     var isValidDayInThePast =
         LocalDate.now().isAfter(request.getCreatedAt())
             || LocalDate.now().isEqual(request.getCreatedAt());
@@ -166,36 +164,113 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
   }
 
   @Override
-  public BaseResponse<PaginationResponse<ScheduleResponse>> findByFilter(ScheduleCriteria criteria) {
-    var sortByProperties =Sort.by("startedAt");
-    var pageable = PageRequest.of(criteria.getCurrentPage(),criteria.getPageSize(),sortByProperties );
-    Specification<MovieSchedule> specification = MovieScheduleSpecification
-            .hasStartedAt(criteria.getStartedAt())
+  public BaseResponse<PaginationResponse<ScheduleResponse>> findByFilter(
+      ScheduleCriteria criteria) {
+    var sortByProperties = Sort.by("startedAt");
+    var pageable =
+        PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize(), sortByProperties);
+    Specification<MovieSchedule> specification =
+        MovieScheduleSpecification.hasStartedAt(criteria.getStartedAt())
             .and(MovieScheduleSpecification.hasTheaterId(criteria.getTheaterId()))
             .and(MovieScheduleSpecification.hasMovieId(criteria.getMovieId()));
 
-    var movieSchedulePage = this.movieScheduleService.findAll(specification,pageable);
+    var movieSchedulePage = this.movieScheduleService.findAll(specification, pageable);
 
     return BaseResponse.build(
-            PaginationResponse.<ScheduleResponse>builder()
-                    .data(movieSchedulePage.get().map(movieSchedule -> ScheduleResponse.builder()
-                                    .id(movieSchedule.getId())
-                                    .roomId(movieSchedule.getRoomId())
-                                    .roomName(movieSchedule.getRoomName())
-                                    .startedAt(movieSchedule.getStartedAt())
-                                    .finishedAt(movieSchedule.getFinishedAt())
-                                    .build())
-                            .toList())
-                    .currentPage(criteria.getCurrentPage())
-                    .totalElements(movieSchedulePage.getNumberOfElements())
-                    .totalPages(movieSchedulePage.getTotalPages())
-                    .build()
-            ,
-            true
-    ) ;
+        PaginationResponse.<ScheduleResponse>builder()
+            .data(
+                movieSchedulePage
+                    .get()
+                    .map(
+                        movieSchedule ->
+                            ScheduleResponse.builder()
+                                .id(movieSchedule.getId())
+                                .roomId(movieSchedule.getRoomId())
+                                .roomName(movieSchedule.getRoomName())
+                                .startedAt(movieSchedule.getStartedAt())
+                                .finishedAt(movieSchedule.getFinishedAt())
+                                .build())
+                    .toList())
+            .currentPage(criteria.getCurrentPage())
+            .totalElements(movieSchedulePage.getNumberOfElements())
+            .totalPages(movieSchedulePage.getTotalPages())
+            .build(),
+        true);
+  }
+
+  @Override
+  @Transactional
+  public void doSchedule(UpsertScheduleRequest request) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var theater =
+        this.theaterService
+            .findById(request.getTheaterId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.THEATER_NOT_FOUND));
+
+    var isValidAdminTheater = theater.getDirectorId().equals(principal.getId());
+    if (!isValidAdminTheater) throw new PermissionDeniedException(ErrorCode.NOT_ADMIN);
+
+    var room =
+        theater.getRooms().stream()
+            .filter(theaterRoom -> theaterRoom.getId().equals(request.getRoomId()))
+            .findFirst()
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ROOM_NOT_FOUND));
+
+    var movieSchedule =
+        MovieSchedule.builder()
+            .movieId(request.getMovieId())
+            .room(room)
+            .startedAt(request.getStartedAt())
+            .finishedAt(request.getFinishedAt())
+            .theater(theater)
+            .build();
+
+    var isValidMovieSchedule =
+        this.validateConflictMovieSchedule(
+            request.getTheaterId(), request.getRoomId(), movieSchedule);
+    if (!isValidMovieSchedule)
+      throw new ConflictMovieScheduleException(ErrorCode.CONFLICT_SCHEDULE);
+
+    this.movieScheduleService.save(movieSchedule);
   }
 
   private void saveMovieSchedule(List<MovieSchedule> movieSchedules) {
     movieSchedules.stream().forEach(movieScheduleService::save);
+  }
+
+  private Boolean validateConflictMovieSchedule(
+      Long theaterId, Long roomId, MovieSchedule movieSchedule) {
+    List<MovieSchedule> movieSchedules =
+        this.movieScheduleService.findMovieSchedulesByDateAndTheaterIdAndRoomId(
+            movieSchedule.getStartedAt(), theaterId, roomId);
+    log.info("data in db {}", movieSchedules);
+    if (movieSchedules == null || movieSchedules.isEmpty()) return false;
+
+    var startedAt = movieSchedule.getStartedAtToLocalDateTime();
+    var finishedAt = movieSchedule.getFinishedAtToLocalDateTime();
+
+    return movieSchedules.stream()
+        .anyMatch(
+            ms -> {
+              var isBetweenOfStartedAt =
+                  ((startedAt.isBefore(ms.getStartedAtToLocalDateTime())
+                          || startedAt.isEqual(ms.getStartedAtToLocalDateTime()))
+                      || (startedAt.isAfter(ms.getFinishedAtToLocalDateTime())
+                          || startedAt.isEqual(ms.getFinishedAtToLocalDateTime())));
+              var isBetweenOfFinishedAt =
+                  ((finishedAt.isBefore(ms.getStartedAtToLocalDateTime())
+                          || finishedAt.isEqual(ms.getStartedAtToLocalDateTime()))
+                      || (finishedAt.isAfter(ms.getFinishedAtToLocalDateTime())
+                          || finishedAt.isEqual(ms.getFinishedAtToLocalDateTime())));
+              log.info(
+                  " {} {} check  {}  {}",
+                  startedAt,
+                  finishedAt,
+                  ms.getStartedAtToLocalDateTime(),
+                  ms.getFinishedAtToLocalDateTime());
+
+              return isBetweenOfStartedAt || isBetweenOfFinishedAt;
+            });
   }
 }

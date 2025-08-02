@@ -43,7 +43,7 @@ public class TheaterController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public BaseResponse<Void> updateTheater(
       @PathVariable Long id, @RequestBody @Validated UpsertTheaterRequest request) {
-    request.attendId(id);
+    request.attachId(id);
     this.theaterFacade.updateTheater(request);
     return BaseResponse.ok();
   }

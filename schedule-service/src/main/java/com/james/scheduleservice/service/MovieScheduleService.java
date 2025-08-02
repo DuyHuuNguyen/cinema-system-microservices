@@ -1,12 +1,11 @@
 package com.james.scheduleservice.service;
 
 import com.james.scheduleservice.entity.MovieSchedule;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface MovieScheduleService {
   Optional<MovieSchedule> findById(Long id);

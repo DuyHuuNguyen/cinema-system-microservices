@@ -3,9 +3,9 @@ package com.james.scheduleservice.controller;
 import com.james.scheduleservice.dto.ScheduleDTO;
 import com.james.scheduleservice.facade.MovieScheduleFacade;
 import com.james.scheduleservice.response.*;
-import com.james.scheduleservice.resquest.BaseCriteria;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 import com.james.scheduleservice.resquest.ScheduleCriteria;
+import com.james.scheduleservice.resquest.UpsertScheduleRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,7 +29,17 @@ public class ScheduleController {
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public BaseResponse<DoScheduleResponse> doSchedule(@RequestBody DoScheduleRequest request) {
-    return this.scheduleFacade.doSchedule(request);
+    return this.scheduleFacade.doSchedules(request);
+  }
+
+  @PostMapping("/mono-schedule")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Schedule APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public BaseResponse<Void> doSchedule(@RequestBody UpsertScheduleRequest request) {
+    this.scheduleFacade.doSchedule(request);
+    return BaseResponse.ok();
   }
 
   @DeleteMapping("/{id}")
@@ -57,7 +67,8 @@ public class ScheduleController {
   @Operation(tags = {"Schedule APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
-  public BaseResponse<PaginationResponse<ScheduleResponse>> findByFilter(@NonNull ScheduleCriteria criteria) {
+  public BaseResponse<PaginationResponse<ScheduleResponse>> findByFilter(
+      @NonNull ScheduleCriteria criteria) {
     return this.scheduleFacade.findByFilter(criteria);
   }
 

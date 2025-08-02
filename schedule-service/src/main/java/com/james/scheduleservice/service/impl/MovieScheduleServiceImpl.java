@@ -41,7 +41,8 @@ public class MovieScheduleServiceImpl implements MovieScheduleService {
   }
 
   @Override
-  public Page<MovieSchedule> findAll(Specification<MovieSchedule> specification, Pageable pageable) {
-    return this.movieScheduleRepository.findAll(specification,pageable);
+  public Page<MovieSchedule> findAll(
+      Specification<MovieSchedule> specification, Pageable pageable) {
+    return this.movieScheduleRepository.findAll(specification, pageable);
   }
 }

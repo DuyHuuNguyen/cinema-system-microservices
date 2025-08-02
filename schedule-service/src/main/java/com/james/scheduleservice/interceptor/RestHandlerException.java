@@ -45,4 +45,13 @@ public class RestHandlerException {
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
         HttpStatus.NOT_FOUND);
   }
+
+  @ExceptionHandler(ConflictMovieScheduleException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleConflictScheduleException(
+      ConflictMovieScheduleException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.NOT_FOUND);
+  }
 }

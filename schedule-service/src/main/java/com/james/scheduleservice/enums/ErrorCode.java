@@ -14,7 +14,8 @@ public enum ErrorCode {
   MOVIE_NOT_FOUND("3336", "Movie not found"),
   ROOM_NOT_FOUND("3336", "Movie not found"),
   NOT_CREATE_SCHEDULE_IN_THE_PAST("3337", "Not create schedule in the past"),
-  SCHEDULED("3338", "The schedule is done");
+  SCHEDULED("3338", "The schedule is done"),
+  CONFLICT_SCHEDULE("3339", "Conflict schedule");
   private final String code;
   private final String message;
 }
