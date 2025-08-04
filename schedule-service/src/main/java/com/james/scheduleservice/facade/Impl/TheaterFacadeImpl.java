@@ -86,7 +86,11 @@ public class TheaterFacadeImpl implements TheaterFacade {
     var newTheater = this.theaterService.saveAndFlush(theater);
     if (!principal.isAdmin()) {
       var addRoleRequest = AddRoleRequest.builder().roleEnums(RoleEnums.ADMIN).build();
-      userService.addRole(principal.getId(), addRoleRequest);
+      try {
+        userService.addRole(principal.getId(), addRoleRequest);
+      } catch (Exception e) {
+        throw new EntityNotFoundException(ErrorCode.ALL_ROLE_fALSE);
+      }
     }
 
     var notificationNewTheaterRequest =

@@ -1,6 +1,7 @@
 package com.james.scheduleservice.facade.Impl;
 
 import com.james.scheduleservice.config.SecurityUserDetails;
+import com.james.scheduleservice.dto.MovieDTO;
 import com.james.scheduleservice.dto.ScheduleDTO;
 import com.james.scheduleservice.entity.MovieSchedule;
 import com.james.scheduleservice.enums.ErrorCode;
@@ -87,15 +88,19 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
                 room ->
                     request.getRoomIds().stream().anyMatch(roomId -> roomId.equals(room.getId())));
 
-    var movieUtils = movieService.findMovieIdByIds(request.getTheaterId(), request.getMovieIds());
-
     var startedAt = TimeConverter.convertStringToDateTime(request.getStartedAt());
     var endedAt = TimeConverter.convertStringToDateTime(request.getEndAt());
 
     var timeLine = TimeLineUtil.build(startedAt, endedAt);
 
     Queue<MovieUtil> movies = new LinkedList<>();
-    movies.addAll(movieUtils);
+
+    try {
+      var movieUtils = movieService.findMovieIdByIds(request.getTheaterId(), request.getMovieIds());
+      movies.addAll(movieUtils);
+    } catch (Exception e) {
+      throw new EntityNotFoundException(ErrorCode.MOVIE_NOT_FOUND);
+    }
     timeLine.addMovies(movies);
     timeLine.addTheater(theater);
     timeLine.addMiddleSection(request.getMiddleSection());
@@ -144,8 +149,12 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
         this.movieScheduleService
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND));
-    var movieDTO = movieService.findMovieById(movieSchedule.getMovieId());
-
+    MovieDTO movieDTO;
+    try {
+      movieDTO = movieService.findMovieById(movieSchedule.getMovieId());
+    } catch (Exception e) {
+      throw new EntityNotFoundException(ErrorCode.MOVIE_NOT_FOUND);
+    }
     var scheduleDetailResponse =
         ScheduleDetailResponse.builder()
             .startedAt(movieSchedule.getStartedAt())
