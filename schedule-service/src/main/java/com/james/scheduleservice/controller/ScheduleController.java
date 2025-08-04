@@ -32,7 +32,7 @@ public class ScheduleController {
     return this.scheduleFacade.doSchedules(request);
   }
 
-  @PostMapping("/mono-schedule")
+  @PostMapping("/schedule")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Schedule APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
