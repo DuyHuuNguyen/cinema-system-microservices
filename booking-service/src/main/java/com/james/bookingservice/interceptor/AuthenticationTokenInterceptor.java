@@ -1,11 +1,11 @@
 package com.james.bookingservice.interceptor;
 
+import com.james.bookingservice.config.SecurityUserDetails;
 import com.james.bookingservice.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,21 +21,24 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class AuthenticationTokenInterceptor extends OncePerRequestFilter {
   private final AuthService authService;
+
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
+  private static final List<String> PUBLIC_URLS = List.of("/api/v1/bookings/internal");
+  private final String ROLE_PATTERN = "ROLE_%s";
 
   @Override
   protected void doFilterInternal(
-      @NotNull HttpServletRequest request,
-      @NotNull HttpServletResponse response,
-      FilterChain filterChain)
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String path = request.getRequestURI();
     log.info("path : {}", path);
     var isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);
+    var isPublicEndpoint = PUBLIC_URLS.stream().anyMatch(path::startsWith);
     log.info("swagger {}", isSwagger);
+    log.info("public endpoint {}", isPublicEndpoint);
     String token = getTokenFromHeader(request);
 
-    if (isSwagger) {
+    if (isSwagger || isPublicEndpoint) {
       filterChain.doFilter(request, response);
       return;
     }
@@ -47,11 +50,11 @@ public class AuthenticationTokenInterceptor extends OncePerRequestFilter {
 
       List<GrantedAuthority> authorityList =
           validTokenDTO.getRoles().stream()
-              .map(role -> new SimpleGrantedAuthority(role.name()))
+              .map(role -> new SimpleGrantedAuthority(String.format(ROLE_PATTERN, role.toString())))
               .collect(Collectors.toList());
-
+      var principle = SecurityUserDetails.build(validTokenDTO.getUserDTO(), authorityList);
       UsernamePasswordAuthenticationToken authenticationToken =
-          new UsernamePasswordAuthenticationToken(validTokenDTO.getUserDTO(), null, authorityList);
+          new UsernamePasswordAuthenticationToken(principle, null, authorityList);
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
     } catch (Exception e) {
