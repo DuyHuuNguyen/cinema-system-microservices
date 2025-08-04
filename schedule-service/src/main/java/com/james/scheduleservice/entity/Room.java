@@ -1,5 +1,6 @@
 package com.james.scheduleservice.entity;
 
+import com.james.scheduleservice.dto.RoomDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,9 +24,26 @@ public class Room extends BaseEntity {
   private Integer monitorHeight;
 
   @Column(name = "seat_number", nullable = false)
-  private Integer seatNumber;
+  private Integer totalSeatNumber;
 
   @ManyToOne
   @JoinColumn(name = "theater_id", nullable = false)
   private Theater theater;
+
+  public void addTheater(Theater theater) {
+    this.theater = theater;
+  }
+
+  public RoomDTO getRoomDTO() {
+    return RoomDTO.builder()
+        .name(roomName)
+        .monitorHeight(monitorHeight)
+        .monitorWidth(monitorWidth)
+        .totalSeatNumber(totalSeatNumber)
+        .build();
+  }
+
+  public Long getTheaterId() {
+    return this.theater.getId();
+  }
 }

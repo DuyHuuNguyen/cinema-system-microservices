@@ -18,4 +18,40 @@ public class RestHandlerException {
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
         HttpStatus.NOT_FOUND);
   }
+
+  @ExceptionHandler(PermissionDeniedException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleEntityNotFoundException(
+      PermissionDeniedException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(ScheduleIsDoneException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleEntityNotFoundException(
+      ScheduleIsDoneException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(CreateScheduleInThePastException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleEntityNotFoundException(
+      CreateScheduleInThePastException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(ConflictMovieScheduleException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleConflictScheduleException(
+      ConflictMovieScheduleException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.NOT_FOUND);
+  }
 }

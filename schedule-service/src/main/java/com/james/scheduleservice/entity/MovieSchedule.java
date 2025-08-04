@@ -1,11 +1,17 @@
 package com.james.scheduleservice.entity;
 
+import com.james.scheduleservice.dto.LocationDTO;
+import com.james.scheduleservice.dto.RoomDTO;
+import com.james.scheduleservice.until.TimeConverter;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+@ToString
 @Entity
 @Table(name = "movie_schedules")
 @Getter
@@ -22,11 +28,51 @@ public class MovieSchedule extends BaseEntity {
   @Column(name = "movie_id", nullable = false)
   private Long movieId;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "theater_id", nullable = false)
   private Theater theater;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "room_id", nullable = false)
   private Room room;
+
+  public String getTheaterName() {
+    return this.theater.getTheaterName();
+  }
+
+  public LocationDTO getLocationTheater() {
+    return this.theater.getLocationDTO();
+  }
+
+  public void addMovieId(Long id) {
+    this.movieId = id;
+  }
+
+  public LocalDateTime getStartedAtToLocalDateTime() {
+    return TimeConverter.convertStringToDateTime(this.startedAt);
+  }
+
+  public LocalDateTime getFinishedAtToLocalDateTime() {
+    return TimeConverter.convertStringToDateTime(this.finishedAt);
+  }
+
+  public Long getRoomId() {
+    return this.room.getId();
+  }
+
+  public RoomDTO getRoomDTO() {
+    return room.getRoomDTO();
+  }
+
+  private String theaterName() {
+    return theater.getTheaterName();
+  }
+
+  public LocationDTO getTheaterLocationDTO() {
+    return this.theater.getLocationDTO();
+  }
+
+  public String getRoomName() {
+    return this.room.getRoomName();
+  }
 }

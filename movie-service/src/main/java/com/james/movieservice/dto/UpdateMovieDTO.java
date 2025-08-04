@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class UpdateMovieDTO {
   private String title;
   private String description;
-  private String duration;
+  private Long duration;
   private String language;
   private Long releasedAt;
   private String poster;

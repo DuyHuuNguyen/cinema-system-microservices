@@ -1,6 +1,10 @@
-package com.james.movieservice.enums;
+package com.james.scheduleservice.enums;
 
 public enum MediaType {
   IMAGE,
-  VIDEO
+  VIDEO;
+
+  public boolean isImage() {
+    return this == IMAGE;
+  }
 }
