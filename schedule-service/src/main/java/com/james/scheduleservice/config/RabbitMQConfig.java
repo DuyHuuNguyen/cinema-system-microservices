@@ -22,6 +22,15 @@ public class RabbitMQConfig {
   @Value("${rabbitmq.variable.handle-movie-schedule-routing-key}")
   private String ROUTING_KEY_HANDLE_MOVIE_SCHEDULE;
 
+  @Value("${rabbitmq.variable.save-ticket-queue}")
+  private String QUEUE_HANDLE_SAVE_TICKET;
+
+  @Value("${rabbitmq.variable.save-ticket-exchange")
+  private String EXCHANGE_HANDLE_SAVE_TICKET;
+
+  @Value("${rabbitmq.variable.handle-save-ticket-routing-key}")
+  private String ROUTING_KEY_HANDLE_SAVE_TICKET;
+
   @Bean
   public Queue scheduleQueue() {
     return new Queue(QUEUE_HANDLE_MOVIE_SCHEDULE);
@@ -42,5 +51,22 @@ public class RabbitMQConfig {
     return BindingBuilder.bind(scheduleQueue())
         .to(scheduleExchange())
         .with(ROUTING_KEY_HANDLE_MOVIE_SCHEDULE);
+  }
+
+  @Bean
+  public Queue ticketQueue() {
+    return new Queue(QUEUE_HANDLE_SAVE_TICKET);
+  }
+
+  @Bean
+  public TopicExchange ticketExchange() {
+    return new TopicExchange(EXCHANGE_HANDLE_SAVE_TICKET);
+  }
+
+  @Bean
+  public Binding ticketBinding() {
+    return BindingBuilder.bind(this.ticketQueue())
+        .to(ticketExchange())
+        .with(ROUTING_KEY_HANDLE_SAVE_TICKET);
   }
 }
