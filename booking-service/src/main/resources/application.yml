@@ -16,3 +16,19 @@ spring:
     username: postgres
     password: 1111
     driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+---
+rabbitmq:
+  variable:
+    handle-ticket-queue: "QUEUE_HANDLE_SAVES_TICKET_23130075"
+    handle-ticket-exchange: "EXCHANGE_HANDLE_TICKET_23130075"
+    handle-ticket-routing-key: "ROUTING_KEY_HANDLE_TICKET_23130075"

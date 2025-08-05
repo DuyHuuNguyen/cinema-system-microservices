@@ -73,7 +73,9 @@ public class ScheduleController {
   }
 
   @Hidden
-  @GetMapping(value = "/internal/{id}", headers = "secret-key=user-service001")
+  @GetMapping(
+      value = "/internal/{id}",
+      headers = {"secret-key=user-service001", "secret-key=booking-service001"})
   @ResponseStatus(HttpStatus.OK)
   public ScheduleDTO findScheduleById(@PathVariable Long id) {
     return this.scheduleFacade.findScheduleById(id);

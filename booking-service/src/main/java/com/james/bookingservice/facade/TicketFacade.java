@@ -1,3 +1,9 @@
 package com.james.bookingservice.facade;
 
-public interface TicketFacade {}
+import com.james.bookingservice.resquest.CreateTicketInternalRequest;
+
+public interface TicketFacade {
+  void createTicketInternal(CreateTicketInternalRequest request);
+
+  void deleteById(Long id);
+}

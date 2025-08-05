@@ -17,7 +17,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ticket extends BaseEntity {
-  private static final String PATTERN_SEAT_CODE = "SEAT_%s";
 
   @Column(name = "price", nullable = false)
   private Float price;
@@ -27,8 +26,7 @@ public class Ticket extends BaseEntity {
 
   @Column(name = "seat_code", nullable = false)
   @Builder.Default
-  private String seatCode =
-      String.format(PATTERN_SEAT_CODE, UUID.randomUUID().toString().substring(0, 5));
+  private String seatCode = UUID.randomUUID().toString().substring(0, 5);
 
   @Column(name = "schedule_id", nullable = false)
   private Long scheduleId;
