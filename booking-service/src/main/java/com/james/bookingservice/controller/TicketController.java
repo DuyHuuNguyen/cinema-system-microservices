@@ -14,14 +14,14 @@ public class TicketController {
   private final TicketFacade ticketFacade;
 
   @Hidden
-  @PostMapping("/internal")
+  @PostMapping(value = "/internal",headers = {"secret-key=schedule-service-23130075"})
   public BaseResponse<Void> createTicketInternal(@RequestBody CreateTicketInternalRequest request) {
     this.ticketFacade.createTicketInternal(request);
     return BaseResponse.ok();
   }
 
   @Hidden
-  @DeleteMapping("/internal/{id}")
+  @DeleteMapping(value = "/internal/{id}",headers = {"secret-key=schedule-service-23130075"})
   public BaseResponse<Void> deleteTicketById(@PathVariable Long id) {
     this.ticketFacade.deleteById(id);
     return BaseResponse.ok();
