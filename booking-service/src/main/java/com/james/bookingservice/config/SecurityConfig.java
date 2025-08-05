@@ -25,7 +25,9 @@ public class SecurityConfig {
     "/api/v1/auth/authorization",
     "/swagger-ui/**",
     "/v3/api-docs/**",
-    "/api/v1/auth"
+    "/api/v1/auth",
+    "/api/v1/bookings/internal",
+    "/api/v1/tickets/internal"
   };
 
   @Bean
