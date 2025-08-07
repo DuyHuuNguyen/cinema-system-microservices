@@ -2,6 +2,7 @@ package com.james.scheduleservice.facade.Impl;
 
 import com.james.scheduleservice.config.SecurityUserDetails;
 import com.james.scheduleservice.dto.MovieDTO;
+import com.james.scheduleservice.dto.ProducerSaveTicketDTO;
 import com.james.scheduleservice.dto.ScheduleDTO;
 import com.james.scheduleservice.entity.MovieSchedule;
 import com.james.scheduleservice.enums.ErrorCode;
@@ -38,6 +39,7 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
   private final MovieService movieService;
   private final CacheService cacheService;
   private final ProducerHandleScheduleService producerHandleScheduleService;
+  private final ProducerHandleTicketService producerHandleTicketService;
 
   @Override
   public ScheduleDTO findScheduleById(Long id) {
@@ -113,7 +115,19 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
     var isDemoSchedule = request.getIsDemoSchedule();
     if (!isDemoSchedule) {
 
-      this.producerHandleScheduleService.saveMovieSchedule(movieSchedules);
+      //      this.producerHandleScheduleService.saveMovieSchedule(movieSchedules);
+      movieSchedules.forEach(
+          schedule -> {
+            this.movieScheduleService.save(schedule);
+            var producerSaveTicketDTO =
+                ProducerSaveTicketDTO.builder()
+                    .price(request.getPrice())
+                    .totalSeats(schedule.getRoom().getTotalSeatNumber())
+                    .scheduleCode(schedule.getScheduleCode())
+                    .build();
+            log.info(" info {}", producerSaveTicketDTO);
+            this.producerHandleTicketService.save(producerSaveTicketDTO);
+          });
 
       var cacheValueSchedule = UUID.randomUUID().toString();
       int timeout = request.getCreatedAt().compareTo(LocalDate.now()) + 2;
@@ -241,6 +255,15 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
       throw new ConflictMovieScheduleException(ErrorCode.CONFLICT_SCHEDULE);
 
     this.movieScheduleService.save(movieSchedule);
+  }
+
+  @Override
+  public Long convertScheduleCodeToId(String scheduleCode) {
+    var schedule =
+        this.movieScheduleService
+            .findByCode(scheduleCode)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND));
+    return schedule.getId();
   }
 
   private Boolean validateConflictMovieSchedule(

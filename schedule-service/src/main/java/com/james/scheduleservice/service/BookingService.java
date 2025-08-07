@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient("booking-service")
 public interface BookingService {
-    @PostMapping(value = "/internal",headers = {"secret-key=schedule-service-23130075"})
-    BaseResponse<Void> createTicketInternal(@RequestBody CreateTicketInternalRequest request);
+  @PostMapping(
+      value = "/api/v1/tickets/internal",
+      headers = {"secret-key=schedule-service-23130075"})
+  BaseResponse<Void> createTicketInternal(@RequestBody CreateTicketInternalRequest request);
 }

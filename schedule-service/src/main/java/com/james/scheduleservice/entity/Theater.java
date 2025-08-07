@@ -1,5 +1,6 @@
 package com.james.scheduleservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.james.scheduleservice.dto.LocationDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -37,12 +38,14 @@ public class Theater extends BaseEntity {
       mappedBy = "theater",
       cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @Builder.Default
+  @JsonManagedReference
   private List<TheaterAsset> theaterAssets = new ArrayList<>();
 
   @OneToMany(
       mappedBy = "theater",
       cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @Builder.Default
+  @JsonManagedReference
   private List<Room> rooms = new ArrayList<>();
 
   @OneToMany(

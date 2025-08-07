@@ -75,9 +75,18 @@ public class ScheduleController {
   @Hidden
   @GetMapping(
       value = "/internal/{id}",
-      headers = {"secret-key=user-service001", "secret-key=booking-service001"})
+      headers = {"secret-key=user-service001"})
   @ResponseStatus(HttpStatus.OK)
   public ScheduleDTO findScheduleById(@PathVariable Long id) {
     return this.scheduleFacade.findScheduleById(id);
+  }
+
+  @Hidden
+  @GetMapping(
+      value = "/internal/scheduleId",
+      headers = {"secret-key=user-service001"})
+  @ResponseStatus(HttpStatus.OK)
+  public Long convertScheduleCodeToId(@RequestParam("scheduleCode") String scheduleCode) {
+    return this.scheduleFacade.convertScheduleCodeToId(scheduleCode);
   }
 }

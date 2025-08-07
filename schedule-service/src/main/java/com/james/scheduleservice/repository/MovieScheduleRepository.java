@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MovieScheduleRepository extends JpaRepository<MovieSchedule, Long> , JpaSpecificationExecutor<MovieSchedule> {
@@ -36,4 +37,6 @@ public interface MovieScheduleRepository extends JpaRepository<MovieSchedule, Lo
       and to_timestamp(s.started_at / 1000)::date =  to_timestamp(:created_at / 1000)::date;
     """,nativeQuery = true)
     List<MovieSchedule> findMovieSchedulesByDateAndTheaterIdAndRoomId(@Param("created_at") Long createdAt, Long roomId, Long theaterId);
+
+    Optional<MovieSchedule> findByScheduleCode(String scheduleCode);
 }

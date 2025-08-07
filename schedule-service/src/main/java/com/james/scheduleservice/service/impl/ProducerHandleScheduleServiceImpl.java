@@ -13,15 +13,15 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ProducerHandleScheduleServiceImpl implements ProducerHandleScheduleService {
-  private RabbitTemplate rabbitTemplate;
+  private final RabbitTemplate rabbitTemplate;
 
-  @Value("${rabbitmq.variable.movie-schedule-queue}")
+  @Value("${rabbitmq.queue.movie-schedule-queue}")
   private String QUEUE_HANDLE_MOVIE_SCHEDULE;
 
-  @Value("${rabbitmq.variable.movie-schedule-exchange}")
+  @Value("${rabbitmq.exchange.movie-schedule-exchange}")
   private String EXCHANGE_HANDLE_MOVIE_SCHEDULE;
 
-  @Value("${rabbitmq.variable.handle-movie-schedule-routing-key}")
+  @Value("${rabbitmq.routing-key.handle-movie-schedule-routing-key}")
   private String ROUTING_KEY_HANDLE_MOVIE_SCHEDULE;
 
   @Override

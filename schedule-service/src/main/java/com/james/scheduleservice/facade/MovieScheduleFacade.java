@@ -18,4 +18,6 @@ public interface MovieScheduleFacade {
   BaseResponse<PaginationResponse<ScheduleResponse>> findByFilter(ScheduleCriteria criteria);
 
   void doSchedule(UpsertScheduleRequest request);
+
+  Long convertScheduleCodeToId(String scheduleCode);
 }

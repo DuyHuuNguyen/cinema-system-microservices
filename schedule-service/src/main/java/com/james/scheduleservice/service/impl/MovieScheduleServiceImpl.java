@@ -45,4 +45,9 @@ public class MovieScheduleServiceImpl implements MovieScheduleService {
       Specification<MovieSchedule> specification, Pageable pageable) {
     return this.movieScheduleRepository.findAll(specification, pageable);
   }
+
+  @Override
+  public Optional<MovieSchedule> findByCode(String scheduleCode) {
+    return this.movieScheduleRepository.findByScheduleCode(scheduleCode);
+  }
 }
