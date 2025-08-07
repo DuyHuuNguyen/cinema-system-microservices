@@ -1,14 +1,13 @@
 package com.james.scheduleservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.james.scheduleservice.dto.LocationDTO;
 import com.james.scheduleservice.dto.RoomDTO;
 import com.james.scheduleservice.until.TimeConverter;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.UUID;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @ToString
@@ -28,12 +27,18 @@ public class MovieSchedule extends BaseEntity {
   @Column(name = "movie_id", nullable = false)
   private Long movieId;
 
+  @Column(name = "schedule_code")
+  @Builder.Default
+  private String scheduleCode = UUID.randomUUID().toString();
+
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "theater_id", nullable = false)
+  @JsonManagedReference
   private Theater theater;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "room_id", nullable = false)
+  @JsonManagedReference
   private Room room;
 
   public String getTheaterName() {

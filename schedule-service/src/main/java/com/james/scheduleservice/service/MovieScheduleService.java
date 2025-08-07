@@ -18,4 +18,6 @@ public interface MovieScheduleService {
   void remove(MovieSchedule movieSchedule);
 
   Page<MovieSchedule> findAll(Specification<MovieSchedule> specification, Pageable pageable);
+
+  Optional<MovieSchedule> findByCode(String scheduleCode);
 }

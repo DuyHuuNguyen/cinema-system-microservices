@@ -1,15 +1,16 @@
 CREATE TABLE "movie_schedules"
 (
-    "id"          BIGSERIAL PRIMARY KEY NOT NULL,
-    "started_at"  bigint                NOT NULL,
-    "finished_at" bigint                NOT NULL,
-    "movie_id"    bigint                NOT NULL,
-    "room_id"     bigint                NOT NULL,
-    "theater_id"  bigint                NOT NULL,
-    "is_active"   boolean               NOT NULL DEFAULT true,
-    "version"     bigint                NOT NULL DEFAULT 0,
-    "created_at"  bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric,
-    "updated_at"  bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric
+    "id"            BIGSERIAL PRIMARY KEY NOT NULL,
+    "started_at"    bigint                NOT NULL,
+    "finished_at"   bigint                NOT NULL,
+    "schedule_code" varchar(100)          NOT NULL,
+    "movie_id"      bigint                NOT NULL,
+    "room_id"       bigint                NOT NULL,
+    "theater_id"    bigint                NOT NULL,
+    "is_active"     boolean               NOT NULL DEFAULT true,
+    "version"       bigint                NOT NULL DEFAULT 0,
+    "created_at"    bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric,
+    "updated_at"    bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric
 );
 
 CREATE TABLE "theaters"
@@ -39,13 +40,13 @@ CREATE TABLE "theater_assets"
 
 CREATE TABLE "locations"
 (
-    "id"          BIGSERIAL PRIMARY KEY NOT NULL,
-    "longitude" bigint                NOT NULL,
-    "latitude"    bigint                NOT NULL,
+    "id"         BIGSERIAL PRIMARY KEY NOT NULL,
+    "longitude"  bigint                NOT NULL,
+    "latitude"   bigint                NOT NULL,
     "version"    bigint                NOT NULL DEFAULT 0,
-    "is_active"   boolean               NOT NULL DEFAULT true,
-    "created_at"  bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric,
-    "updated_at"  bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric
+    "is_active"  boolean               NOT NULL DEFAULT true,
+    "created_at" bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric,
+    "updated_at" bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric
 );
 
 CREATE TABLE "rooms"

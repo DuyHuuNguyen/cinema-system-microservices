@@ -1,5 +1,6 @@
 package com.james.scheduleservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.james.scheduleservice.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class TheaterAsset extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "theater_id")
+  @JsonBackReference
   private Theater theater;
 
   public void addTheater(Theater theater) {

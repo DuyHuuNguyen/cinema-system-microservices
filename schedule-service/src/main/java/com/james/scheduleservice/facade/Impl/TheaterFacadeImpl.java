@@ -89,7 +89,7 @@ public class TheaterFacadeImpl implements TheaterFacade {
       try {
         userService.addRole(principal.getId(), addRoleRequest);
       } catch (Exception e) {
-        throw new EntityNotFoundException(ErrorCode.ALL_ROLE_fALSE);
+        throw new EntityNotFoundException(ErrorCode.ALL_ROLE_FALSE);
       }
     }
 

@@ -23,6 +23,9 @@ public class DoScheduleRequest {
   //  @Schema(defaultValue = "1753453200000")
   private LocalDate createdAt;
 
+  @Schema(defaultValue = "49000")
+  private Float price;
+
   @Schema(defaultValue = "1753491600000")
   private Long startedAt;
 

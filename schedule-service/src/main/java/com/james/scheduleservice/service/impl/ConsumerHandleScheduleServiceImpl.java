@@ -19,7 +19,7 @@ public class ConsumerHandleScheduleServiceImpl implements ConsumerHandleSchedule
 
   @Override
   @Transactional
-  @RabbitListener(queues = "${rabbitmq.variable.movie-schedule-queue}")
+  @RabbitListener(queues = "${rabbitmq.queue.movie-schedule-queue}")
   public void saveMovieScheduleMovie(List<MovieSchedule> movieSchedules) {
     log.info("Movie Schedule Save MovieSchedule");
     for (MovieSchedule movieSchedule : movieSchedules) {

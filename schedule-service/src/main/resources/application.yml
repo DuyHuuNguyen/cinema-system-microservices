@@ -32,10 +32,13 @@ spring:
       time-to-live: 600000ms
 ---
 rabbitmq:
-  variable:
+  queue:
     movie-schedule-queue: "QUEUE_HANDLE_MOVIE_SCHEDULE_23130075"
-    movie-schedule-exchange: "EXCHANGE_HANDLE_MOVIE_SCHEDULE_23130075"
-    handle-movie-schedule-routing-key: "ROUTING_KEY_HANDLE_MOVIE_SCHEDULE_23130075"
     save-ticket-queue: "QUEUE_HANDLE_SAVE_TICKET_23130075"
+  exchange:
+    movie-schedule-exchange: "EXCHANGE_HANDLE_MOVIE_SCHEDULE_23130075"
     save-ticket-exchange: "EXCHANGE_HANDLE_SAVE_TICKET_23130075"
+  routing-key:
+    handle-movie-schedule-routing-key: "ROUTING_KEY_HANDLE_MOVIE_SCHEDULE_23130075"
     handle-save-ticket-routing-key: "ROUTING_KEY_HANDLE_SAVE_TICKET_23130075"
+

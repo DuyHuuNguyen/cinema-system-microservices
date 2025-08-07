@@ -14,19 +14,19 @@ import org.springframework.stereotype.Service;
 public class ProducerHandleTicketServiceImpl implements ProducerHandleTicketService {
   private final RabbitTemplate rabbitTemplate;
 
-  @Value("${rabbitmq.variable.save-ticket-queue}")
+  @Value("${rabbitmq.queue.save-ticket-queue}")
   private String QUEUE_HANDLE_SAVE_TICKET;
 
-  @Value("${rabbitmq.variable.save-ticket-exchange")
+  @Value("${rabbitmq.exchange.save-ticket-exchange}")
   private String EXCHANGE_HANDLE_SAVE_TICKET;
 
-  @Value("${rabbitmq.variable.handle-save-ticket-routing-key}")
+  @Value("${rabbitmq.routing-key.handle-save-ticket-routing-key}")
   private String ROUTING_KEY_HANDLE_SAVE_TICKET;
 
   @Override
   public void save(ProducerSaveTicketDTO producerSaveTicketDTO) {
     log.info("save tickets");
     this.rabbitTemplate.convertAndSend(
-        EXCHANGE_HANDLE_SAVE_TICKET, QUEUE_HANDLE_SAVE_TICKET, producerSaveTicketDTO);
+        EXCHANGE_HANDLE_SAVE_TICKET, ROUTING_KEY_HANDLE_SAVE_TICKET, producerSaveTicketDTO);
   }
 }

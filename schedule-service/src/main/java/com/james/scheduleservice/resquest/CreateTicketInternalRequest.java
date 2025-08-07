@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class CreateTicketInternalRequest {
   private Float price;
   private Integer totalSeats;
-  private Long scheduleId;
+  private String scheduleCode;
 }

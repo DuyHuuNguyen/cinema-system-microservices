@@ -1,5 +1,6 @@
 package com.james.scheduleservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.james.scheduleservice.dto.RoomDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ public class Room extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "theater_id", nullable = false)
+  @JsonBackReference
   private Theater theater;
 
   public void addTheater(Theater theater) {

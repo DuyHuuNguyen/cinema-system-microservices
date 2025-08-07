@@ -1,14 +1,14 @@
 package com.james.scheduleservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
+@ToString
 public class ProducerSaveTicketDTO {
   private Float price;
   private Integer totalSeats;
-  private Long scheduleId;
+  private String scheduleCode;
 }

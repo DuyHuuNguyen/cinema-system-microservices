@@ -13,22 +13,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-  @Value("${rabbitmq.variable.movie-schedule-queue}")
+  @Value("${rabbitmq.queue.movie-schedule-queue}")
   private String QUEUE_HANDLE_MOVIE_SCHEDULE;
 
-  @Value("${rabbitmq.variable.movie-schedule-exchange}")
+  @Value("${rabbitmq.exchange.movie-schedule-exchange}")
   private String EXCHANGE_HANDLE_MOVIE_SCHEDULE;
 
-  @Value("${rabbitmq.variable.handle-movie-schedule-routing-key}")
+  @Value("${rabbitmq.routing-key.handle-movie-schedule-routing-key}")
   private String ROUTING_KEY_HANDLE_MOVIE_SCHEDULE;
 
-  @Value("${rabbitmq.variable.save-ticket-queue}")
+  @Value("${rabbitmq.queue.save-ticket-queue}")
   private String QUEUE_HANDLE_SAVE_TICKET;
 
-  @Value("${rabbitmq.variable.save-ticket-exchange")
+  @Value("${rabbitmq.exchange.save-ticket-exchange}")
   private String EXCHANGE_HANDLE_SAVE_TICKET;
 
-  @Value("${rabbitmq.variable.handle-save-ticket-routing-key}")
+  @Value("${rabbitmq.routing-key.handle-save-ticket-routing-key}")
   private String ROUTING_KEY_HANDLE_SAVE_TICKET;
 
   @Bean

@@ -26,19 +26,16 @@ public class TickerFacadeImpl implements TicketFacade {
   @Override
   @Transactional
   public void createTicketInternal(CreateTicketInternalRequest request) {
+    Long scheduleId;
     try {
-      this.scheduleService.findScheduleById(request.getScheduleId());
+      scheduleId = this.scheduleService.findScheduleByCode(request.getScheduleCode());
     } catch (Exception e) {
       throw new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND);
     }
     List<Ticket> tickets = new ArrayList<>();
     for (int i = 1; i <= request.getTotalSeats(); i++) {
       var ticket =
-          Ticket.builder()
-              .price(request.getPrice())
-              .scheduleId(request.getScheduleId())
-              .seatNumber(i)
-              .build();
+          Ticket.builder().price(request.getPrice()).scheduleId(scheduleId).seatNumber(i).build();
       log.info("Creating ticket {}", ticket);
       tickets.add(ticket);
     }
