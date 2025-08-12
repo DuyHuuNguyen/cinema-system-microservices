@@ -22,6 +22,12 @@ public class Booking extends BaseEntity {
   @Column(name = "payment_id", nullable = false)
   private Long paymentId;
 
+  @Column(name = "theater_id")
+  private Long theaterId;
+
+  @Column(name = "booking_code")
+  private String bookingCode;
+
   @ManyToMany
   @JoinTable(
       name = "booking_tickets",
@@ -39,4 +45,19 @@ public class Booking extends BaseEntity {
       joinColumns = @JoinColumn(name = "booking_id"),
       inverseJoinColumns = @JoinColumn(name = "voucher_id"))
   private List<Voucher> vouchers = new ArrayList<>();
+
+  public void addVoucher(Voucher voucher) {
+    vouchers.add(voucher);
+    voucher.addBooking(this);
+  }
+
+  public void addTicket(Ticket ticket) {
+    ticket.addBooking(this);
+    tickets.add(ticket);
+  }
+
+  public void addBookingFingerFood(BookingFingerFood bookingFingerFood) {
+    this.bookingFingerFoods.add(bookingFingerFood);
+    bookingFingerFood.addBooking(this);
+  }
 }

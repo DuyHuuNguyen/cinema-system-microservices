@@ -1,3 +1,7 @@
 package com.james.bookingservice.facade;
 
-public interface BookingFacade {}
+import com.james.bookingservice.resquest.CreateBookingTicketRequest;
+
+public interface BookingFacade {
+  void createBooking(CreateBookingTicketRequest request);
+}

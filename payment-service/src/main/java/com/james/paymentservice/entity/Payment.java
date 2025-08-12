@@ -26,4 +26,7 @@ public class Payment extends BaseEntity {
 
   @Column(name = "booking_id", nullable = false)
   private Long bookingId;
+
+  @Column(name = "price", nullable = false)
+  private float price;
 }

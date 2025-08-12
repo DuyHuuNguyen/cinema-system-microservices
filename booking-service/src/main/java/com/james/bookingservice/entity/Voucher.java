@@ -2,6 +2,7 @@ package com.james.bookingservice.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,4 +33,14 @@ public class Voucher extends BaseEntity {
 
   @Column(name = "description", nullable = false)
   private String description;
+
+  @ManyToOne private Booking booking;
+
+  public void addBooking(Booking booking) {
+    this.booking = booking;
+  }
+
+  public Boolean isExpired() {
+    return expiredAt <= System.currentTimeMillis();
+  }
 }

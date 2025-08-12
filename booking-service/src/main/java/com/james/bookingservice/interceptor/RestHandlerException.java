@@ -18,4 +18,13 @@ public class RestHandlerException {
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
         HttpStatus.NOT_FOUND);
   }
+
+  @ExceptionHandler(TicketUsedException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleTicketUsedException(
+      TicketUsedException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
 }

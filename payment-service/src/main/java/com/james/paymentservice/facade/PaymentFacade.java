@@ -1,3 +1,7 @@
 package com.james.paymentservice.facade;
 
-public interface PaymentFacade {}
+import com.james.paymentservice.resquest.UpsertPaymentRequest;
+
+public interface PaymentFacade {
+  void createPayment(UpsertPaymentRequest request);
+}

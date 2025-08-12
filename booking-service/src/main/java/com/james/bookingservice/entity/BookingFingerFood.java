@@ -23,4 +23,8 @@ public class BookingFingerFood extends BaseEntity {
 
   @Column(name = "quantity", nullable = false)
   private Integer quantity;
+
+  public void addBooking(Booking booking) {
+    this.booking = booking;
+  }
 }

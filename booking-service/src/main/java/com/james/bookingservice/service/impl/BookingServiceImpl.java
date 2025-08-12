@@ -1,5 +1,6 @@
 package com.james.bookingservice.service.impl;
 
+import com.james.bookingservice.entity.Booking;
 import com.james.bookingservice.repository.BookingRepository;
 import com.james.bookingservice.service.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -9,4 +10,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
   private final BookingRepository bookingRepository;
+
+  @Override
+  public Booking save(Booking booking) {
+    return this.bookingRepository.save(booking);
+  }
+
+  @Override
+  public void delete(Booking booking) {
+    this.bookingRepository.delete(booking);
+  }
 }

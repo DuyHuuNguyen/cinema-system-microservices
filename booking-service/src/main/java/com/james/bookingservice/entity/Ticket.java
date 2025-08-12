@@ -2,6 +2,7 @@ package com.james.bookingservice.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -24,10 +25,19 @@ public class Ticket extends BaseEntity {
   @Column(name = "seat_number", nullable = false)
   private Integer seatNumber;
 
+  @Column(name = "is_uesed")
+  private Boolean isUsed;
+
   @Column(name = "seat_code", nullable = false)
   @Builder.Default
   private String seatCode = UUID.randomUUID().toString().substring(0, 5);
 
   @Column(name = "schedule_id", nullable = false)
   private Long scheduleId;
+
+  @ManyToOne private Booking booking;
+
+  public void addBooking(Booking booking) {
+    this.booking = booking;
+  }
 }
