@@ -19,7 +19,7 @@ public class Booking extends BaseEntity {
   @Column(name = "user_id", nullable = false)
   private Long userId;
 
-  @Column(name = "payment_id", nullable = false)
+  @Column(name = "payment_id")
   private Long paymentId;
 
   @Column(name = "theater_id")
@@ -28,7 +28,8 @@ public class Booking extends BaseEntity {
   @Column(name = "booking_code")
   private String bookingCode;
 
-  @ManyToMany
+  @ManyToMany(
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
   @JoinTable(
       name = "booking_tickets",
       joinColumns = @JoinColumn(name = "booking_id"),
@@ -36,10 +37,14 @@ public class Booking extends BaseEntity {
   @Builder.Default
   private List<Ticket> tickets = new ArrayList<>();
 
-  @OneToMany(mappedBy = "booking")
-  private List<BookingFingerFood> bookingFingerFoods;
+  @OneToMany(
+      mappedBy = "booking",
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+  @Builder.Default
+  private List<BookingFingerFood> bookingFingerFoods = new ArrayList<>();
 
-  @ManyToMany
+  @ManyToMany(
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
   @JoinTable(
       name = "booking_vouchers",
       joinColumns = @JoinColumn(name = "booking_id"),
@@ -52,12 +57,19 @@ public class Booking extends BaseEntity {
   }
 
   public void addTicket(Ticket ticket) {
-    ticket.addBooking(this);
     tickets.add(ticket);
   }
 
   public void addBookingFingerFood(BookingFingerFood bookingFingerFood) {
     this.bookingFingerFoods.add(bookingFingerFood);
     bookingFingerFood.addBooking(this);
+  }
+
+  public void addBookingCode(String bookingCode) {
+    this.bookingCode = bookingCode;
+  }
+
+  public void addPaymentId(Long paymentId) {
+    this.paymentId = paymentId;
   }
 }

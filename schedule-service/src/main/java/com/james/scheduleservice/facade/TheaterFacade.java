@@ -20,4 +20,6 @@ public interface TheaterFacade {
   BaseResponse<PaginationResponse<TheaterResponse>> findByFilter(TheaterCriteria criteria);
 
   BaseResponse<PaginationResponse<RoomResponse>> findRoomByFilter(RoomCriteria criteria);
+
+  Float getPriceOfFood(long id, Long foodId);
 }

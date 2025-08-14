@@ -1,9 +1,6 @@
 package com.james.bookingservice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,9 +32,19 @@ public class Ticket extends BaseEntity {
   @Column(name = "schedule_id", nullable = false)
   private Long scheduleId;
 
-  @ManyToOne private Booking booking;
+  //  @ManyToOne(fetch = FetchType.LAZY)
+  //  @JoinColumn(name = "booking_id", nullable = false)
+  //  private Booking booking;
+  //
+  //  public void addBooking(Booking booking) {
+  //    this.booking = booking;
+  //  }
 
-  public void addBooking(Booking booking) {
-    this.booking = booking;
+  public void markTicketUsed() {
+    this.isUsed = true;
+  }
+
+  public void markTicketUnused() {
+    this.isUsed = false;
   }
 }

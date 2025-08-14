@@ -2,11 +2,9 @@ package com.james.bookingservice.resquest;
 
 import com.james.bookingservice.enums.PaymentStatus;
 import com.james.bookingservice.enums.PaymentType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

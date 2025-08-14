@@ -99,4 +99,10 @@ public class TheaterController {
   public TheaterDTO findScheduleById(@PathVariable Long id) {
     return this.theaterFacade.findTheaterById(id);
   }
+
+  @Hidden
+  @PostMapping(value = "/internal/food/{id}", headers = "secret-key=booking-service")
+  public Float getPriceOfFoodById(@PathVariable long id, @RequestParam("foodId") Long foodId) {
+    return this.theaterFacade.getPriceOfFood(id, foodId);
+  }
 }

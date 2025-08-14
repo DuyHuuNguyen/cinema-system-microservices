@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -16,6 +17,7 @@ public class ConsumerHandleTicketServiceImpl implements ConsumerHandleTicketServ
   private final TicketService ticketService;
 
   @Override
+  @Transactional
   @RabbitListener(queues = {"${rabbitmq.variable.handle-ticket-queue}"})
   public void save(List<Ticket> tickets) {
     try {

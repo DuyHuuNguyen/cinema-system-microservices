@@ -20,4 +20,9 @@ public class BookingServiceImpl implements BookingService {
   public void delete(Booking booking) {
     this.bookingRepository.delete(booking);
   }
+
+  @Override
+  public void addPaymentIdForBookingById(Long id, Long paymentId) {
+    this.bookingRepository.addPaymentIdForBookingById(id, paymentId);
+  }
 }

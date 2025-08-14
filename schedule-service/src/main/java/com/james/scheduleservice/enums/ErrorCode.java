@@ -16,7 +16,8 @@ public enum ErrorCode {
   NOT_CREATE_SCHEDULE_IN_THE_PAST("3337", "Not create schedule in the past"),
   SCHEDULED("3338", "The schedule is done"),
   CONFLICT_SCHEDULE("3339", "Conflict schedule"),
-  ALL_ROLE_FALSE("3400", "All role user unsuccessful");
+  ALL_ROLE_FALSE("3400", "All role user unsuccessful"),
+  FOOD_NOT_FOUND("3401", "Food not found");
 
   private final String code;
   private final String message;
