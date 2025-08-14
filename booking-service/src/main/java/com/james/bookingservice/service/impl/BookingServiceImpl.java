@@ -4,6 +4,9 @@ import com.james.bookingservice.entity.Booking;
 import com.james.bookingservice.repository.BookingRepository;
 import com.james.bookingservice.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,5 +27,10 @@ public class BookingServiceImpl implements BookingService {
   @Override
   public void addPaymentIdForBookingById(Long id, Long paymentId) {
     this.bookingRepository.addPaymentIdForBookingById(id, paymentId);
+  }
+
+  @Override
+  public Page<Booking> findAll(Specification<Booking> specification, Pageable pageable) {
+    return this.bookingRepository.findAll(specification, pageable);
   }
 }

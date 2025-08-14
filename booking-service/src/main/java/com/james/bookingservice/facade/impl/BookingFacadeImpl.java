@@ -11,6 +11,10 @@ import com.james.bookingservice.exception.EntityNotFoundException;
 import com.james.bookingservice.exception.TicketExpireException;
 import com.james.bookingservice.exception.TicketUsedException;
 import com.james.bookingservice.facade.BookingFacade;
+import com.james.bookingservice.response.BaseResponse;
+import com.james.bookingservice.response.BookingResponse;
+import com.james.bookingservice.response.PaginationResponse;
+import com.james.bookingservice.resquest.BookingCriteria;
 import com.james.bookingservice.resquest.CreateBookingTicketRequest;
 import com.james.bookingservice.resquest.CreatePaymentRequest;
 import com.james.bookingservice.service.*;
@@ -19,9 +23,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.james.bookingservice.specification.BookingSpecification;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +46,10 @@ public class BookingFacadeImpl implements BookingFacade {
 
 
 
-  @Override
+    @Override
   @Transactional
   public void createBooking(CreateBookingTicketRequest request) {
-      AtomicReference<Float> totalPrice = new AtomicReference<>(0F);
+        AtomicReference<Float> totalPrice = new AtomicReference<>(0F);
 
       var principal =
               (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -102,7 +110,39 @@ public class BookingFacadeImpl implements BookingFacade {
       }
 
   }
-  private void markTicketUnused(List<Long> ticketIds){
+
+    @Override
+    public BaseResponse<PaginationResponse<BookingResponse>> findByFilter(BookingCriteria criteria) {
+        var principal = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Specification<Booking> specification = BookingSpecification.hasTheaterId(criteria.getTheaterId())
+                .and(BookingSpecification.hasAroundCreatedAt(criteria.getAroundCreatedAt()))
+                .and(BookingSpecification.hasOwnerId(principal.getId()));
+
+        var pageable = PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize(), Sort.by( Sort.Direction.ASC,"createdAt"));
+        var pages = this.bookingService.findAll(specification,pageable);
+
+        var response = PaginationResponse.<BookingResponse>builder()
+                .data(pages.get().map(booking -> BookingResponse.builder()
+                        .id(booking.getId())
+                        .bookingCode(booking.getBookingCode())
+                        .userId(booking.getId())
+                        .paymentId(booking.getPaymentId())
+                        .theaterId(booking.getTheaterId())
+                        .createdAt(booking.getCreatedAt())
+                        .build()).toList())
+                .currentPage(criteria.getCurrentPage())
+                .totalPages(pages.getTotalPages())
+                .totalElements(pages.getNumberOfElements())
+                .build();
+
+        return BaseResponse.build(
+                response
+                , true
+        );
+    }
+
+    private void markTicketUnused(List<Long> ticketIds){
       ticketIds
               .forEach(
                       ticketId -> {
