@@ -16,4 +16,6 @@ public interface BookingService {
   Page<Booking> findAll(Specification<Booking> specification, Pageable pageable);
 
   Optional<Booking> findByIdAndOwnerId(Long id, Long ownerId);
+
+  Optional<Booking> findById(Long id);
 }

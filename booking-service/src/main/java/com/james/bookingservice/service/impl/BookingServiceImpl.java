@@ -39,4 +39,9 @@ public class BookingServiceImpl implements BookingService {
   public Optional<Booking> findByIdAndOwnerId(Long id, Long ownerId) {
     return this.bookingRepository.findByIdAndOwnerId(id, ownerId);
   }
+
+  @Override
+  public Optional<Booking> findById(Long id) {
+    return this.bookingRepository.findById(id);
+  }
 }
