@@ -23,7 +23,8 @@ public class ConsumerHandleTicketServiceImpl implements ConsumerHandleTicketServ
     try {
       tickets.forEach(this.ticketService::save);
     } catch (Exception e) {
-      log.error(e.getMessage());
+      throw new RuntimeException(e.getMessage());
+      //      log.info(e.getMessage());
     }
   }
 }

@@ -6,6 +6,7 @@ import com.james.scheduleservice.response.*;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 import com.james.scheduleservice.resquest.ScheduleCriteria;
 import com.james.scheduleservice.resquest.UpsertScheduleRequest;
+import com.james.scheduleservice.resquest.ValidScheduleOfTheaterRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -88,5 +89,11 @@ public class ScheduleController {
   @ResponseStatus(HttpStatus.OK)
   public Long convertScheduleCodeToId(@RequestParam("scheduleCode") String scheduleCode) {
     return this.scheduleFacade.convertScheduleCodeToId(scheduleCode);
+  }
+
+  @Hidden
+  @PostMapping(value = "/internal/verify-schedule", headers = "secret-key=booking-service")
+  public Boolean validScheduleOfTheater(@RequestBody ValidScheduleOfTheaterRequest request) {
+    return this.scheduleFacade.validScheduleOfTheater(request);
   }
 }

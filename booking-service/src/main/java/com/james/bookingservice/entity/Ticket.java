@@ -39,4 +39,8 @@ public class Ticket extends BaseEntity {
   public void markTicketUnused() {
     this.isUsed = false;
   }
+
+  public void changePrice(Float price) {
+    this.price = price;
+  }
 }

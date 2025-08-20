@@ -80,4 +80,8 @@ public class MovieSchedule extends BaseEntity {
   public String getRoomName() {
     return this.room.getRoomName();
   }
+
+  public boolean isTheaterId(Long theaterId) {
+    return this.theater.getId().equals(theaterId);
+  }
 }

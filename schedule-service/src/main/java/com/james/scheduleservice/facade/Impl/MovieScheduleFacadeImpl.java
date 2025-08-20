@@ -13,6 +13,7 @@ import com.james.scheduleservice.response.*;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 import com.james.scheduleservice.resquest.ScheduleCriteria;
 import com.james.scheduleservice.resquest.UpsertScheduleRequest;
+import com.james.scheduleservice.resquest.ValidScheduleOfTheaterRequest;
 import com.james.scheduleservice.service.*;
 import com.james.scheduleservice.specification.MovieScheduleSpecification;
 import com.james.scheduleservice.until.MovieUtil;
@@ -264,6 +265,15 @@ public class MovieScheduleFacadeImpl implements MovieScheduleFacade {
             .findByCode(scheduleCode)
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND));
     return schedule.getId();
+  }
+
+  @Override
+  public Boolean validScheduleOfTheater(ValidScheduleOfTheaterRequest request) {
+    var schedule =
+        this.movieScheduleService
+            .findById(request.getScheduleId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND));
+    return schedule.isTheaterId(request.getTheaterId());
   }
 
   private Boolean validateConflictMovieSchedule(
