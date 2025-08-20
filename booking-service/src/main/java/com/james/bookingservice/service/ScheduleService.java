@@ -2,11 +2,9 @@ package com.james.bookingservice.service;
 
 import com.james.bookingservice.dto.FoodDTO;
 import com.james.bookingservice.dto.ScheduleDTO;
+import com.james.bookingservice.resquest.ValidAdminTheaterRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient("schedule-service")
 public interface ScheduleService {
@@ -26,4 +24,9 @@ public interface ScheduleService {
 
   @GetMapping(value = "/api/v1/foods/internal/{id}", headers = "secret-key=booking-service")
   FoodDTO findFoodById(@PathVariable Long id);
+
+  @PostMapping(
+      value = "/api/v1/theaters/internal/verify-admin-theater",
+      headers = "secret-key=movie-service")
+  Boolean validAdminTheater(@RequestBody ValidAdminTheaterRequest request);
 }

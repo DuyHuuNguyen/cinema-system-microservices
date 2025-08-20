@@ -27,4 +27,13 @@ public class RestHandlerException {
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
         HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(PermissionDeniedException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handlePermissionDeniedException(
+      PermissionDeniedException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
 }

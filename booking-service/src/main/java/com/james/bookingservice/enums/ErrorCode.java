@@ -13,7 +13,8 @@ public enum ErrorCode {
   VOUCHER_IS_EXPIRED("1115", "Voucher is expired"),
   FOOD_NOT_FOUND("1116", "Food not found"),
   PAYMENT_INVALID("1117", "Payment invalid"),
-  FOOD_PRICE_NOT_FOUND("1118", "Food price not found");
+  FOOD_PRICE_NOT_FOUND("1118", "Food price not found"),
+  PERMISSION_DENIED("1119", "Permission denied");
   private final String code;
   private final String message;
 }
