@@ -1,19 +1,19 @@
-package com.james.scheduleservice.dto;
+package com.james.bookingservice.dto;
 
-import com.james.scheduleservice.enums.FoodType;
-import java.util.List;
+import com.james.bookingservice.enums.FoodType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
-@Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class FingerFoodDTO {
+@AllArgsConstructor
+@Getter
+public class FoodDTO {
+  private Long id;
   private String foodName;
   private FoodType foodType;
   private Float price;
-  private List<AssetDTO> foodAssetDTOS;
+  private Integer quantity;
 }

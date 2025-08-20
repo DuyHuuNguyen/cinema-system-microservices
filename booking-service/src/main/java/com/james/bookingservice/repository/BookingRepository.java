@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> , JpaSpecificationExecutor<Booking> {
 
@@ -17,4 +19,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> , JpaSpe
     WHERE id =:id
     """, nativeQuery = true)
     void addPaymentIdForBookingById(Long id,Long paymentId);
+
+    @Query("""
+    SELECT b
+    FROM Booking b
+    WHERE b.id =:id AND b.userId =:ownerId
+    """)
+    Optional<Booking> findByIdAndOwnerId(Long id, Long ownerId);
 }

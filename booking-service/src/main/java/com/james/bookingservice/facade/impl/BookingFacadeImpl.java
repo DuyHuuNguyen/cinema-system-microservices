@@ -1,7 +1,10 @@
 package com.james.bookingservice.facade.impl;
 
 import com.james.bookingservice.config.SecurityUserDetails;
+import com.james.bookingservice.dto.FoodDTO;
 import com.james.bookingservice.dto.FoodIdAndQuantityDTO;
+import com.james.bookingservice.dto.PaymentDTO;
+import com.james.bookingservice.dto.TicketDTO;
 import com.james.bookingservice.entity.Booking;
 import com.james.bookingservice.entity.BookingFingerFood;
 import com.james.bookingservice.enums.ErrorCode;
@@ -12,6 +15,7 @@ import com.james.bookingservice.exception.TicketExpireException;
 import com.james.bookingservice.exception.TicketUsedException;
 import com.james.bookingservice.facade.BookingFacade;
 import com.james.bookingservice.response.BaseResponse;
+import com.james.bookingservice.response.BookingDetailResponse;
 import com.james.bookingservice.response.BookingResponse;
 import com.james.bookingservice.response.PaginationResponse;
 import com.james.bookingservice.resquest.BookingCriteria;
@@ -19,6 +23,7 @@ import com.james.bookingservice.resquest.CreateBookingTicketRequest;
 import com.james.bookingservice.resquest.CreatePaymentRequest;
 import com.james.bookingservice.service.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,8 +50,7 @@ public class BookingFacadeImpl implements BookingFacade {
   private final PaymentService paymentService;
 
 
-
-    @Override
+  @Override
   @Transactional
   public void createBooking(CreateBookingTicketRequest request) {
         AtomicReference<Float> totalPrice = new AtomicReference<>(0F);
@@ -140,6 +144,49 @@ public class BookingFacadeImpl implements BookingFacade {
                 response
                 , true
         );
+    }
+
+    @Override
+    public BaseResponse<BookingDetailResponse> findDetailById(Long id) {
+        var principal = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var booking = this.bookingService.findByIdAndOwnerId(id, principal.getId()).orElseThrow(() -> new EntityNotFoundException(ErrorCode.BOOKING_NOT_FOUND));
+        PaymentDTO paymentDTO = null;
+        try {
+            paymentDTO = this.paymentService.findPaymentById(booking.getPaymentId());
+        } catch (Exception e) {
+        }
+
+        List<FoodDTO> foodDTOs = new ArrayList<>();
+        try{
+            for(var bookingFood : booking.getBookingFingerFoods()){
+                var food = this.scheduleService.findFoodById(bookingFood.getFingerFoodId());
+                foodDTOs.add(food);
+            }
+        }catch (Exception e){
+            throw new EntityNotFoundException(ErrorCode.FOOD_NOT_FOUND);
+        }
+
+        var bookingDetailResponse = BookingDetailResponse.builder()
+                .id(booking.getId())
+                .userId(booking.getUserId())
+                .bookingCode(booking.getBookingCode())
+                .paymentDTO(paymentDTO)
+                .ticketDTOs(booking.getTickets().stream()
+                        .map(ticket -> TicketDTO.builder().id(ticket.getId())
+                                .scheduleId(ticket.getScheduleId())
+                                .seatCode(ticket.getSeatCode())
+                                .seatNumber(ticket.getSeatNumber())
+                                .price(ticket.getPrice())
+                                .build()).toList()
+                        )
+                .foodDTOs(foodDTOs)
+                .theaterId(booking.getTheaterId())
+                .createdAt(booking.getCreatedAt())
+                .paymentId(booking.getPaymentId())
+                .build();
+
+
+        return BaseResponse.build(bookingDetailResponse,true);
     }
 
     private void markTicketUnused(List<Long> ticketIds){

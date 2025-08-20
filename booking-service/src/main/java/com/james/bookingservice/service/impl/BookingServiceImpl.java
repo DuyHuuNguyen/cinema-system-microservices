@@ -3,6 +3,7 @@ package com.james.bookingservice.service.impl;
 import com.james.bookingservice.entity.Booking;
 import com.james.bookingservice.repository.BookingRepository;
 import com.james.bookingservice.service.BookingService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,5 +33,10 @@ public class BookingServiceImpl implements BookingService {
   @Override
   public Page<Booking> findAll(Specification<Booking> specification, Pageable pageable) {
     return this.bookingRepository.findAll(specification, pageable);
+  }
+
+  @Override
+  public Optional<Booking> findByIdAndOwnerId(Long id, Long ownerId) {
+    return this.bookingRepository.findByIdAndOwnerId(id, ownerId);
   }
 }

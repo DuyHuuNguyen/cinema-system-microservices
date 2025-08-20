@@ -1,5 +1,6 @@
 package com.james.bookingservice.service;
 
+import com.james.bookingservice.dto.PaymentDTO;
 import com.james.bookingservice.resquest.CreatePaymentRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -17,4 +18,7 @@ public interface PaymentService {
 
   @PatchMapping(value = "/api/v1/payments/internal/{id}", headers = "secret-key=booking-service")
   Boolean addBookingIdForPayment(@PathVariable Long id, @RequestParam Long paymentId1);
+
+  @GetMapping(value = "/api/v1/payments/internal/{id}", headers = "secret-key=booking-service")
+  PaymentDTO findPaymentById(@PathVariable Long id);
 }

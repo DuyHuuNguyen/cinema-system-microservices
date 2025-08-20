@@ -1,4 +1,4 @@
-package com.james.scheduleservice.enums;
+package com.james.bookingservice.enums;
 
 public enum FoodType {
   SNACK,
@@ -6,5 +6,5 @@ public enum FoodType {
   SWEET_TREAT,
   SAVORY_MEAL,
   HEALTHY_OPTION,
-  DRINK,
+  DRINK
 }

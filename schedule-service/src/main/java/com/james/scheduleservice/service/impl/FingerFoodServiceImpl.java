@@ -16,4 +16,9 @@ public class FingerFoodServiceImpl implements FingerFoodService {
   public Optional<FingerFood> findByIdAndTheaterId(Long foodId, Long theaterId) {
     return this.fingerFoodRepository.findFingerFoodByIdAndTheaterId(foodId, theaterId);
   }
+
+  @Override
+  public Optional<FingerFood> findById(Long id) {
+    return this.fingerFoodRepository.findById(id);
+  }
 }

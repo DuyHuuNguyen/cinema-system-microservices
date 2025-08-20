@@ -1,5 +1,6 @@
 package com.james.bookingservice.service;
 
+import com.james.bookingservice.dto.FoodDTO;
 import com.james.bookingservice.dto.ScheduleDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,4 +23,7 @@ public interface ScheduleService {
       value = "/api/v1/theaters/internal/food/{id}",
       headers = "secret-key=booking-service")
   Float getPriceOfFoodById(@PathVariable long id, @RequestParam("foodId") Long foodId);
+
+  @GetMapping(value = "/api/v1/foods/internal/{id}", headers = "secret-key=booking-service")
+  FoodDTO findFoodById(@PathVariable Long id);
 }

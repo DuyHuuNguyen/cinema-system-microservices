@@ -32,14 +32,6 @@ public class Ticket extends BaseEntity {
   @Column(name = "schedule_id", nullable = false)
   private Long scheduleId;
 
-  //  @ManyToOne(fetch = FetchType.LAZY)
-  //  @JoinColumn(name = "booking_id", nullable = false)
-  //  private Booking booking;
-  //
-  //  public void addBooking(Booking booking) {
-  //    this.booking = booking;
-  //  }
-
   public void markTicketUsed() {
     this.isUsed = true;
   }

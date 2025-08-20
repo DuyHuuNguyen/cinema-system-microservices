@@ -1,5 +1,6 @@
 package com.james.paymentservice.facade.impl;
 
+import com.james.paymentservice.dto.PaymentDTO;
 import com.james.paymentservice.entity.Payment;
 import com.james.paymentservice.enums.ErrorCode;
 import com.james.paymentservice.exception.EntityNotFoundException;
@@ -53,5 +54,19 @@ public class PaymentFacadeImpl implements PaymentFacade {
     if (!isValidPayment) throw new EntityNotFoundException(ErrorCode.PAYMENT_INVALID);
     payment.addBookingId(bookingId);
     this.paymentService.save(payment);
+  }
+
+  @Override
+  public PaymentDTO findPaymentById(Long id) {
+    var payment =
+        this.paymentService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.PAYMENT_NOT_FOUND));
+    return PaymentDTO.builder()
+        .id(payment.getId())
+        .paymentStatus(payment.getPaymentStatus())
+        .paymentType(payment.getPaymentType())
+        .price(payment.getPrice())
+        .build();
   }
 }

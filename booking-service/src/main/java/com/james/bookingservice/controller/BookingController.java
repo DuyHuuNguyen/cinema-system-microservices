@@ -2,6 +2,7 @@ package com.james.bookingservice.controller;
 
 import com.james.bookingservice.facade.BookingFacade;
 import com.james.bookingservice.response.BaseResponse;
+import com.james.bookingservice.response.BookingDetailResponse;
 import com.james.bookingservice.response.BookingResponse;
 import com.james.bookingservice.response.PaginationResponse;
 import com.james.bookingservice.resquest.BookingCriteria;
@@ -38,5 +39,14 @@ public class BookingController {
   public BaseResponse<PaginationResponse<BookingResponse>> findByFilter(
       @NonNull BookingCriteria criteria) {
     return this.bookingFacade.findByFilter(criteria);
+  }
+
+  @GetMapping("/booking-detail/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Booking APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<BookingDetailResponse> findDetailById(@PathVariable Long id) {
+    return this.bookingFacade.findDetailById(id);
   }
 }

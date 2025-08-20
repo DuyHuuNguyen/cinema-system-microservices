@@ -1,5 +1,6 @@
 package com.james.paymentservice.controller;
 
+import com.james.paymentservice.dto.PaymentDTO;
 import com.james.paymentservice.facade.PaymentFacade;
 import com.james.paymentservice.resquest.UpsertPaymentRequest;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -35,5 +36,11 @@ public class PaymentController {
   Boolean addBookingIdForPayment(@PathVariable Long id, @RequestParam Long bookingId) {
     this.paymentFacade.addBookingIdForPayment(id, bookingId);
     return true;
+  }
+
+  @Hidden
+  @GetMapping(value = "/internal/{id}", headers = "secret-key=booking-service")
+  public PaymentDTO findPaymentById(@PathVariable Long id) {
+    return this.paymentFacade.findPaymentById(id);
   }
 }
