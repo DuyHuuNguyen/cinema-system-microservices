@@ -1,12 +1,12 @@
 package com.james.bookingservice.controller;
 
 import com.james.bookingservice.facade.BookingFacade;
+import com.james.bookingservice.request.BookingCriteria;
+import com.james.bookingservice.request.CreateBookingTicketRequest;
 import com.james.bookingservice.response.BaseResponse;
 import com.james.bookingservice.response.BookingDetailResponse;
 import com.james.bookingservice.response.BookingResponse;
 import com.james.bookingservice.response.PaginationResponse;
-import com.james.bookingservice.resquest.BookingCriteria;
-import com.james.bookingservice.resquest.CreateBookingTicketRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.NonNull;

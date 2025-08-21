@@ -1,11 +1,12 @@
 package com.james.bookingservice.controller;
 
 import com.james.bookingservice.facade.TicketFacade;
+import com.james.bookingservice.request.ChangePriceTicketsRequest;
+import com.james.bookingservice.request.CreateTicketInternalRequest;
+import com.james.bookingservice.request.ReleaseTicketsRequest;
+import com.james.bookingservice.request.UpsertTicketRequest;
 import com.james.bookingservice.response.BaseResponse;
 import com.james.bookingservice.response.TicketResponse;
-import com.james.bookingservice.resquest.ChangePriceTicketsRequest;
-import com.james.bookingservice.resquest.CreateTicketInternalRequest;
-import com.james.bookingservice.resquest.ReleaseTicketsRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,6 +21,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class TicketController {
   private final TicketFacade ticketFacade;
+
+  @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Booking APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public BaseResponse<Void> updateTicket(
+      @PathVariable Long id, @RequestBody UpsertTicketRequest request) {
+    request.withId(id);
+    this.ticketFacade.updateTicket(request);
+    return BaseResponse.ok();
+  }
 
   @PatchMapping("/price")
   @ResponseStatus(HttpStatus.OK)

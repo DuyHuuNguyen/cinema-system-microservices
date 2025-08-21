@@ -1,4 +1,4 @@
-package com.james.bookingservice.resquest;
+package com.james.bookingservice.request;
 
 import com.james.bookingservice.enums.PaymentStatus;
 import com.james.bookingservice.enums.PaymentType;

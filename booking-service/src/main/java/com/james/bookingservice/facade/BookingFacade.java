@@ -1,11 +1,11 @@
 package com.james.bookingservice.facade;
 
+import com.james.bookingservice.request.BookingCriteria;
+import com.james.bookingservice.request.CreateBookingTicketRequest;
 import com.james.bookingservice.response.BaseResponse;
 import com.james.bookingservice.response.BookingDetailResponse;
 import com.james.bookingservice.response.BookingResponse;
 import com.james.bookingservice.response.PaginationResponse;
-import com.james.bookingservice.resquest.BookingCriteria;
-import com.james.bookingservice.resquest.CreateBookingTicketRequest;
 
 public interface BookingFacade {
   void createBooking(CreateBookingTicketRequest request);

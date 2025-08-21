@@ -2,8 +2,8 @@ package com.james.bookingservice.service;
 
 import com.james.bookingservice.dto.FoodDTO;
 import com.james.bookingservice.dto.ScheduleDTO;
-import com.james.bookingservice.resquest.ValidAdminTheaterRequest;
-import com.james.bookingservice.resquest.ValidScheduleOfTheaterRequest;
+import com.james.bookingservice.request.ValidAdminTheaterRequest;
+import com.james.bookingservice.request.ValidScheduleOfTheaterRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

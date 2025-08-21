@@ -32,4 +32,9 @@ public class TicketServiceImpl implements TicketService {
   public List<Ticket> findTicketsByScheduleId(Long scheduleId) {
     return this.ticketRepository.findTicketsByScheduleId(scheduleId);
   }
+
+  @Override
+  public Optional<Ticket> findByIdWithoutActive(Long id) {
+    return this.ticketRepository.findById(id);
+  }
 }

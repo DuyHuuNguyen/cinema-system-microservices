@@ -18,9 +18,9 @@ import com.james.bookingservice.response.BaseResponse;
 import com.james.bookingservice.response.BookingDetailResponse;
 import com.james.bookingservice.response.BookingResponse;
 import com.james.bookingservice.response.PaginationResponse;
-import com.james.bookingservice.resquest.BookingCriteria;
-import com.james.bookingservice.resquest.CreateBookingTicketRequest;
-import com.james.bookingservice.resquest.CreatePaymentRequest;
+import com.james.bookingservice.request.BookingCriteria;
+import com.james.bookingservice.request.CreateBookingTicketRequest;
+import com.james.bookingservice.request.CreatePaymentRequest;
 import com.james.bookingservice.service.*;
 
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.james.bookingservice.specification.BookingSpecification;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;

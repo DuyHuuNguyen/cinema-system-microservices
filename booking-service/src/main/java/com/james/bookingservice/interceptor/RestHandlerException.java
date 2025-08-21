@@ -8,9 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.List;
-import java.util.Set;
-
 @ControllerAdvice
 public class RestHandlerException {
   @ExceptionHandler(EntityNotFoundException.class)
@@ -42,10 +39,10 @@ public class RestHandlerException {
 
   @ExceptionHandler(UnReleaseTicketException.class)
   public ResponseEntity<BaseResponse<ExceptionResponse>> handleUnReleaseTicketException(
-          UnReleaseTicketException exception) {
+      UnReleaseTicketException exception) {
     return new ResponseEntity<>(
-            BaseResponse.build(
-                    new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
-            HttpStatus.BAD_REQUEST);
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
   }
 }

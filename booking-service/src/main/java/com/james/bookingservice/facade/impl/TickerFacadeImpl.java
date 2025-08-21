@@ -1,14 +1,15 @@
 package com.james.bookingservice.facade.impl;
 
 import com.james.bookingservice.config.SecurityUserDetails;
+import com.james.bookingservice.dto.TicketDTO;
 import com.james.bookingservice.entity.Ticket;
 import com.james.bookingservice.enums.ActiveEnum;
 import com.james.bookingservice.enums.ErrorCode;
 import com.james.bookingservice.exception.*;
 import com.james.bookingservice.facade.TicketFacade;
+import com.james.bookingservice.request.*;
 import com.james.bookingservice.response.BaseResponse;
 import com.james.bookingservice.response.TicketResponse;
-import com.james.bookingservice.resquest.*;
 import com.james.bookingservice.service.ProducerHandleTicketService;
 import com.james.bookingservice.service.ScheduleService;
 import com.james.bookingservice.service.TicketService;
@@ -139,6 +140,27 @@ public class TickerFacadeImpl implements TicketFacade {
                 })
             .toList();
     return BaseResponse.build(response, true);
+  }
+
+  @Override
+  @Transactional
+  public void updateTicket(UpsertTicketRequest request) {
+    this.verifyAdminTheater(request.getTheaterId(), request.getScheduleId());
+    var ticket =
+        this.ticketService
+            .findById(request.getId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.TICKET_NOT_FOUND));
+    var isValidTicketOfScheduleId =
+        request.getScheduleId() != null && ticket.getScheduleId().equals(request.getScheduleId());
+    if (!isValidTicketOfScheduleId) throw new EntityNotFoundException(ErrorCode.SCHEDULE_NOT_FOUND);
+    var ticketDTO =
+        TicketDTO.builder()
+            .price(request.getPrice())
+            .seatNumber(request.getSeatNumber())
+            .seatCode(request.getSeatCode())
+            .build();
+    ticket.changeInfo(ticketDTO);
+    this.ticketService.save(ticket);
   }
 
   private void verifyAdminTheater(Long theaterId, Long scheduleId) {

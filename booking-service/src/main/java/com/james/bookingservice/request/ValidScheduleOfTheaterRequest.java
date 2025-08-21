@@ -1,15 +1,15 @@
-package com.james.bookingservice.resquest;
+package com.james.bookingservice.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ValidAdminTheaterRequest {
-  private Long adminId;
+@Builder
+public class ValidScheduleOfTheaterRequest {
+  private Long scheduleId;
   private Long theaterId;
 }

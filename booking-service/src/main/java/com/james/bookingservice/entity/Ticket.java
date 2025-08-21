@@ -1,5 +1,6 @@
 package com.james.bookingservice.entity;
 
+import com.james.bookingservice.dto.TicketDTO;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.*;
@@ -44,5 +45,11 @@ public class Ticket extends BaseEntity {
 
   public void release() {
     this.isActive = true;
+  }
+
+  public void changeInfo(TicketDTO ticketDTO) {
+    this.price = ticketDTO.getPrice();
+    this.seatCode = ticketDTO.getSeatCode();
+    this.seatNumber = ticketDTO.getSeatNumber();
   }
 }

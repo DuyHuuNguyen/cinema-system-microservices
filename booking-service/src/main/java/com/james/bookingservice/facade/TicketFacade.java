@@ -1,10 +1,11 @@
 package com.james.bookingservice.facade;
 
+import com.james.bookingservice.request.ChangePriceTicketsRequest;
+import com.james.bookingservice.request.CreateTicketInternalRequest;
+import com.james.bookingservice.request.ReleaseTicketsRequest;
+import com.james.bookingservice.request.UpsertTicketRequest;
 import com.james.bookingservice.response.BaseResponse;
 import com.james.bookingservice.response.TicketResponse;
-import com.james.bookingservice.resquest.ChangePriceTicketsRequest;
-import com.james.bookingservice.resquest.CreateTicketInternalRequest;
-import com.james.bookingservice.resquest.ReleaseTicketsRequest;
 import java.util.List;
 
 public interface TicketFacade {
@@ -17,4 +18,6 @@ public interface TicketFacade {
   void releaseTickets(ReleaseTicketsRequest request);
 
   BaseResponse<List<TicketResponse>> findAllTicket(Long scheduleId);
+
+  void updateTicket(UpsertTicketRequest request);
 }

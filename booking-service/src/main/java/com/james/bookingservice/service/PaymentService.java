@@ -1,7 +1,7 @@
 package com.james.bookingservice.service;
 
 import com.james.bookingservice.dto.PaymentDTO;
-import com.james.bookingservice.resquest.CreatePaymentRequest;
+import com.james.bookingservice.request.CreatePaymentRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

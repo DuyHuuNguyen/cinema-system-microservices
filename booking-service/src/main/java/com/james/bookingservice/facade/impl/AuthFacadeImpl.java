@@ -2,8 +2,8 @@ package com.james.bookingservice.facade.impl;
 
 import com.james.bookingservice.config.SecurityUserDetails;
 import com.james.bookingservice.facade.AuthFacade;
+import com.james.bookingservice.request.AuthenticationRequest;
 import com.james.bookingservice.response.BaseResponse;
-import com.james.bookingservice.resquest.AuthenticationRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

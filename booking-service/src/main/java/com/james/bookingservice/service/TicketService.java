@@ -12,4 +12,6 @@ public interface TicketService {
   void delete(Ticket ticket);
 
   List<Ticket> findTicketsByScheduleId(Long scheduleId);
+
+  Optional<Ticket> findByIdWithoutActive(Long id);
 }
