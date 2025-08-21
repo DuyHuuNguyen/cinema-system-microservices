@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+@ToString
 @Entity
 @Table(name = "payments")
 @Getter
@@ -26,4 +28,15 @@ public class Payment extends BaseEntity {
 
   @Column(name = "booking_id", nullable = false)
   private Long bookingId;
+
+  @Column(name = "price", nullable = false)
+  private float price;
+
+  public Boolean isCompletedPayment() {
+    return paymentStatus.isCompleted();
+  }
+
+  public void addBookingId(Long bookingId) {
+    this.bookingId = bookingId;
+  }
 }

@@ -1,4 +1,4 @@
-package com.james.bookingservice.resquest;
+package com.james.bookingservice.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

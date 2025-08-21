@@ -5,6 +5,7 @@ import com.james.scheduleservice.response.*;
 import com.james.scheduleservice.resquest.DoScheduleRequest;
 import com.james.scheduleservice.resquest.ScheduleCriteria;
 import com.james.scheduleservice.resquest.UpsertScheduleRequest;
+import com.james.scheduleservice.resquest.ValidScheduleOfTheaterRequest;
 
 public interface MovieScheduleFacade {
   ScheduleDTO findScheduleById(Long id);
@@ -20,4 +21,6 @@ public interface MovieScheduleFacade {
   void doSchedule(UpsertScheduleRequest request);
 
   Long convertScheduleCodeToId(String scheduleCode);
+
+  Boolean validScheduleOfTheater(ValidScheduleOfTheaterRequest request);
 }

@@ -29,6 +29,7 @@ public class TheaterFacadeImpl implements TheaterFacade {
   private final TheaterRateService theaterRateService;
   private final NotificationService notificationService;
   private final RoomService roomService;
+  private final FingerFoodService fingerFoodService;
 
   @Override
   public TheaterDTO findTheaterById(Long id) {
@@ -229,6 +230,15 @@ public class TheaterFacadeImpl implements TheaterFacade {
             .totalPages(roomPages.getTotalPages())
             .build();
     return BaseResponse.build(null, true);
+  }
+
+  @Override
+  public Float getPriceOfFood(long id, Long foodId) {
+    var food =
+        this.fingerFoodService
+            .findByIdAndTheaterId(foodId, id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.FOOD_NOT_FOUND));
+    return food.getPrice();
   }
 
   public void addLocationIntoTheater(LocationDTO locationDTO, Theater theater) {

@@ -5,5 +5,6 @@ public enum FoodType {
   BEVERAGE,
   SWEET_TREAT,
   SAVORY_MEAL,
-  HEALTHY_OPTION
+  HEALTHY_OPTION,
+  DRINK,
 }

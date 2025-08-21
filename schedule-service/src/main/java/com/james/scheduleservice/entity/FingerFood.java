@@ -27,11 +27,12 @@ public class FingerFood extends BaseEntity {
   @Column(name = "price", nullable = false)
   private Float price;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "theater_id")
   private Theater theater;
 
   @OneToMany(
+      fetch = FetchType.LAZY,
       mappedBy = "fingerFood",
       cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
   @Builder.Default

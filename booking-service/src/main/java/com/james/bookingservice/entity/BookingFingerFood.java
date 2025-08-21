@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "booking_finger_foods")
 @Getter
 @SuperBuilder
 @AllArgsConstructor
@@ -18,9 +18,13 @@ public class BookingFingerFood extends BaseEntity {
   @JoinColumn(name = "booking_id", nullable = false)
   private Booking booking;
 
-  @Column(name = "finger_food_id", nullable = false)
+  @Column(name = "finger_food_id")
   private Long fingerFoodId;
 
   @Column(name = "quantity", nullable = false)
   private Integer quantity;
+
+  public void addBooking(Booking booking) {
+    this.booking = booking;
+  }
 }
