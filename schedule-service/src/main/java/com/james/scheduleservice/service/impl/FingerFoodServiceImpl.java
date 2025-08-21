@@ -5,6 +5,9 @@ import com.james.scheduleservice.repository.FingerFoodRepository;
 import com.james.scheduleservice.service.FingerFoodService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,5 +23,10 @@ public class FingerFoodServiceImpl implements FingerFoodService {
   @Override
   public Optional<FingerFood> findById(Long id) {
     return this.fingerFoodRepository.findById(id);
+  }
+
+  @Override
+  public Page<FingerFood> findAll(Specification<FingerFood> specification, Pageable pageable) {
+    return fingerFoodRepository.findAll(specification, pageable);
   }
 }
