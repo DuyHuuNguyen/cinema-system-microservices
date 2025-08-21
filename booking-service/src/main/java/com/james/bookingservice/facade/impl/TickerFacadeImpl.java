@@ -6,6 +6,8 @@ import com.james.bookingservice.enums.ActiveEnum;
 import com.james.bookingservice.enums.ErrorCode;
 import com.james.bookingservice.exception.*;
 import com.james.bookingservice.facade.TicketFacade;
+import com.james.bookingservice.response.BaseResponse;
+import com.james.bookingservice.response.TicketResponse;
 import com.james.bookingservice.resquest.*;
 import com.james.bookingservice.service.ProducerHandleTicketService;
 import com.james.bookingservice.service.ScheduleService;
@@ -112,6 +114,31 @@ public class TickerFacadeImpl implements TicketFacade {
     }
 
     this.producerHandleTicketService.save(tickets);
+  }
+
+  @Override
+  public BaseResponse<List<TicketResponse>> findAllTicket(Long scheduleId) {
+    var tickets = this.ticketService.findTicketsByScheduleId(scheduleId);
+
+    var response =
+        tickets.stream()
+            .map(
+                ticket -> {
+                  var isReleasedTicket = ticket.isActive() == ActiveEnum.RELEASE.getIsActive();
+                  if (!isReleasedTicket)
+                    throw new UnReleaseTicketException(ErrorCode.TICKET_NOT_FOUND);
+                  return TicketResponse.builder()
+                      .id(ticket.getId())
+                      .price(ticket.getPrice())
+                      .seatNumber(ticket.getSeatNumber())
+                      .isUsed(ticket.getIsUsed())
+                      .seatCode(ticket.getSeatCode())
+                      .scheduleId(ticket.getScheduleId())
+                      .releasedAt(ticket.getUpdated_at())
+                      .build();
+                })
+            .toList();
+    return BaseResponse.build(response, true);
   }
 
   private void verifyAdminTheater(Long theaterId, Long scheduleId) {

@@ -19,10 +19,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findTicketsByScheduleId(Long scheduleId);
 
     @Query("""
-    SELECT t 
+    SELECT t
     FROM Ticket t
-    WHERE t.id =:id 
-    AND t.isActive =:true
+    WHERE t.id =:id
+    AND t.isActive = true
     """)
     Optional<Ticket> findByIdWithActive(Long id);
 }

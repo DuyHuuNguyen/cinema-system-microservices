@@ -2,12 +2,14 @@ package com.james.bookingservice.controller;
 
 import com.james.bookingservice.facade.TicketFacade;
 import com.james.bookingservice.response.BaseResponse;
+import com.james.bookingservice.response.TicketResponse;
 import com.james.bookingservice.resquest.ChangePriceTicketsRequest;
 import com.james.bookingservice.resquest.CreateTicketInternalRequest;
 import com.james.bookingservice.resquest.ReleaseTicketsRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,9 +31,19 @@ public class TicketController {
     return BaseResponse.ok();
   }
 
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Ticket APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<List<TicketResponse>> findAllTicket(
+      @RequestParam("scheduleId") Long scheduleId) {
+    return this.ticketFacade.findAllTicket(scheduleId);
+  }
+
   @PatchMapping("/release-tickets")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Booking APIs"})
+  @Operation(tags = {"Ticket APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public BaseResponse<Void> releaseTickets(@RequestBody ReleaseTicketsRequest request) {
