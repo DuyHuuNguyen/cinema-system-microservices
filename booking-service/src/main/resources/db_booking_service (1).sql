@@ -68,6 +68,9 @@ CREATE TABLE "vouchers"
     "expired_at"  bigint                NOT NULL,
     "code"        varchar(100) UNIQUE   NOT NULL,
     "description" varchar(255),
+    "quality"     int                   NOT NULL,
+
+    "theater_id"  bigint                NOT NULL,
     "is_active"   boolean               NOT NULL DEFAULT true,
     "version"     bigint                NOT NULL DEFAULT 0,
     "created_at"  bigint                NOT NULL DEFAULT EXTRACT(epoch FROM now()) * 1000::numeric,

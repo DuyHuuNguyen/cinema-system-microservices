@@ -1,5 +1,6 @@
 package com.james.bookingservice.entity;
 
+import com.james.bookingservice.dto.VoucherDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -34,6 +35,12 @@ public class Voucher extends BaseEntity {
   @Column(name = "description", nullable = false)
   private String description;
 
+  @Column(name = "theater_id", nullable = false)
+  private Long theaterId;
+
+  @Column(name = "quality", nullable = false)
+  private Integer quality;
+
   @ManyToOne private Booking booking;
 
   public void addBooking(Booking booking) {
@@ -42,5 +49,19 @@ public class Voucher extends BaseEntity {
 
   public Boolean isExpired() {
     return expiredAt <= System.currentTimeMillis();
+  }
+
+  public void subQuality() {
+    this.quality--;
+  }
+
+  public void changeInfo(VoucherDTO voucherDTO) {
+    this.voucherType = voucherDTO.getVoucherType();
+    this.percent = voucherDTO.getPercent();
+    this.maxPrice = voucherDTO.getMaxPrice();
+    this.expiredAt = voucherDTO.getExpiredAt();
+    this.voucherCode = voucherDTO.getVoucherCode();
+    this.description = voucherDTO.getDescription();
+    this.quality = voucherDTO.getQuality();
   }
 }

@@ -232,6 +232,7 @@ public class BookingFacadeImpl implements BookingFacade {
                           var isValidVoucherExpired = voucher.isExpired();
                           if (isValidVoucherExpired) throw new TicketExpireException(ErrorCode.VOUCHER_IS_EXPIRED);
                           booking.addVoucher(voucher);
+                          voucher.subQuality();
                           totalPrice.updateAndGet(
                                   price -> price - voucher.getMaxPrice() * voucher.getPercent());
                       });

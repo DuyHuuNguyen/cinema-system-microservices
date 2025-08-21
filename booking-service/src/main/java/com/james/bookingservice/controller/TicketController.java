@@ -24,7 +24,7 @@ public class TicketController {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Booking APIs"})
+  @Operation(tags = {"Ticket APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public BaseResponse<Void> updateTicket(
@@ -36,7 +36,7 @@ public class TicketController {
 
   @PatchMapping("/price")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Booking APIs"})
+  @Operation(tags = {"Ticket APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public BaseResponse<Void> changeTicketsPrice(@RequestBody ChangePriceTicketsRequest request) {
