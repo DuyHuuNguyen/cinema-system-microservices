@@ -48,11 +48,10 @@ public class BookingFacadeImpl implements BookingFacade {
   private final ScheduleService scheduleService;
   private final PaymentService paymentService;
 
-
   @Override
   @Transactional
   public void createBooking(CreateBookingTicketRequest request) {
-        AtomicReference<Float> totalPrice = new AtomicReference<>(0F);
+      AtomicReference<Float> totalPrice = new AtomicReference<>(0F);
 
       var principal =
               (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
