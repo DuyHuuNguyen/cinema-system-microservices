@@ -2,13 +2,11 @@ package com.james.bookingservice.facade.impl;
 
 import com.james.bookingservice.config.SecurityUserDetails;
 import com.james.bookingservice.entity.Ticket;
+import com.james.bookingservice.enums.ActiveEnum;
 import com.james.bookingservice.enums.ErrorCode;
 import com.james.bookingservice.exception.*;
 import com.james.bookingservice.facade.TicketFacade;
-import com.james.bookingservice.resquest.ChangePriceTicketsRequest;
-import com.james.bookingservice.resquest.CreateTicketInternalRequest;
-import com.james.bookingservice.resquest.ValidAdminTheaterRequest;
-import com.james.bookingservice.resquest.ValidScheduleOfTheaterRequest;
+import com.james.bookingservice.resquest.*;
 import com.james.bookingservice.service.ProducerHandleTicketService;
 import com.james.bookingservice.service.ScheduleService;
 import com.james.bookingservice.service.TicketService;
@@ -42,6 +40,7 @@ public class TickerFacadeImpl implements TicketFacade {
       var ticket =
           Ticket.builder().price(request.getPrice()).scheduleId(scheduleId).seatNumber(i).build();
       log.info("Creating ticket {}", ticket);
+      ticket.changeActive(ActiveEnum.HIDDEN_DEFAULT.getIsActive());
       tickets.add(ticket);
     }
     this.producerHandleTicketService.save(tickets);
@@ -60,37 +59,9 @@ public class TickerFacadeImpl implements TicketFacade {
   @Override
   @Transactional
   public void changeTicketsPrice(ChangePriceTicketsRequest request) {
-    var principal =
-        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    try {
-      var validAdminTheaterRequest =
-          ValidAdminTheaterRequest.builder()
-              .adminId(principal.getId())
-              .theaterId(request.getTheaterId())
-              .build();
-
-      var isValidAdmin = this.scheduleService.validAdminTheater(validAdminTheaterRequest);
-      if (!isValidAdmin) throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED);
-
-      var validScheduleOfTheaterRequest =
-          ValidScheduleOfTheaterRequest.builder()
-              .scheduleId(request.getScheduleId())
-              .theaterId(request.getTheaterId())
-              .build();
-
-      // bug logic verify input
-
-      var isValidScheduleOfTheater =
-          this.scheduleService.validScheduleOfTheater(validScheduleOfTheaterRequest);
-      if (!isValidScheduleOfTheater)
-        throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED);
-
-    } catch (Exception e) {
-      throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED);
-    }
-
+    this.verifyAdminTheater(request.getTheaterId(), request.getScheduleId());
     var ticketIds = request.getTicketIds();
-    var isSomeTicketsChanged = ticketIds == null || ticketIds.isEmpty();
+    var isSomeTicketsChanged = ticketIds != null && !ticketIds.isEmpty();
 
     List<Ticket> tickets;
     if (isSomeTicketsChanged) {
@@ -113,5 +84,62 @@ public class TickerFacadeImpl implements TicketFacade {
       ticket.changePrice(request.getPrice());
     }
     this.producerHandleTicketService.save(tickets);
+  }
+
+  @Override
+  public void releaseTickets(ReleaseTicketsRequest request) {
+    this.verifyAdminTheater(request.getTheaterId(), request.getScheduleId());
+    var ticketIds = request.getTicketIds();
+    var isSomeTicketsChanged = ticketIds != null && !ticketIds.isEmpty();
+
+    List<Ticket> tickets;
+    if (isSomeTicketsChanged) {
+      tickets = new ArrayList<>();
+      ticketIds.forEach(
+          ticketId -> {
+            var ticket =
+                this.ticketService
+                    .findById(ticketId)
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.TICKET_NOT_FOUND));
+            ticket.release();
+            tickets.add(ticket);
+          });
+    } else {
+      tickets = this.ticketService.findTicketsByScheduleId(request.getScheduleId());
+      var isTicketsNotFound = tickets == null || tickets.isEmpty();
+      if (isTicketsNotFound) throw new EntityNotFoundException(ErrorCode.TICKET_NOT_FOUND);
+      tickets.forEach(Ticket::release);
+    }
+
+    this.producerHandleTicketService.save(tickets);
+  }
+
+  private void verifyAdminTheater(Long theaterId, Long scheduleId) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    try {
+      var validAdminTheaterRequest =
+          ValidAdminTheaterRequest.builder()
+              .adminId(principal.getId())
+              .theaterId(theaterId)
+              .build();
+
+      var isValidAdmin = this.scheduleService.validAdminTheater(validAdminTheaterRequest);
+      if (!isValidAdmin) throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED);
+
+      var validScheduleOfTheaterRequest =
+          ValidScheduleOfTheaterRequest.builder()
+              .scheduleId(scheduleId)
+              .theaterId(theaterId)
+              .build();
+
+      var isValidScheduleOfTheater =
+          this.scheduleService.validScheduleOfTheater(validScheduleOfTheaterRequest);
+      if (!isValidScheduleOfTheater)
+        throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED);
+
+    } catch (Exception e) {
+      throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED);
+    }
   }
 }

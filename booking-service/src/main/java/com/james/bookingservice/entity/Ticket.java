@@ -2,12 +2,10 @@ package com.james.bookingservice.entity;
 
 import jakarta.persistence.*;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@ToString(callSuper = true)
 @Entity
 @Table(name = "tickets")
 @Getter
@@ -42,5 +40,9 @@ public class Ticket extends BaseEntity {
 
   public void changePrice(Float price) {
     this.price = price;
+  }
+
+  public void release() {
+    this.isActive = true;
   }
 }

@@ -5,6 +5,7 @@ import java.time.Instant;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@ToString
 @SuperBuilder
 @Getter
 @AllArgsConstructor
@@ -41,5 +42,9 @@ public class BaseEntity {
   @PreUpdate
   protected void preUpdate() {
     this.updated_at = Instant.now().toEpochMilli();
+  }
+
+  public void changeActive(Boolean isActive) {
+    this.isActive = isActive;
   }
 }

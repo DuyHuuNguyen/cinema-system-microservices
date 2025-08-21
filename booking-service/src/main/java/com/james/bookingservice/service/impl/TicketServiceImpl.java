@@ -20,7 +20,7 @@ public class TicketServiceImpl implements TicketService {
 
   @Override
   public Optional<Ticket> findById(Long id) {
-    return this.ticketRepository.findById(id);
+    return this.ticketRepository.findByIdWithActive(id);
   }
 
   @Override

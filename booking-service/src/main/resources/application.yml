@@ -27,11 +27,11 @@ spring:
     port: 5672
     username: guest
     password: guest
-#    listener:
-#      simple:
-#        retry:
-#          enabled: true
-#          max-attempts: 5
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
 #          initial-interval: 3000
 ---
 rabbitmq:

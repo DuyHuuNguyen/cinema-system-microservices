@@ -3,7 +3,6 @@ package com.james.bookingservice.service.impl;
 import com.james.bookingservice.entity.Ticket;
 import com.james.bookingservice.service.ConsumerHandleTicketService;
 import com.james.bookingservice.service.TicketService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -19,12 +18,8 @@ public class ConsumerHandleTicketServiceImpl implements ConsumerHandleTicketServ
   @Override
   @Transactional
   @RabbitListener(queues = {"${rabbitmq.variable.handle-ticket-queue}"})
-  public void save(List<Ticket> tickets) {
-    try {
-      tickets.forEach(this.ticketService::save);
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage());
-      //      log.info(e.getMessage());
-    }
+  public void save(Ticket ticket) {
+    log.info("ticket info {}", ticket.toString());
+    this.ticketService.save(ticket);
   }
 }

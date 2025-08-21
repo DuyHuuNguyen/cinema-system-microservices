@@ -4,6 +4,7 @@ import com.james.bookingservice.facade.TicketFacade;
 import com.james.bookingservice.response.BaseResponse;
 import com.james.bookingservice.resquest.ChangePriceTicketsRequest;
 import com.james.bookingservice.resquest.CreateTicketInternalRequest;
+import com.james.bookingservice.resquest.ReleaseTicketsRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,6 +26,16 @@ public class TicketController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public BaseResponse<Void> changeTicketsPrice(@RequestBody ChangePriceTicketsRequest request) {
     this.ticketFacade.changeTicketsPrice(request);
+    return BaseResponse.ok();
+  }
+
+  @PatchMapping("/release-tickets")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Booking APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public BaseResponse<Void> releaseTickets(@RequestBody ReleaseTicketsRequest request) {
+    this.ticketFacade.releaseTickets(request);
     return BaseResponse.ok();
   }
 

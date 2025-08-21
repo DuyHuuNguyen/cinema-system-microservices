@@ -24,6 +24,16 @@ public class ProducerHandleTickerServiceImpl implements ProducerHandleTicketServ
   @Override
   public void save(List<Ticket> tickets) {
     log.info("save tickets");
-    this.rabbitTemplate.convertAndSend(HANDLE_TICKET_EXCHANGE, HANDLE_TICKET_ROUTING_KEY, tickets);
+    for (Ticket ticket : tickets) {
+      this.rabbitTemplate.convertAndSend(HANDLE_TICKET_EXCHANGE, HANDLE_TICKET_ROUTING_KEY, ticket);
+    }
+    //    this.rabbitTemplate.convertAndSend(HANDLE_TICKET_EXCHANGE, HANDLE_TICKET_ROUTING_KEY,
+    // tickets);
   }
+
+  //  @PostConstruct
+  //  void run(){
+  //    this.rabbitTemplate.convertAndSend(HANDLE_TICKET_EXCHANGE, HANDLE_TICKET_ROUTING_KEY,
+  // List.of(Ticket.builder().build()));
+  //  }
 }
