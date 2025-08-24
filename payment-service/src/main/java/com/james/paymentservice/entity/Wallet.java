@@ -1,10 +1,9 @@
 package com.james.paymentservice.entity;
 
 import com.james.paymentservice.enums.WalletStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @Getter
 @SuperBuilder
+@Entity
 @Table(name = "wallets")
 public class Wallet extends BaseEntity {
   @Column(name = "user_id")
@@ -33,4 +33,6 @@ public class Wallet extends BaseEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private WalletStatus status;
+
+  @OneToMany private List<Transaction> transactions = new ArrayList<>();
 }

@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Entity
 @Table(name = "transactions")
 public class Transaction extends BaseEntity {
   @ManyToOne(
@@ -32,7 +33,4 @@ public class Transaction extends BaseEntity {
 
   @Column(name = "partner_id", nullable = false)
   private Long partnerId;
-
-  @Column(name = "is_payment_for_booking")
-  private Boolean isPaymentForBooking;
 }
