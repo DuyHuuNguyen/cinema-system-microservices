@@ -16,6 +16,7 @@ CREATE TABLE "wallets"
     CONSTRAINT fk_wallets_user FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
     CONSTRAINT chk_wallets_status CHECK ("status" IN ('ACTIVE', 'LOCKED'))
 );
+alter table wallets add column wallet_name varchar(100);
 
 CREATE TABLE "transactions"
 (

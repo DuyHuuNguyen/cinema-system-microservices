@@ -21,6 +21,9 @@ public class Wallet extends BaseEntity {
   @Column(name = "user_id")
   private Long userId;
 
+  @Column(name = "wallet_name")
+  private String walletName;
+
   @Column(name = "balance")
   private Double balance;
 
