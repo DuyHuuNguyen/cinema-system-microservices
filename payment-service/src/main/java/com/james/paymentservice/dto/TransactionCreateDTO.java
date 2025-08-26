@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class TransactionCreateDTO {
-
+  private Long principalId;
   private Long sourceWalletId;
   private Long destinationWalletId;
   private Double amount;

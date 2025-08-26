@@ -12,7 +12,7 @@ public class TransactionServiceImpl implements TransactionService {
   private final TransactionRepository transactionRepository;
 
   @Override
-  public void save(Transaction transaction) {
-    this.transactionRepository.save(transaction);
+  public Transaction save(Transaction transaction) {
+    return this.transactionRepository.save(transaction);
   }
 }

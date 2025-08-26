@@ -50,6 +50,7 @@ public class CheckoutPaymentConsumerImpl implements CheckoutPaymentConsumer {
     if (isWalletsMissing || isInsufficientBalance) {
       var transactionDeadLetterDTO =
           TransactionDeadLetterDTO.builder()
+              .principalId(transactionCreateDTO.getPrincipalId())
               .transactionType(transactionCreateDTO.getTransactionType())
               .amount(transactionCreateDTO.getAmount())
               .destinationWalletId(transactionCreateDTO.getDestinationWalletId())

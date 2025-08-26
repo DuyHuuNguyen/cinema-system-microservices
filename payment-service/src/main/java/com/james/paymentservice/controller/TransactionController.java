@@ -2,7 +2,7 @@ package com.james.paymentservice.controller;
 
 import com.james.paymentservice.facade.TransactionFacade;
 import com.james.paymentservice.response.BaseResponse;
-import com.james.paymentservice.resquest.TicketTransactionRequest;
+import com.james.paymentservice.resquest.CreateTransactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.*;
 public class TransactionController {
   private final TransactionFacade transactionFacade;
 
-  @PostMapping("/for-ticket")
+  @PostMapping
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Transaction APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<Void> createTransaction(
-      @RequestBody TicketTransactionRequest ticketTransactionRequest) {
-    this.transactionFacade.createTransaction(ticketTransactionRequest);
+      @RequestBody CreateTransactionRequest createTransactionRequest) {
+    this.transactionFacade.createTransaction(createTransactionRequest);
     return BaseResponse.ok();
   }
 }

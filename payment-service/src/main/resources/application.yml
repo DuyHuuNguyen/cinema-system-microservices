@@ -37,3 +37,4 @@ kafka:
     topic-successful-transaction: topic-success-transaction-23130075
     group-id-transaction-coordinator: james-23130075
     group-id-handle-successful: successful-23130075
+    group-id-handle-fail: fail-23130075

@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @ToString
-public class TicketTransactionRequest {
+public class CreateTransactionRequest {
 
   @NotNull private String idempotencyKey;
 

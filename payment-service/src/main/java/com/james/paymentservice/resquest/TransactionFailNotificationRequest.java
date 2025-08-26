@@ -1,15 +1,14 @@
-package com.james.paymentservice.dto;
+package com.james.paymentservice.resquest;
 
 import com.james.paymentservice.enums.TransactionType;
 import lombok.*;
 
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Builder
-public class TransactionDeadLetterDTO {
-  @Builder.Default private String message = "A Transaction Failed.";
+@Getter
+@ToString
+public class TransactionFailNotificationRequest {
   private Long principalId;
   private Long sourceWalletId;
   private Long destinationWalletId;

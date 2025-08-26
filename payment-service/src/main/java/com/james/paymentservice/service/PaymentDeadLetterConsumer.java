@@ -1,3 +1,7 @@
 package com.james.paymentservice.service;
 
-public interface PaymentDeadLetterConsumer {}
+import com.james.paymentservice.dto.TransactionDeadLetterDTO;
+
+public interface PaymentDeadLetterConsumer {
+  void handleFailTransaction(TransactionDeadLetterDTO transactionDeadLetterDTO);
+}
