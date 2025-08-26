@@ -1,5 +1,8 @@
 package com.james.paymentservice.enums;
 
+import lombok.ToString;
+
+@ToString
 public enum TransactionType {
   DEPOSIT,
   WITHDRAW,

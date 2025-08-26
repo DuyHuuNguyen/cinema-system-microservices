@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @ToString
-public class UpsertTransactionRequest {
+public class TicketTransactionRequest {
 
   @NotNull private String idempotencyKey;
 
@@ -19,11 +19,7 @@ public class UpsertTransactionRequest {
 
   @NotNull private Long partnerId;
 
-  private String bookingCode;
-
   @NotNull private Double amount;
-
-  private Boolean isPaymentForBooking;
 
   @NotNull private TransactionType transactionType;
 }

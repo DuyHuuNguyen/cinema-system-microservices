@@ -1,7 +1,7 @@
 package com.james.paymentservice.facade;
 
-import com.james.paymentservice.resquest.UpsertTransactionRequest;
+import com.james.paymentservice.resquest.TicketTransactionRequest;
 
 public interface TransactionFacade {
-  void createTransaction(UpsertTransactionRequest upsertTransactionRequest);
+  void createTransaction(TicketTransactionRequest ticketTransactionRequest);
 }

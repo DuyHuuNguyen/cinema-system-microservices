@@ -34,5 +34,27 @@ public class Wallet extends BaseEntity {
   @Column(name = "status")
   private WalletStatus status;
 
-  @OneToMany private List<Transaction> transactions = new ArrayList<>();
+  @OneToMany(
+      mappedBy = "sourceWallet",
+      fetch = FetchType.EAGER,
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  private List<Transaction> transactions = new ArrayList<>();
+
+  @OneToMany(
+      mappedBy = "destinationWallet",
+      fetch = FetchType.EAGER,
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  private List<Transaction> transactionsb = new ArrayList<>();
+
+  //  public void addTransaction(Transaction transaction) {
+  //    this.transactions.add(transaction);
+  //  }
+
+  public void minusBalance(Double balance) {
+    this.balance -= balance;
+  }
+
+  public void plusBalance(Double balance) {
+    this.balance += balance;
+  }
 }

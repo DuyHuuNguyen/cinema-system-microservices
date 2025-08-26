@@ -1,3 +1,7 @@
 package com.james.paymentservice.service;
 
-public interface CheckoutPaymentConsumer {}
+import com.james.paymentservice.dto.TransactionCreateDTO;
+
+public interface CheckoutPaymentConsumer {
+  void receiveAndHandleTransaction(TransactionCreateDTO transactionCreateDTO);
+}

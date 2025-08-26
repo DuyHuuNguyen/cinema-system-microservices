@@ -1,3 +1,7 @@
 package com.james.paymentservice.service;
 
-public interface PaymentSuccessConsumer {}
+import com.james.paymentservice.dto.TransactionSuccessfulDTO;
+
+public interface PaymentSuccessConsumer {
+  void handleSuccessTransaction(TransactionSuccessfulDTO transactionSuccessfulDTO);
+}

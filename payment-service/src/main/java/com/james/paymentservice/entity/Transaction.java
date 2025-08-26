@@ -19,7 +19,8 @@ public class Transaction extends BaseEntity {
   @ManyToOne(
       fetch = FetchType.LAZY,
       cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
-  private Wallet wallet;
+  @JoinColumn(name = "wallet_id")
+  private Wallet sourceWallet;
 
   @Column(name = "type")
   private TransactionType type;
@@ -31,6 +32,12 @@ public class Transaction extends BaseEntity {
   @Builder.Default
   private TransactionEnum status = TransactionEnum.ERROR;
 
-  @Column(name = "partner_id", nullable = false)
-  private Long partnerId;
+  //  @Column(name = "partner_id", nullable = false)
+  //  private Long partnerId;
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+  @JoinColumn(name = "destination_wallet_id")
+  private Wallet destinationWallet;
 }

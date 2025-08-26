@@ -1,3 +1,7 @@
 package com.james.paymentservice.service;
 
-public interface TransactionService {}
+import com.james.paymentservice.entity.Transaction;
+
+public interface TransactionService {
+  void save(Transaction transaction);
+}
