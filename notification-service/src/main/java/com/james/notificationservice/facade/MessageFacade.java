@@ -1,3 +1,7 @@
 package com.james.notificationservice.facade;
 
-public interface MessageFacade {}
+import com.james.notificationservice.resquest.TransactionSuccessNotificationRequest;
+
+public interface MessageFacade {
+    void sendNotificationSuccessTransaction(TransactionSuccessNotificationRequest transactionSuccessNotificationRequest);
+}

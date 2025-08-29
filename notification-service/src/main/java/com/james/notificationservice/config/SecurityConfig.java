@@ -22,7 +22,12 @@ public class SecurityConfig {
 
   private final AuthService authService;
   private final String[] WHITE_LISTS = {
-    "/api/v1/auth/authorization", "/swagger-ui/**", "/v3/api-docs/**"
+    "/api/v1/auth/authorization",
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/api/v1/auth",
+    "/api/v1/notifications/internal",
+    "/api/v1/messages/internal",
   };
 
   @Bean

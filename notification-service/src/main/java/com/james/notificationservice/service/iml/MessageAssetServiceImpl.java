@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MessageAssetServiceImpl implements MessageAssetService {
-  private final MessageAssetService messageAssetService;
+  //  private final MessageAssetService messageAssetService;
 }
