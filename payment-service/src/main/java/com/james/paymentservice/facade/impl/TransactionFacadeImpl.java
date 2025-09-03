@@ -2,13 +2,24 @@ package com.james.paymentservice.facade.impl;
 
 import com.james.paymentservice.config.SecurityUserDetails;
 import com.james.paymentservice.dto.TransactionCreateDTO;
+import com.james.paymentservice.dto.WalletDTO;
+import com.james.paymentservice.entity.Transaction;
 import com.james.paymentservice.enums.ErrorCode;
 import com.james.paymentservice.exception.DoubleSpendingException;
+import com.james.paymentservice.exception.EntityNotFoundException;
 import com.james.paymentservice.facade.TransactionFacade;
+import com.james.paymentservice.response.BaseResponse;
+import com.james.paymentservice.response.PaginationResponse;
+import com.james.paymentservice.response.TransactionDetailResponse;
+import com.james.paymentservice.response.TransactionResponse;
 import com.james.paymentservice.resquest.CreateTransactionRequest;
+import com.james.paymentservice.resquest.TransactionCriteria;
 import com.james.paymentservice.service.*;
+import com.james.paymentservice.specification.TransactionSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +53,73 @@ public class TransactionFacadeImpl implements TransactionFacade {
             .build();
     this.checkinPaymentCreatedProducer.createTransaction(transactionCreateDTO);
     log.info("Create transaction");
+  }
+
+  @Override
+  public BaseResponse<TransactionDetailResponse> findTransactionDetailById(Long id) {
+    var transaction =
+        this.transactionService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND));
+    var sourceWallet = transaction.getSourceWallet();
+    var sourceWalletDTO =
+        WalletDTO.builder()
+            .ownerId(sourceWallet.getUserId())
+            .walletName(sourceWallet.getWalletName())
+            .id(sourceWallet.getId())
+            .build();
+
+    var destinationWallet = transaction.getDestinationWallet();
+    var destinationWalletDTO =
+        WalletDTO.builder()
+            .id(destinationWallet.getId())
+            .ownerId(destinationWallet.getUserId())
+            .walletName(destinationWallet.getWalletName())
+            .build();
+    var transactionDetailResponse =
+        TransactionDetailResponse.builder()
+            .id(transaction.getId())
+            .amount(transaction.getAmount())
+            .createdAt(transaction.getCreatedAt())
+            .transactionStatus(transaction.getStatus())
+            .transactionType(transaction.getType())
+            .sourceWalletDTO(sourceWalletDTO)
+            .destinationWalletDTO(destinationWalletDTO)
+            .build();
+    return BaseResponse.build(transactionDetailResponse, true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<TransactionResponse>> findByFilter(
+      TransactionCriteria transactionCriteria) {
+    Specification<Transaction> transactionSpecification =
+        TransactionSpecification.withCreatedAtWithin30Minutes(transactionCriteria.getCreatedAt())
+            .and(
+                TransactionSpecification.withDestinationWalletId(
+                    transactionCriteria.getDestinationWalletId()));
+    var pageable =
+        PageRequest.of(transactionCriteria.getCurrentPage(), transactionCriteria.getPageSize());
+    var pages = transactionService.findAll(transactionSpecification, pageable);
+
+    var response =
+        PaginationResponse.<TransactionResponse>builder()
+            .data(
+                pages
+                    .get()
+                    .map(
+                        transaction ->
+                            TransactionResponse.builder()
+                                .id(transaction.getId())
+                                .transactionStatus(transaction.getStatus())
+                                .transactionType(transaction.getType())
+                                .createdAt(transaction.getCreatedAt())
+                                .amount(transaction.getAmount())
+                                .build())
+                    .toList())
+            .currentPage(transactionCriteria.getCurrentPage())
+            .totalElements(pages.getNumberOfElements())
+            .totalPages(pages.getTotalPages())
+            .build();
+    return BaseResponse.build(response, true);
   }
 }

@@ -14,13 +14,12 @@ import org.springframework.stereotype.Service;
 public class ProducerServiceImpl implements ProducerService {
   private final RabbitTemplate rabbitTemplate;
 
-
   @Value("${rabbitmq-info.routing-key-user-notification}")
   private String ROUTING_KEY_USER_NOTIFICATION;
 
   @Override
   public void sendNotification(MailDTO mailDTO) {
-    log.info("sending notification {}",mailDTO);
-    this.rabbitTemplate.convertAndSend(this.ROUTING_KEY_USER_NOTIFICATION,mailDTO);
+    log.info("sending notification {}", mailDTO);
+    this.rabbitTemplate.convertAndSend(this.ROUTING_KEY_USER_NOTIFICATION, mailDTO);
   }
 }

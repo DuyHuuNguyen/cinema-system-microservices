@@ -8,7 +8,7 @@ import lombok.*;
 @ToString
 @Getter
 public class MailDTO {
-    private String to;
-    private String subject;
-    private String body;
+  private String to;
+  private String subject;
+  private String body;
 }

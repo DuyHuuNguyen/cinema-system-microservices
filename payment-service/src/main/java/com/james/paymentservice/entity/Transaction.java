@@ -32,9 +32,6 @@ public class Transaction extends BaseEntity {
   @Builder.Default
   private TransactionEnum status = TransactionEnum.ERROR;
 
-  //  @Column(name = "partner_id", nullable = false)
-  //  private Long partnerId;
-
   @ManyToOne(
       fetch = FetchType.LAZY,
       cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})

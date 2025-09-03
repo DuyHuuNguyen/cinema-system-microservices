@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class TransactionSuccessNotificationRequest {
-    private Long transactionId;
-    private Long sourceWalletId;
-    private Long destinationWalletId;
-    private Double amount;
+  private Long transactionId;
+  private Long sourceWalletId;
+  private Long destinationWalletId;
+  private Double amount;
 }

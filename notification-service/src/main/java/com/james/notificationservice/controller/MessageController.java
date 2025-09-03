@@ -1,7 +1,6 @@
 package com.james.notificationservice.controller;
 
 import com.james.notificationservice.facade.MessageFacade;
-import com.james.notificationservice.response.BaseResponse;
 import com.james.notificationservice.resquest.TransactionSuccessNotificationRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,8 @@ public class MessageController {
 
   @Hidden
   @GetMapping("/internal/notification")
-  public void sendNotification(@RequestBody TransactionSuccessNotificationRequest transactionSuccessNotificationRequest) {
+  public void sendNotification(
+      @RequestBody TransactionSuccessNotificationRequest transactionSuccessNotificationRequest) {
     this.messageFacade.sendNotificationSuccessTransaction(transactionSuccessNotificationRequest);
   }
 }

@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
-    private final JavaMailSender javaMailSender;
+  private final JavaMailSender javaMailSender;
 
-    @Override
-    public void sendMail(MailDTO mailDTO) {
-        var mail = new SimpleMailMessage();
-        mail.setTo(mailDTO.getTo());
-        mail.setSubject(mailDTO.getSubject());
-        mail.setText(mailDTO.getBody());
-        javaMailSender.send(mail);
-    }
+  @Override
+  public void sendMail(MailDTO mailDTO) {
+    var mail = new SimpleMailMessage();
+    mail.setTo(mailDTO.getTo());
+    mail.setSubject(mailDTO.getSubject());
+    mail.setText(mailDTO.getBody());
+    javaMailSender.send(mail);
+  }
 }

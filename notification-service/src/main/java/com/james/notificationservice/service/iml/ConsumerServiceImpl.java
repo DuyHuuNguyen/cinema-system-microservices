@@ -12,13 +12,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ConsumerServiceImpl implements ConsumerService {
-    private final MailService mailService;
+  private final MailService mailService;
 
-
-    @Override
-    @RabbitListener(queues = "${rabbitmq-info.queue-name-user-notification}")
-    public void handleSendEmail(MailDTO mailDTO) {
-        log.info("handle notification {}",mailDTO);
-        mailService.sendMail(mailDTO);
-    }
+  @Override
+  @RabbitListener(queues = "${rabbitmq-info.queue-name-user-notification}")
+  public void handleSendEmail(MailDTO mailDTO) {
+    log.info("handle notification {}", mailDTO);
+    mailService.sendMail(mailDTO);
+  }
 }

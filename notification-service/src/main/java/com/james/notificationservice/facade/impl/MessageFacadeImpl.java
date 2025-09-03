@@ -11,13 +11,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MessageFacadeImpl implements MessageFacade {
-    private final MessageService messageService;
-    private final ProducerService producerService;
+  private final MessageService messageService;
+  private final ProducerService producerService;
 
-    @Override
-    public void sendNotificationSuccessTransaction(TransactionSuccessNotificationRequest transactionSuccessNotificationRequest) {
-        var message = Message.builder()
-                .build();
-    }
-
+  @Override
+  public void sendNotificationSuccessTransaction(
+      TransactionSuccessNotificationRequest transactionSuccessNotificationRequest) {
+    var message = Message.builder().build();
+  }
 }
