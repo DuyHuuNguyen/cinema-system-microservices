@@ -3,6 +3,7 @@ package com.james.paymentservice.service.impl;
 import com.james.paymentservice.entity.Transaction;
 import com.james.paymentservice.reporitory.TransactionRepository;
 import com.james.paymentservice.service.*;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,5 +29,12 @@ public class TransactionServiceImpl implements TransactionService {
   @Override
   public Page<Transaction> findAll(Specification<Transaction> specification, Pageable pageable) {
     return this.transactionRepository.findAll(specification, pageable);
+  }
+
+  @Override
+  public List<Transaction> findTransactionBySourceWalletIdAndTimeRange(
+      Long sourceWalletId, Long from, Long to) {
+    return this.transactionRepository.findTransactionBySourceWalletIdAndTimeRange(
+        sourceWalletId, from, to);
   }
 }

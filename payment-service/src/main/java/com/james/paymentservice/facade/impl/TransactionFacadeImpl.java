@@ -8,14 +8,16 @@ import com.james.paymentservice.enums.ErrorCode;
 import com.james.paymentservice.exception.DoubleSpendingException;
 import com.james.paymentservice.exception.EntityNotFoundException;
 import com.james.paymentservice.facade.TransactionFacade;
-import com.james.paymentservice.response.BaseResponse;
-import com.james.paymentservice.response.PaginationResponse;
-import com.james.paymentservice.response.TransactionDetailResponse;
-import com.james.paymentservice.response.TransactionResponse;
+import com.james.paymentservice.response.*;
 import com.james.paymentservice.resquest.CreateTransactionRequest;
+import com.james.paymentservice.resquest.SpendingTimeRangeRequest;
 import com.james.paymentservice.resquest.TransactionCriteria;
 import com.james.paymentservice.service.*;
 import com.james.paymentservice.specification.TransactionSpecification;
+import com.netflix.spectator.impl.AtomicDouble;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -121,5 +123,44 @@ public class TransactionFacadeImpl implements TransactionFacade {
             .totalPages(pages.getTotalPages())
             .build();
     return BaseResponse.build(response, true);
+  }
+
+  @Override
+  public BaseResponse<SpendingAnalysisResponse> findByAnalysisTimeRange(
+      SpendingTimeRangeRequest spendingTimeRangeRequest) {
+    var principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var wallet =
+        this.walletService
+            .findByUserIdAndId(principal.getId(), spendingTimeRangeRequest.getWalletId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
+
+    var transactions =
+        this.transactionService.findTransactionBySourceWalletIdAndTimeRange(
+            spendingTimeRangeRequest.getWalletId(),
+            spendingTimeRangeRequest.getFrom(),
+            spendingTimeRangeRequest.getTo());
+    List<Long> transactionIds = new ArrayList<>();
+
+    double totalAmount = 0;
+    int transactionSuccessfulTimes = 0;
+
+    for (var transaction : transactions) {
+      var isTransactionSuccessful = transaction.getStatus().isSuccess();
+
+      if (isTransactionSuccessful) {
+        transactionIds.add(transaction.getId());
+        totalAmount += transaction.getAmount();
+        transactionSuccessfulTimes++;
+      }
+
+    }
+    return BaseResponse.build(
+        SpendingAnalysisResponse.builder()
+            .transactionTimes(transactionSuccessfulTimes)
+            .transactionAmounts(totalAmount)
+            .transactionIds(transactionIds)
+            .build(),
+        true);
   }
 }

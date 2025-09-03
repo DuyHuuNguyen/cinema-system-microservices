@@ -1,14 +1,13 @@
 package com.james.paymentservice.controller;
 
 import com.james.paymentservice.facade.TransactionFacade;
-import com.james.paymentservice.response.BaseResponse;
-import com.james.paymentservice.response.PaginationResponse;
-import com.james.paymentservice.response.TransactionDetailResponse;
-import com.james.paymentservice.response.TransactionResponse;
+import com.james.paymentservice.response.*;
 import com.james.paymentservice.resquest.CreateTransactionRequest;
+import com.james.paymentservice.resquest.SpendingTimeRangeRequest;
 import com.james.paymentservice.resquest.TransactionCriteria;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,5 +50,15 @@ public class TransactionController {
   public BaseResponse<PaginationResponse<TransactionResponse>> findByFilter(
       @NotNull TransactionCriteria transactionCriteria) {
     return this.transactionFacade.findByFilter(transactionCriteria);
+  }
+
+  @GetMapping("analysis-time-range")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Transaction APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<SpendingAnalysisResponse> findByAnalysisTimeRange(
+      @Valid SpendingTimeRangeRequest spendingTimeRangeRequest) {
+    return this.transactionFacade.findByAnalysisTimeRange(spendingTimeRangeRequest);
   }
 }

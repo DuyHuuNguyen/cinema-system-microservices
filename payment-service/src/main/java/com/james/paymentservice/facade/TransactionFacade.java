@@ -1,10 +1,8 @@
 package com.james.paymentservice.facade;
 
-import com.james.paymentservice.response.BaseResponse;
-import com.james.paymentservice.response.PaginationResponse;
-import com.james.paymentservice.response.TransactionDetailResponse;
-import com.james.paymentservice.response.TransactionResponse;
+import com.james.paymentservice.response.*;
 import com.james.paymentservice.resquest.CreateTransactionRequest;
+import com.james.paymentservice.resquest.SpendingTimeRangeRequest;
 import com.james.paymentservice.resquest.TransactionCriteria;
 
 public interface TransactionFacade {
@@ -14,4 +12,7 @@ public interface TransactionFacade {
 
   BaseResponse<PaginationResponse<TransactionResponse>> findByFilter(
       TransactionCriteria transactionCriteria);
+
+  BaseResponse<SpendingAnalysisResponse> findByAnalysisTimeRange(
+      SpendingTimeRangeRequest spendingTimeRangeRequest);
 }

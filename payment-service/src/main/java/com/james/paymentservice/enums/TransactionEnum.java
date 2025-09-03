@@ -5,4 +5,8 @@ public enum TransactionEnum {
   SUCCESS,
   FAILURE,
   ERROR;
+
+  public boolean isSuccess() {
+    return this == SUCCESS;
+  }
 }
