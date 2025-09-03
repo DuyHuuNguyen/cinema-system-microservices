@@ -1,6 +1,7 @@
 package com.james.paymentservice.service;
 
 import com.james.paymentservice.entity.Wallet;
+import java.util.List;
 import java.util.Optional;
 
 public interface WalletService {
@@ -9,4 +10,6 @@ public interface WalletService {
   Optional<Wallet> findByUserIdAndId(Long userId, Long id);
 
   void save(Wallet wallet);
+
+  List<Wallet> findAllByOwnerId(Long ownerId);
 }

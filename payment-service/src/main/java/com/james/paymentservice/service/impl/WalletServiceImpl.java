@@ -3,6 +3,7 @@ package com.james.paymentservice.service.impl;
 import com.james.paymentservice.entity.Wallet;
 import com.james.paymentservice.reporitory.WalletRepository;
 import com.james.paymentservice.service.WalletService;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,10 @@ public class WalletServiceImpl implements WalletService {
   @Override
   public void save(Wallet wallet) {
     this.walletRepository.save(wallet);
+  }
+
+  @Override
+  public List<Wallet> findAllByOwnerId(Long ownerId) {
+    return this.walletRepository.findWalletsByUserId(ownerId);
   }
 }
