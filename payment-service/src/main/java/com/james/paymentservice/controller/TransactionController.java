@@ -1,10 +1,12 @@
 package com.james.paymentservice.controller;
 
+import com.james.paymentservice.dto.TransactionDTO;
 import com.james.paymentservice.facade.TransactionFacade;
 import com.james.paymentservice.response.*;
 import com.james.paymentservice.resquest.CreateTransactionRequest;
 import com.james.paymentservice.resquest.SpendingTimeRangeRequest;
 import com.james.paymentservice.resquest.TransactionCriteria;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -60,5 +62,25 @@ public class TransactionController {
   public BaseResponse<SpendingAnalysisResponse> findByAnalysisTimeRange(
       @Valid SpendingTimeRangeRequest spendingTimeRangeRequest) {
     return this.transactionFacade.findByAnalysisTimeRange(spendingTimeRangeRequest);
+  }
+
+  @Hidden
+  @PostMapping(
+          value = "/internal/verify/{id}",
+          headers = "secret-key=booking-service")
+  public  Boolean verifyPayment(@PathVariable Long id){
+    return this.transactionFacade.verifyTransaction(id);
+  }
+
+  @Hidden
+  @GetMapping(value = "/internal/{id}", headers = "secret-key=booking-service")
+  public TransactionDTO findTransactionById(@PathVariable Long id){
+    return this.transactionFacade.findTransactionById(id);
+  }
+
+  @Hidden
+  @PostMapping(value = "/internal", headers = "secret-key=booking-service")
+  public Long createPayment(@RequestBody CreateTransactionRequest request){
+    return this.transactionFacade.createTransactionInternal(request);
   }
 }

@@ -2,13 +2,16 @@ package com.james.paymentservice.facade.impl;
 
 import com.james.paymentservice.config.SecurityUserDetails;
 import com.james.paymentservice.dto.TransactionCreateDTO;
+import com.james.paymentservice.dto.TransactionDTO;
 import com.james.paymentservice.dto.WalletDTO;
 import com.james.paymentservice.entity.Transaction;
+import com.james.paymentservice.entity.Wallet;
 import com.james.paymentservice.enums.ErrorCode;
 import com.james.paymentservice.exception.DoubleSpendingException;
 import com.james.paymentservice.exception.EntityNotFoundException;
 import com.james.paymentservice.facade.TransactionFacade;
 import com.james.paymentservice.response.*;
+import com.james.paymentservice.resquest.CreateTransactionInternalForBookingTicket;
 import com.james.paymentservice.resquest.CreateTransactionRequest;
 import com.james.paymentservice.resquest.SpendingTimeRangeRequest;
 import com.james.paymentservice.resquest.TransactionCriteria;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.loadbalancer.config.LoadBalancerCacheAutoConfiguration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -160,4 +164,29 @@ public class TransactionFacadeImpl implements TransactionFacade {
             .build(),
         true);
   }
+
+  @Override
+  public Boolean verifyTransaction(Long id) {
+    var transaction = this.transactionService.findById(id).orElseThrow(()-> new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
+    return true;
+  }
+
+  @Override
+  public TransactionDTO findTransactionById(Long id) {
+    var transaction = this.transactionService.findById(id).orElseThrow(()-> new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
+    return TransactionDTO.builder()
+            .id(transaction.getId())
+            .price(transaction.getAmount())
+            .transactionStatus(transaction.getStatus())
+            .transactionType(transaction.getType())
+            .build();
+  }
+
+  @Override
+  public Long createTransactionInternal(CreateTransactionInternalForBookingTicket createTransactionInternalForBookingTicket) {
+    //build api nap tien cho user(internal: customer -> CTO theater)
+    return 0L;
+  }
+
+
 }
