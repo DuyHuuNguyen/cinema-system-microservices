@@ -14,10 +14,8 @@ import com.james.paymentservice.resquest.SpendingTimeRangeRequest;
 import com.james.paymentservice.resquest.TransactionCriteria;
 import com.james.paymentservice.service.*;
 import com.james.paymentservice.specification.TransactionSpecification;
-import com.netflix.spectator.impl.AtomicDouble;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -153,7 +151,6 @@ public class TransactionFacadeImpl implements TransactionFacade {
         totalAmount += transaction.getAmount();
         transactionSuccessfulTimes++;
       }
-
     }
     return BaseResponse.build(
         SpendingAnalysisResponse.builder()

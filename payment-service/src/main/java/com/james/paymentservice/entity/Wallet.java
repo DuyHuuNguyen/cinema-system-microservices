@@ -4,10 +4,7 @@ import com.james.paymentservice.enums.WalletStatus;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
@@ -25,7 +22,8 @@ public class Wallet extends BaseEntity {
   private String walletName;
 
   @Column(name = "balance")
-  private Double balance;
+  @Builder.Default
+  private Double balance = 0.0;
 
   @Column(name = "currency")
   private String currency;
@@ -38,13 +36,13 @@ public class Wallet extends BaseEntity {
       mappedBy = "sourceWallet",
       fetch = FetchType.EAGER,
       cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-  private List<Transaction> transactions = new ArrayList<>();
+  private List<Transaction> sendTransactions = new ArrayList<>();
 
   @OneToMany(
       mappedBy = "destinationWallet",
       fetch = FetchType.EAGER,
       cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-  private List<Transaction> transactionsb = new ArrayList<>();
+  private List<Transaction> receiveTransactions = new ArrayList<>();
 
   //  public void addTransaction(Transaction transaction) {
   //    this.transactions.add(transaction);
@@ -56,5 +54,13 @@ public class Wallet extends BaseEntity {
 
   public void plusBalance(Double balance) {
     this.balance += balance;
+  }
+
+  public void changeWalletName(String walletName) {
+    this.walletName = walletName;
+  }
+
+  public void changeStatus(WalletStatus status) {
+    this.status = status;
   }
 }

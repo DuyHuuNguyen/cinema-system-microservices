@@ -7,4 +7,6 @@ public interface WalletService {
   Optional<Wallet> findById(Long id);
 
   Optional<Wallet> findByUserIdAndId(Long userId, Long id);
+
+  void save(Wallet wallet);
 }
