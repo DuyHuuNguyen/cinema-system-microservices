@@ -10,8 +10,16 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 public class CreatePaymentRequest {
+  //  private Long destinationId;
   private PaymentType paymentType;
   private PaymentStatus paymentStatus;
   private Long bookingId;
   private float price;
+
+  private Long sourceWalletId;
+  private Long destinationWalletId;
+  private Double amount;
+  //      private TransactionType transactionType;
+  //      private TransactionEnum transactionStatus;
+  //      private Long bookingId;
 }

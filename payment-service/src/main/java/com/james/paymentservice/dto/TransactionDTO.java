@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class TransactionDTO {
-    private Long id;
-    private TransactionType transactionType;
-    private TransactionEnum transactionStatus;
-    private Double price;
+  private Long id;
+  private TransactionType transactionType;
+  private TransactionEnum transactionStatus;
+  private Double price;
 }

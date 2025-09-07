@@ -7,6 +7,8 @@ import com.james.paymentservice.dto.WalletDTO;
 import com.james.paymentservice.entity.Transaction;
 import com.james.paymentservice.entity.Wallet;
 import com.james.paymentservice.enums.ErrorCode;
+import com.james.paymentservice.enums.TransactionEnum;
+import com.james.paymentservice.enums.TransactionType;
 import com.james.paymentservice.exception.DoubleSpendingException;
 import com.james.paymentservice.exception.EntityNotFoundException;
 import com.james.paymentservice.facade.TransactionFacade;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.loadbalancer.config.LoadBalancerCacheAutoConfiguration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -167,26 +168,59 @@ public class TransactionFacadeImpl implements TransactionFacade {
 
   @Override
   public Boolean verifyTransaction(Long id) {
-    var transaction = this.transactionService.findById(id).orElseThrow(()-> new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
+    var transaction =
+        this.transactionService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
     return true;
   }
 
   @Override
   public TransactionDTO findTransactionById(Long id) {
-    var transaction = this.transactionService.findById(id).orElseThrow(()-> new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
+    var transaction =
+        this.transactionService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
     return TransactionDTO.builder()
-            .id(transaction.getId())
-            .price(transaction.getAmount())
-            .transactionStatus(transaction.getStatus())
-            .transactionType(transaction.getType())
-            .build();
+        .id(transaction.getId())
+        .price(transaction.getAmount())
+        .transactionStatus(transaction.getStatus())
+        .transactionType(transaction.getType())
+        .build();
   }
 
   @Override
-  public Long createTransactionInternal(CreateTransactionInternalForBookingTicket createTransactionInternalForBookingTicket) {
-    //build api nap tien cho user(internal: customer -> CTO theater)
-    return 0L;
+  public Long createTransactionInternal(
+      CreateTransactionInternalForBookingTicket createTransactionInternalForBookingTicket) {
+    Wallet sourceWallet = null;
+    Wallet destinationWallet = null;
+    try {
+      sourceWallet =
+          this.walletService
+              .findById(createTransactionInternalForBookingTicket.getSourceWalletId())
+              .orElseThrow(() -> new EntityNotFoundException(ErrorCode.PAYMENT_NOT_FOUND));
+      destinationWallet =
+          this.walletService
+              .findById(createTransactionInternalForBookingTicket.getDestinationWalletId())
+              .orElseThrow(() -> new EntityNotFoundException(ErrorCode.PAYMENT_NOT_FOUND));
+
+      sourceWallet.minusBalance(createTransactionInternalForBookingTicket.getAmount());
+      destinationWallet.plusBalance(createTransactionInternalForBookingTicket.getAmount());
+    } catch (EntityNotFoundException e) {
+      log.info("Wallet could not be found {}", createTransactionInternalForBookingTicket);
+      return -1L;
+    }
+    var transaction =
+        Transaction.builder()
+            .amount(createTransactionInternalForBookingTicket.getAmount())
+            .type(TransactionType.TRANSFER)
+            .destinationWallet(destinationWallet)
+            .sourceWallet(sourceWallet)
+            .status(TransactionEnum.SUCCESS)
+            .build();
+    var newTransaction = this.transactionService.save(transaction);
+    log.info("Successfully processed transaction");
+
+    return newTransaction.getId();
   }
-
-
 }

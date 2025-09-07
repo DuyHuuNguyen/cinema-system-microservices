@@ -3,6 +3,7 @@ package com.james.paymentservice.controller;
 import com.james.paymentservice.dto.TransactionDTO;
 import com.james.paymentservice.facade.TransactionFacade;
 import com.james.paymentservice.response.*;
+import com.james.paymentservice.resquest.CreateTransactionInternalForBookingTicket;
 import com.james.paymentservice.resquest.CreateTransactionRequest;
 import com.james.paymentservice.resquest.SpendingTimeRangeRequest;
 import com.james.paymentservice.resquest.TransactionCriteria;
@@ -65,22 +66,21 @@ public class TransactionController {
   }
 
   @Hidden
-  @PostMapping(
-          value = "/internal/verify/{id}",
-          headers = "secret-key=booking-service")
-  public  Boolean verifyPayment(@PathVariable Long id){
+  @PostMapping(value = "/internal/verify/{id}", headers = "secret-key=booking-service")
+  public Boolean verifyPayment(@PathVariable Long id) {
     return this.transactionFacade.verifyTransaction(id);
   }
 
   @Hidden
   @GetMapping(value = "/internal/{id}", headers = "secret-key=booking-service")
-  public TransactionDTO findTransactionById(@PathVariable Long id){
+  public TransactionDTO findTransactionById(@PathVariable Long id) {
     return this.transactionFacade.findTransactionById(id);
   }
 
   @Hidden
   @PostMapping(value = "/internal", headers = "secret-key=booking-service")
-  public Long createPayment(@RequestBody CreateTransactionRequest request){
+  public Long createPayment(@RequestBody CreateTransactionInternalForBookingTicket request) {
+    //    return this.transactionFacade.createTransactionInternal(request);
     return this.transactionFacade.createTransactionInternal(request);
   }
 }
