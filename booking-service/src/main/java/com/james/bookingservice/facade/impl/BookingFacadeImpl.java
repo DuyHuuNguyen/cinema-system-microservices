@@ -78,6 +78,8 @@ public class BookingFacadeImpl implements BookingFacade {
                               .paymentStatus(PaymentStatus.FAILURE)
                               .paymentType(PaymentType.COD)
                               .bookingId(newBooking.getId())
+                              .sourceWalletId(request.getSourceId())
+                              .destinationWalletId(request.getDestinationId())
                               .price(totalPrice.get())
                               .build();
               log.info("req body payment {} ", paymentRequest);
@@ -100,13 +102,7 @@ public class BookingFacadeImpl implements BookingFacade {
                }
                booking.addBookingCode(UUID.randomUUID().toString());
                booking.addPaymentId(request.getPaymentId());
-              var newBooking = this.bookingService.save(booking);
-              try{
-                  this.paymentService.addBookingIdForPayment(request.getPaymentId(),newBooking.getPaymentId());
-              } catch (Exception e){
-                  this.bookingService.delete(newBooking);
-                  throw new EntityNotFoundException(ErrorCode.PAYMENT_INVALID);
-              }
+              this.bookingService.save(booking);
               log.info("booking ok by repay for ! 👌");
           }
       }

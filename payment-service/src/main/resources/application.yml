@@ -16,3 +16,25 @@ spring:
     username: postgres
     password: 1111
     driver-class-name: org.postgresql.Driver
+---
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      spring.json.trusted.packages: "*"
+
+---
+kafka:
+  var:
+    topic-create-transaction: topic-create-transaction-23130075
+    topic-deal-letter-transaction:  topic-deal-letter-transaction-23130075
+    topic-successful-transaction: topic-success-transaction-23130075
+    group-id-transaction-coordinator: james-23130075
+    group-id-handle-successful: successful-23130075
+    group-id-handle-fail: fail-23130075

@@ -1,3 +1,7 @@
 package com.james.notificationservice.service;
 
-public interface ConsumerService {}
+import com.james.notificationservice.dto.MailDTO;
+
+public interface ConsumerService {
+  void handleSendEmail(MailDTO mailDTO);
+}

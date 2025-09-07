@@ -29,6 +29,9 @@ public class CreateBookingTicketRequest {
 
   private Long paymentId;
 
+  private Long sourceId;
+  private Long destinationId;
+
   private String bookingCode;
 
   @Schema(defaultValue = "[]")

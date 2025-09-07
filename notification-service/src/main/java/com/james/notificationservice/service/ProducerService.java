@@ -1,3 +1,7 @@
 package com.james.notificationservice.service;
 
-public interface ProducerService {}
+import com.james.notificationservice.dto.MailDTO;
+
+public interface ProducerService {
+  void sendNotification(MailDTO mailDTO);
+}
