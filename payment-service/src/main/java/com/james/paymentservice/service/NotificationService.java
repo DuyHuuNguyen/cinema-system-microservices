@@ -10,5 +10,6 @@ public interface NotificationService {
   @PostMapping(value = "/api/v1/notifications/internal", headers = "secret-key=transaction-success")
   void sendNotification(TransactionSuccessNotificationRequest transactionNotificationRequest);
 
+  @PostMapping(value = "during-the-development-stage")
   void sendNotification(TransactionFailNotificationRequest transactionNotificationRequest);
 }
